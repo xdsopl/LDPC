@@ -18,6 +18,17 @@ Here some good reads:
 * [en_302307v010201p.pdf](http://www.etsi.org/deliver/etsi_en/302300_302399/302307/01.02.01_60/en_302307v010201p.pdf)
 * [a83-1_dvb-s2_den302307v141.pdf](https://www.dvb.org/resources/public/standards/a83-1_dvb-s2_den302307v141.pdf)
 
+### The convergence behaviour of different algorithms and the impact of the varying degrees of bit nodes on them
+
+This is the fastest algorithm, but it needs a few iterations more:
+![min-sum-c](min-sum-c.png)
+
+The sum-product algorithms converge much faster than the min-sum algorithms, but they involve [transcendental functions](https://en.wikipedia.org/wiki/Transcendental_function).
+![log-sum-product](log-sum-product.png)
+
+Here we see the fastest convergence, where bitnodes go to minus or plus infinity (and sometimes back from):
+![sum-product](sum-product.png)
+
 ### [dvb_s2_tables.hh](dvb_s2_tables.hh)
 
 Some DVB-S2 LDPC parity bit address tables
