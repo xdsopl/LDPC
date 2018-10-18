@@ -31,7 +31,7 @@ Here we see the fastest convergence, where bitnodes go to minus or plus infinity
 
 ### [dvb_s2_tables.hh](dvb_s2_tables.hh)
 
-Some DVB-S2 LDPC parity bit address tables
+DVB-S2 LDPC parity bit address tables
 
 Entries are copied from: [a83-1_dvb-s2_den302307v141.pdf](https://www.dvb.org/resources/public/standards/a83-1_dvb-s2_den302307v141.pdf)
 
