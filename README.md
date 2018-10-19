@@ -12,9 +12,12 @@ You can switch between 3 [Belief propagation](https://en.wikipedia.org/wiki/Beli
 Decoding speed varies about 20ms (no errors) to 500ms (max errors) for the rate 1/2 N=64800 code using min-sum-c on my workstation.
 
 Here some good reads:
-* Low-Density Parity-Check Codes by Robert G. Gallager - 1963
-* Near Shannon Limit Performance of Low Density Parity Check Codes by David J.C. MacKay and Radford M. Neal - 1996
-* An introduction to LDPC codes by William E. Ryan - 2003
+* Low-Density Parity-Check Codes  
+by Robert G. Gallager - 1963
+* Near Shannon Limit Performance of Low Density Parity Check Codes  
+by David J.C. MacKay and Radford M. Neal - 1996
+* An introduction to LDPC codes  
+by William E. Ryan - 2003
 * DVB-S2 Low Density Parity Check Codes with near Shannon Limit Performance  
 by Mustafa Eroz, Feng-Wen Sun and Lin-Nan Lee - 2004
 * [en_302307v010201p.pdf](http://www.etsi.org/deliver/etsi_en/302300_302399/302307/01.02.01_60/en_302307v010201p.pdf)
