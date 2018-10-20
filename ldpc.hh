@@ -194,7 +194,7 @@ class LDPC {
 			for (int m = 0; m < M; ++m) {
 				for (int n = 0; n < bit_deg; ++n) {
 					int i = acc_pos[n];
-					cnv[i] *= signum(bnv[j+m+K]);
+					cnv[i] *= signum(bnv[j+m+R]);
 					cnl[CNL*i+cnc[i]++] = alg.prep(*bl++);
 				}
 				next_bit();
@@ -236,7 +236,7 @@ class LDPC {
 				}
 				TYPE out[bit_deg];
 				CODE::exclusive_reduce(inp, out, bit_deg, alg.add);
-				bnv[j+m+K] += out[0] + inp[0];
+				bnv[j+m+R] += out[0] + inp[0];
 				for (int n = 0; n < bit_deg; ++n)
 					*bl++ += out[n];
 				next_bit();
