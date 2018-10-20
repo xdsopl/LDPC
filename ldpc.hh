@@ -114,12 +114,16 @@ class LDPC {
 	TYPE bnl[TABLE::LINKS_TOTAL];
 	TYPE bnv[N];
 	TYPE cnl[R * CNL];
-	TYPE cnv[R];
+	int cnv[R];
 	int cnc[R];
 	MinSumAlgorithm<TYPE> alg;
 	//LogDomainSPA<TYPE> alg;
 	//SumProductAlgorithm<TYPE> alg;
 
+	int signum(TYPE v)
+	{
+		return (v > TYPE(0)) - (v < TYPE(0));
+	}
 	void next_group()
 	{
 		if (grp_cnt >= grp_len) {
@@ -173,9 +177,9 @@ class LDPC {
 	}
 	void check_node_update()
 	{
-		cnv[0] = alg.prep(bnv[0]);
+		cnv[0] = signum(bnv[0]);
 		for (int i = 1; i < R; ++i)
-			cnv[i] = alg.mul(alg.prep(bnv[i-1]), alg.prep(bnv[i]));
+			cnv[i] = signum(bnv[i-1]) * signum(bnv[i]);
 
 		TYPE *bl = bnl;
 		cnl[0] = alg.prep(*bl++);
@@ -190,15 +194,13 @@ class LDPC {
 			for (int m = 0; m < M; ++m) {
 				for (int n = 0; n < bit_deg; ++n) {
 					int i = acc_pos[n];
-					cnv[i] = alg.mul(cnv[i], alg.prep(bnv[j+m+K]));
+					cnv[i] *= signum(bnv[j+m+K]);
 					cnl[CNL*i+cnc[i]++] = alg.prep(*bl++);
 				}
 				next_bit();
 			}
 			next_group();
 		}
-		for (int i = 0; i < R; ++i)
-			cnv[i] = alg.postp(cnv[i]);
 		for (int i = 0; i < R; ++i) {
 			TYPE tmp[cnc[i]];
 			CODE::exclusive_reduce(cnl+CNL*i, tmp, cnc[i], alg.mul);
