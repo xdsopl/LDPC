@@ -112,6 +112,48 @@ struct LogDomainSPA
 };
 
 template <typename TYPE>
+struct TwoMinAlgorithm
+{
+	static TYPE phi(TYPE x)
+	{
+		x = std::clamp(x, TYPE(0.000001), TYPE(14.5));
+		return std::log(std::exp(x)+TYPE(1)) - std::log(std::exp(x)-TYPE(1));
+	}
+	static TYPE mul(TYPE a, TYPE b)
+	{
+		return a * b;
+	}
+	static TYPE add(TYPE a, TYPE b)
+	{
+		return a + b;
+	}
+	typedef std::pair<TYPE, TYPE> Pair;
+	static Pair min(Pair a, Pair b)
+	{
+		return Pair(std::min(a.first, b.first), std::max(a.first, b.first));
+	}
+	static void finalp(TYPE *links, int cnt)
+	{
+		Pair blmags[cnt], mins[cnt];
+		for (int i = 0; i < cnt; ++i)
+			blmags[i].first = std::abs(links[i]);
+		CODE::exclusive_reduce(blmags, mins, cnt, min);
+
+		TYPE sums[cnt];
+		for (int i = 0; i < cnt; ++i)
+			sums[i] = phi(mins[i].first) + phi(mins[i].second);
+
+		TYPE blsigns[cnt], signs[cnt];
+		for (int i = 0; i < cnt; ++i)
+			blsigns[i] = links[i] < TYPE(0) ? TYPE(-1) : TYPE(1);
+		CODE::exclusive_reduce(blsigns, signs, cnt, mul);
+
+		for (int i = 0; i < cnt; ++i)
+			links[i] = signs[i] * phi(sums[i]);
+	}
+};
+
+template <typename TYPE>
 struct SumProductAlgorithm
 {
 	static TYPE prep(TYPE x)
@@ -163,6 +205,7 @@ class LDPC {
 	//MinSumAlgorithm<TYPE> alg;
 	MinSumCAlgorithm<TYPE> alg;
 	//LogDomainSPA<TYPE> alg;
+	//TwoMinAlgorithm<TYPE> alg;
 	//SumProductAlgorithm<TYPE> alg;
 
 	int signum(TYPE v)
