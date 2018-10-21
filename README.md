@@ -26,9 +26,9 @@ by Mustafa Eroz, Feng-Wen Sun and Lin-Nan Lee - 2004
 ### Impact of the varying degrees of the bit nodes on their convergence behaviour
 
 The color on the following three plots are to be interpreted like this:
-* Green: message bitnodes with degree eight
-* Violet: message bitnodes with degree three
-* Blue: parity bitnodes with degree two
+* Red: parity bit nodes with degree two
+* Green: message bit nodes with degree eight
+* Blue: message bit nodes with degree three
 
 This is the fastest algorithm, min-sum-c, but it needs a few iterations longer to converge:
 ![min-sum-c](min-sum-c.png)
@@ -36,7 +36,7 @@ This is the fastest algorithm, min-sum-c, but it needs a few iterations longer t
 The sum-product algorithms converge much faster than the min-sum algorithms, but they involve [transcendental functions](https://en.wikipedia.org/wiki/Transcendental_function).
 ![log-sum-product](log-sum-product.png)
 
-Here we see the fastest convergence, where bitnodes go to minus or plus infinity (and sometimes back from):
+Here we see the fastest convergence, where bit nodes go to minus or plus infinity (and sometimes back from):
 ![sum-product](sum-product.png)
 
 ### [dvb_s2_tables.hh](dvb_s2_tables.hh)
