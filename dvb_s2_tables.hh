@@ -15,6 +15,7 @@ struct DVB_S2_TABLE_B1
 	static const int M = 360;
 	static const int N = 64800;
 	static const int K = 16200;
+	static const int LINKS_MIN_CN = 3;
 	static const int LINKS_MAX_CN = 4;
 	static const int LINKS_TOTAL = 194399;
 	static const int DEG_MAX = 12;
@@ -78,6 +79,7 @@ struct DVB_S2_TABLE_B2
 	static const int M = 360;
 	static const int N = 64800;
 	static const int K = 21600;
+	static const int LINKS_MIN_CN = 4;
 	static const int LINKS_MAX_CN = 5;
 	static const int LINKS_TOTAL = 215999;
 	static const int DEG_MAX = 12;
@@ -156,6 +158,7 @@ struct DVB_S2_TABLE_B3
 	static const int M = 360;
 	static const int N = 64800;
 	static const int K = 25920;
+	static const int LINKS_MIN_CN = 5;
 	static const int LINKS_MAX_CN = 6;
 	static const int LINKS_TOTAL = 233279;
 	static const int DEG_MAX = 12;
@@ -246,6 +249,7 @@ struct DVB_S2_TABLE_B4
 	static const int M = 360;
 	static const int N = 64800;
 	static const int K = 32400;
+	static const int LINKS_MIN_CN = 6;
 	static const int LINKS_MAX_CN = 7;
 	static const int LINKS_TOTAL = 226799;
 	static const int DEG_MAX = 8;
@@ -354,6 +358,7 @@ struct DVB_S2_TABLE_B5
 	static const int M = 360;
 	static const int N = 64800;
 	static const int K = 38880;
+	static const int LINKS_MIN_CN = 10;
 	static const int LINKS_MAX_CN = 11;
 	static const int LINKS_TOTAL = 285119;
 	static const int DEG_MAX = 12;
@@ -480,6 +485,7 @@ struct DVB_S2_TABLE_B6
 	static const int M = 360;
 	static const int N = 64800;
 	static const int K = 43200;
+	static const int LINKS_MIN_CN = 9;
 	static const int LINKS_MAX_CN = 10;
 	static const int LINKS_TOTAL = 215999;
 	static const int DEG_MAX = 13;
@@ -618,6 +624,7 @@ struct DVB_S2_TABLE_B7
 	static const int M = 360;
 	static const int N = 64800;
 	static const int K = 48600;
+	static const int LINKS_MIN_CN = 13;
 	static const int LINKS_MAX_CN = 14;
 	static const int LINKS_TOTAL = 226799;
 	static const int DEG_MAX = 12;
@@ -771,6 +778,7 @@ struct DVB_S2_TABLE_B8
 	static const int M = 360;
 	static const int N = 64800;
 	static const int K = 51840;
+	static const int LINKS_MIN_CN = 17;
 	static const int LINKS_MAX_CN = 18;
 	static const int LINKS_TOTAL = 233279;
 	static const int DEG_MAX = 11;
@@ -933,6 +941,7 @@ struct DVB_S2_TABLE_B9
 	static const int M = 360;
 	static const int N = 64800;
 	static const int K = 54000;
+	static const int LINKS_MIN_CN = 21;
 	static const int LINKS_MAX_CN = 22;
 	static const int LINKS_TOTAL = 237599;
 	static const int DEG_MAX = 13;
@@ -1101,6 +1110,7 @@ struct DVB_S2_TABLE_B10
 	static const int M = 360;
 	static const int N = 64800;
 	static const int K = 57600;
+	static const int LINKS_MIN_CN = 26;
 	static const int LINKS_MAX_CN = 27;
 	static const int LINKS_TOTAL = 194399;
 	static const int DEG_MAX = 4;
@@ -1279,6 +1289,7 @@ struct DVB_S2_TABLE_B11
 	static const int M = 360;
 	static const int N = 64800;
 	static const int K = 58320;
+	static const int LINKS_MIN_CN = 29;
 	static const int LINKS_MAX_CN = 30;
 	static const int LINKS_TOTAL = 194399;
 	static const int DEG_MAX = 4;
@@ -1459,6 +1470,7 @@ struct DVB_S2_TABLE_C1
 	static const int M = 360;
 	static const int N = 16200;
 	static const int K = 3240;
+	static const int LINKS_MIN_CN = 3;
 	static const int LINKS_MAX_CN = 4;
 	static const int LINKS_TOTAL = 48599;
 	static const int DEG_MAX = 12;
@@ -1486,6 +1498,7 @@ struct DVB_S2_TABLE_C2
 	static const int M = 360;
 	static const int N = 16200;
 	static const int K = 5400;
+	static const int LINKS_MIN_CN = 4;
 	static const int LINKS_MAX_CN = 5;
 	static const int LINKS_TOTAL = 53999;
 	static const int DEG_MAX = 12;
@@ -1519,6 +1532,7 @@ struct DVB_S2_TABLE_C3
 	static const int M = 360;
 	static const int N = 16200;
 	static const int K = 6480;
+	static const int LINKS_MIN_CN = 5;
 	static const int LINKS_MAX_CN = 6;
 	static const int LINKS_TOTAL = 58319;
 	static const int DEG_MAX = 12;
@@ -1555,6 +1569,7 @@ struct DVB_S2_TABLE_C4
 	static const int M = 360;
 	static const int N = 16200;
 	static const int K = 7200;
+	static const int LINKS_MIN_CN = 4;
 	static const int LINKS_MAX_CN = 7;
 	static const int LINKS_TOTAL = 48599;
 	static const int DEG_MAX = 8;
@@ -1593,6 +1608,7 @@ struct DVB_S2_TABLE_C5
 	static const int M = 360;
 	static const int N = 16200;
 	static const int K = 9720;
+	static const int LINKS_MIN_CN = 10;
 	static const int LINKS_MAX_CN = 11;
 	static const int LINKS_TOTAL = 71279;
 	static const int DEG_MAX = 12;
@@ -1638,6 +1654,7 @@ struct DVB_S2_TABLE_C6
 	static const int M = 360;
 	static const int N = 16200;
 	static const int K = 10800;
+	static const int LINKS_MIN_CN = 9;
 	static const int LINKS_MAX_CN = 10;
 	static const int LINKS_TOTAL = 53999;
 	static const int DEG_MAX = 13;
@@ -1686,6 +1703,7 @@ struct DVB_S2_TABLE_C7
 	static const int M = 360;
 	static const int N = 16200;
 	static const int K = 11880;
+	static const int LINKS_MIN_CN = 9;
 	static const int LINKS_MAX_CN = 13;
 	static const int LINKS_TOTAL = 47519;
 	static const int DEG_MAX = 12;
@@ -1737,6 +1755,7 @@ struct DVB_S2_TABLE_C8
 	static const int M = 360;
 	static const int N = 16200;
 	static const int K = 12600;
+	static const int LINKS_MIN_CN = 11;
 	static const int LINKS_MAX_CN = 13;
 	static const int LINKS_TOTAL = 44999;
 	static const int DEG_MAX = 3;
@@ -1790,6 +1809,7 @@ struct DVB_S2_TABLE_C9
 	static const int M = 360;
 	static const int N = 16200;
 	static const int K = 13320;
+	static const int LINKS_MIN_CN = 15;
 	static const int LINKS_MAX_CN = 19;
 	static const int LINKS_TOTAL = 49319;
 	static const int DEG_MAX = 13;
@@ -1845,6 +1865,7 @@ struct DVB_S2_TABLE_C10
 	static const int M = 360;
 	static const int N = 16200;
 	static const int K = 14400;
+	static const int LINKS_MIN_CN = 26;
 	static const int LINKS_MAX_CN = 27;
 	static const int LINKS_TOTAL = 48599;
 	static const int DEG_MAX = 4;
