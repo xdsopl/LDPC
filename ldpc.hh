@@ -51,29 +51,31 @@ struct LogDomainSPA
 {
 	static TYPE phi(TYPE x)
 	{
-		TYPE mx = std::abs(x);
-		mx = std::clamp(mx, TYPE(0.000001), TYPE(14.5));
-		mx = std::log(std::exp(mx)+TYPE(1)) - std::log(std::exp(mx)-TYPE(1));
-		return x < TYPE(0) ? -mx : mx;
+		x = std::clamp(x, TYPE(0.000001), TYPE(14.5));
+		return std::log(std::exp(x)+TYPE(1)) - std::log(std::exp(x)-TYPE(1));
 	}
 	static TYPE mul(TYPE a, TYPE b)
 	{
-		TYPE ma = std::abs(a);
-		TYPE mb = std::abs(b);
-		return a < TYPE(0) != b < TYPE(0) ? -(ma + mb) : (ma + mb);
-	}
-	static void finalp(TYPE *links, int cnt)
-	{
-		TYPE in[cnt], out[cnt];
-		for (int i = 0; i < cnt; ++i)
-			in[i] = phi(links[i]);
-		CODE::exclusive_reduce(in, out, cnt, mul);
-		for (int i = 0; i < cnt; ++i)
-			links[i] = phi(out[i]);
+		return a * b;
 	}
 	static TYPE add(TYPE a, TYPE b)
 	{
 		return a + b;
+	}
+	static void finalp(TYPE *links, int cnt)
+	{
+		TYPE blmags[cnt], sums[cnt];
+		for (int i = 0; i < cnt; ++i)
+			blmags[i] = phi(std::abs(links[i]));
+		CODE::exclusive_reduce(blmags, sums, cnt, add);
+
+		TYPE blsigns[cnt], signs[cnt];
+		for (int i = 0; i < cnt; ++i)
+			blsigns[i] = links[i] < TYPE(0) ? TYPE(-1) : TYPE(1);
+		CODE::exclusive_reduce(blsigns, signs, cnt, mul);
+
+		for (int i = 0; i < cnt; ++i)
+			links[i] = signs[i] * phi(sums[i]);
 	}
 };
 
