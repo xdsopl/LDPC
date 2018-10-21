@@ -12,6 +12,38 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 template <typename TYPE>
 struct MinSumAlgorithm
 {
+	static TYPE min(TYPE a, TYPE b)
+	{
+		return std::min(a, b);
+	}
+	static TYPE mul(TYPE a, TYPE b)
+	{
+		return a * b;
+	}
+	static void finalp(TYPE *links, int cnt)
+	{
+		TYPE blmags[cnt], mins[cnt];
+		for (int i = 0; i < cnt; ++i)
+			blmags[i] = std::abs(links[i]);
+		CODE::exclusive_reduce(blmags, mins, cnt, min);
+
+		TYPE blsigns[cnt], signs[cnt];
+		for (int i = 0; i < cnt; ++i)
+			blsigns[i] = links[i] < TYPE(0) ? TYPE(-1) : TYPE(1);
+		CODE::exclusive_reduce(blsigns, signs, cnt, mul);
+
+		for (int i = 0; i < cnt; ++i)
+			links[i] = signs[i] * mins[i];
+	}
+	static TYPE add(TYPE a, TYPE b)
+	{
+		return a + b;
+	}
+};
+
+template <typename TYPE>
+struct MinSumCAlgorithm
+{
 	static TYPE correction_factor(TYPE a, TYPE b)
 	{
 		if (1) {
@@ -128,7 +160,8 @@ class LDPC {
 	TYPE cnl[R * CNL];
 	int cnv[R];
 	int cnc[R];
-	MinSumAlgorithm<TYPE> alg;
+	//MinSumAlgorithm<TYPE> alg;
+	MinSumCAlgorithm<TYPE> alg;
 	//LogDomainSPA<TYPE> alg;
 	//SumProductAlgorithm<TYPE> alg;
 
