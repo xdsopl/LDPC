@@ -246,12 +246,8 @@ class LDPC {
 		if (0) {
 			static int count;
 			std::cout << count++;
-			for (int i = 0; i < 100; ++i)
-				std::cout << " " << std::clamp<TYPE>(bnv[N-1-i], -1000, 1000);
-			for (int i = 0; i < 100; ++i)
-				std::cout << " " << std::clamp<TYPE>(bnv[i+R], -1000, 1000);
-			for (int i = 0; i < 100; ++i)
-				std::cout << " " << std::clamp<TYPE>(bnv[i], -1000, 1000);
+			for (int i = 0; i < N; ++i)
+				std::cout << " " << std::clamp<TYPE>(bnv[i], -1000000, 1000000);
 			std::cout << std::endl;
 		}
 	}
