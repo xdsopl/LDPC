@@ -12,14 +12,6 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 template <typename TYPE>
 struct MinSumAlgorithm
 {
-	static TYPE prep(TYPE x)
-	{
-		return x;
-	}
-	static TYPE postp(TYPE x)
-	{
-		return x;
-	}
 	static TYPE correction_factor(TYPE a, TYPE b)
 	{
 		if (1) {
@@ -46,7 +38,7 @@ struct MinSumAlgorithm
 		TYPE tmp[cnt];
 		CODE::exclusive_reduce(links, tmp, cnt, min);
 		for (int i = 0; i < cnt; ++i)
-			links[i] = postp(tmp[i]);
+			links[i] = tmp[i];
 	}
 	static TYPE add(TYPE a, TYPE b)
 	{
@@ -57,14 +49,7 @@ struct MinSumAlgorithm
 template <typename TYPE>
 struct LogDomainSPA
 {
-	static TYPE prep(TYPE x)
-	{
-		TYPE mx = std::abs(x);
-		mx = std::clamp(mx, TYPE(0.000001), TYPE(14.5));
-		mx = std::log(std::exp(mx)+TYPE(1)) - std::log(std::exp(mx)-TYPE(1));
-		return x < TYPE(0) ? -mx : mx;
-	}
-	static TYPE postp(TYPE x)
+	static TYPE phi(TYPE x)
 	{
 		TYPE mx = std::abs(x);
 		mx = std::clamp(mx, TYPE(0.000001), TYPE(14.5));
@@ -79,10 +64,12 @@ struct LogDomainSPA
 	}
 	static void finalp(TYPE *links, int cnt)
 	{
-		TYPE tmp[cnt];
-		CODE::exclusive_reduce(links, tmp, cnt, mul);
+		TYPE in[cnt], out[cnt];
 		for (int i = 0; i < cnt; ++i)
-			links[i] = postp(tmp[i]);
+			in[i] = phi(links[i]);
+		CODE::exclusive_reduce(in, out, cnt, mul);
+		for (int i = 0; i < cnt; ++i)
+			links[i] = phi(out[i]);
 	}
 	static TYPE add(TYPE a, TYPE b)
 	{
@@ -107,10 +94,12 @@ struct SumProductAlgorithm
 	}
 	static void finalp(TYPE *links, int cnt)
 	{
-		TYPE tmp[cnt];
-		CODE::exclusive_reduce(links, tmp, cnt, mul);
+		TYPE in[cnt], out[cnt];
 		for (int i = 0; i < cnt; ++i)
-			links[i] = postp(tmp[i]);
+			in[i] = prep(links[i]);
+		CODE::exclusive_reduce(in, out, cnt, mul);
+		for (int i = 0; i < cnt; ++i)
+			links[i] = postp(out[i]);
 	}
 	static TYPE add(TYPE a, TYPE b)
 	{
@@ -203,11 +192,11 @@ class LDPC {
 			cnv[i] = signum(bnv[i-1]) * signum(bnv[i]);
 
 		TYPE *bl = bnl;
-		cnl[0] = alg.prep(*bl++);
+		cnl[0] = *bl++;
 		cnc[0] = 1;
 		for (int i = 1; i < R; ++i) {
-			cnl[CNL*i] = alg.prep(*bl++);
-			cnl[CNL*i+1] = alg.prep(*bl++);
+			cnl[CNL*i] = *bl++;
+			cnl[CNL*i+1] = *bl++;
 			cnc[i] = 2;
 		}
 		first_group();
@@ -216,7 +205,7 @@ class LDPC {
 				for (int n = 0; n < bit_deg; ++n) {
 					int i = acc_pos[n];
 					cnv[i] *= signum(bnv[j+m+R]);
-					cnl[CNL*i+cnc[i]++] = alg.prep(*bl++);
+					cnl[CNL*i+cnc[i]++] = *bl++;
 				}
 				next_bit();
 			}
