@@ -3,7 +3,7 @@ Playing with [Low-density parity-check codes](https://en.wikipedia.org/wiki/Low-
 
 To study LDPC codes I've implemented a soft decision decoder using floating point operations only.
 
-You can switch between 3 [Belief propagation](https://en.wikipedia.org/wiki/Belief_propagation) algorithms:
+You can switch between three [Belief propagation](https://en.wikipedia.org/wiki/Belief_propagation) algorithms:
 
 * min-sum-c algorithm: using minimum, addition and a correction factor
 * sum-product algorithm: using tanh+atanh-functions, addition and multiplication
@@ -23,9 +23,14 @@ by Mustafa Eroz, Feng-Wen Sun and Lin-Nan Lee - 2004
 * [en_302307v010201p.pdf](http://www.etsi.org/deliver/etsi_en/302300_302399/302307/01.02.01_60/en_302307v010201p.pdf)
 * [a83-1_dvb-s2_den302307v141.pdf](https://www.dvb.org/resources/public/standards/a83-1_dvb-s2_den302307v141.pdf)
 
-### The convergence behaviour of different algorithms and the impact of the varying degrees of bit nodes on them
+### Impact of the varying degrees of the bit nodes on their convergence behaviour
 
-This is the fastest algorithm, but it needs a few iterations more:
+The color on the following three plots are to be interpreted like this:
+* Green: message bitnodes with degree eight
+* Violet: message bitnodes with degree three
+* Blue: parity bitnodes with degree two
+
+This is the fastest algorithm, min-sum-c, but it needs a few iterations longer to converge:
 ![min-sum-c](min-sum-c.png)
 
 The sum-product algorithms converge much faster than the min-sum algorithms, but they involve [transcendental functions](https://en.wikipedia.org/wiki/Transcendental_function).
