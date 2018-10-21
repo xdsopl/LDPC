@@ -34,12 +34,19 @@ struct MinSumAlgorithm
 		}
 		return std::log(TYPE(1)+std::exp(-std::abs(a+b))) - std::log(TYPE(1)+std::exp(-std::abs(a-b)));
 	}
-	static TYPE mul(TYPE a, TYPE b)
+	static TYPE min(TYPE a, TYPE b)
 	{
 		TYPE m = std::min(std::abs(a), std::abs(b));
 		TYPE x = a < TYPE(0) != b < TYPE(0) ? -m : m;
 		x += correction_factor(a, b);
 		return x;
+	}
+	static void finalp(TYPE *links, int cnt)
+	{
+		TYPE tmp[cnt];
+		CODE::exclusive_reduce(links, tmp, cnt, min);
+		for (int i = 0; i < cnt; ++i)
+			links[i] = postp(tmp[i]);
 	}
 	static TYPE add(TYPE a, TYPE b)
 	{
@@ -70,6 +77,13 @@ struct LogDomainSPA
 		TYPE mb = std::abs(b);
 		return a < TYPE(0) != b < TYPE(0) ? -(ma + mb) : (ma + mb);
 	}
+	static void finalp(TYPE *links, int cnt)
+	{
+		TYPE tmp[cnt];
+		CODE::exclusive_reduce(links, tmp, cnt, mul);
+		for (int i = 0; i < cnt; ++i)
+			links[i] = postp(tmp[i]);
+	}
 	static TYPE add(TYPE a, TYPE b)
 	{
 		return a + b;
@@ -90,6 +104,13 @@ struct SumProductAlgorithm
 	static TYPE mul(TYPE a, TYPE b)
 	{
 		return a * b;
+	}
+	static void finalp(TYPE *links, int cnt)
+	{
+		TYPE tmp[cnt];
+		CODE::exclusive_reduce(links, tmp, cnt, mul);
+		for (int i = 0; i < cnt; ++i)
+			links[i] = postp(tmp[i]);
 	}
 	static TYPE add(TYPE a, TYPE b)
 	{
@@ -201,12 +222,8 @@ class LDPC {
 			}
 			next_group();
 		}
-		for (int i = 0; i < R; ++i) {
-			TYPE tmp[cnc[i]];
-			CODE::exclusive_reduce(cnl+CNL*i, tmp, cnc[i], alg.mul);
-			for (int k = 0; k < cnc[i]; ++k)
-				cnl[CNL*i+k] = alg.postp(tmp[k]);
-		}
+		for (int i = 0; i < R; ++i)
+			alg.finalp(cnl+CNL*i, cnc[i]);
 	}
 	void bit_node_update()
 	{
