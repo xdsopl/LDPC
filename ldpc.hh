@@ -133,7 +133,7 @@ struct LambdaMinAlgorithm
 		Pair blmags[cnt];
 		for (int i = 0; i < cnt; ++i)
 			blmags[i] = Pair(std::abs(links[i]), i);
-		std::sort(blmags, blmags+cnt, [](Pair a, Pair b){ return a.first < b.first; });
+		std::nth_element(blmags, blmags+LAMBDA, blmags+cnt, [](Pair a, Pair b){ return a.first < b.first; });
 
 		TYPE sums[cnt];
 		for (int i = 0; i < cnt; ++i) {
