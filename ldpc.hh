@@ -111,8 +111,8 @@ struct LogDomainSPA
 	}
 };
 
-template <typename TYPE>
-struct TwoMinAlgorithm
+template <typename TYPE, int LAMBDA>
+struct LambdaMinAlgorithm
 {
 	static TYPE phi(TYPE x)
 	{
@@ -127,21 +127,27 @@ struct TwoMinAlgorithm
 	{
 		return a + b;
 	}
-	typedef std::pair<TYPE, TYPE> Pair;
-	static Pair min(Pair a, Pair b)
-	{
-		return Pair(std::min(a.first, b.first), std::max(a.first, b.first));
-	}
 	static void finalp(TYPE *links, int cnt)
 	{
-		Pair blmags[cnt], mins[cnt];
+		typedef std::pair<TYPE, int> Pair;
+		Pair blmags[cnt];
 		for (int i = 0; i < cnt; ++i)
-			blmags[i].first = std::abs(links[i]);
-		CODE::exclusive_reduce(blmags, mins, cnt, min);
+			blmags[i] = Pair(std::abs(links[i]), i);
+		std::sort(blmags, blmags+cnt, [](Pair a, Pair b){ return a.first < b.first; });
 
 		TYPE sums[cnt];
-		for (int i = 0; i < cnt; ++i)
-			sums[i] = phi(mins[i].first) + phi(mins[i].second);
+		for (int i = 0; i < cnt; ++i) {
+			int j = 0;
+			if (i == blmags[0].second)
+				++j;
+			sums[i] = phi(blmags[j].first);
+			for (int l = 1; l < LAMBDA; ++l) {
+				++j;
+				if (i == blmags[j].second)
+					++j;
+				sums[i] += phi(blmags[j].first);
+			}
+		}
 
 		TYPE blsigns[cnt], signs[cnt];
 		for (int i = 0; i < cnt; ++i)
@@ -205,7 +211,7 @@ class LDPC {
 	//MinSumAlgorithm<TYPE> alg;
 	MinSumCAlgorithm<TYPE> alg;
 	//LogDomainSPA<TYPE> alg;
-	//TwoMinAlgorithm<TYPE> alg;
+	//LambdaMinAlgorithm<TYPE, 3> alg;
 	//SumProductAlgorithm<TYPE> alg;
 
 	int signum(TYPE v)

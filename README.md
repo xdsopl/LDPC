@@ -9,7 +9,7 @@ You can switch between five [Belief propagation](https://en.wikipedia.org/wiki/B
 * min-sum-c algorithm: using minimum, addition and a correction factor
 * sum-product algorithm: using tanh+atanh-functions, addition and multiplication
 * log-sum-product algorithm: using log+exp-functions to replace above multiplication with addition in the log domain
-* two-min algorithm: same as log-sum-product, but using only two minima
+* lambda-min algorithm: same as log-sum-product, but using only lambda minima
 
 Decoding speed varies about 20ms (no errors) to 500ms (max errors) for the rate 1/2 N=64800 code using min-sum-c on my workstation.
 
