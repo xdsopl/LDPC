@@ -65,7 +65,7 @@ int main(int argc, char **argv)
 	}
 
 	// $LLR=log(\frac{p(x=+1|y)}{p(x=-1|y)})$
-	// $p(x|\mu,\sigma)=\frac{1}{\sqrt{2\pi}\sigma}}e^{\frac{(x-\mu)^2}{2\sigma^2}}$
+	// $p(x|\mu,\sigma)=\frac{1}{\sqrt{2\pi}\sigma}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}$
 	for (int i = 0; i < TABLE::N; ++i)
 		code[i] = 2 * code[i] / (sigma * sigma);
 
