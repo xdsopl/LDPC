@@ -28,9 +28,9 @@ int main(int argc, char **argv)
 	typedef float value_type;
 	typedef std::complex<value_type> complex_type;
 	value_type SNR = atof(argv[1]);
-	value_type sigma = std::sqrt(1 / std::pow(10, SNR / 10));
-	//value_type SNR = 10 * log10(1 / (sigma * sigma));
-	std::cerr << SNR << " Eb/N0 => standard deviation of " << sigma << " with mean 1" << std::endl;
+	value_type sigma = std::sqrt(1 / (2 * std::pow(10, SNR / 10)));
+	//value_type SNR = 10 * std::log10(1 / (2 * sigma * sigma));
+	std::cerr << SNR << " Es/N0 => standard deviation of " << sigma << " with mean 1" << std::endl;
 
 	std::random_device rd;
 	std::default_random_engine generator(rd());
@@ -76,6 +76,22 @@ int main(int argc, char **argv)
 
 	for (int i = 0; i < SYMBOLS; ++i)
 		symb[i] += complex_type(awgn(), awgn());
+
+	if (1) {
+		value_type tmp[MOD::BITS];
+		value_type sp = 0, np = 0;
+		for (int i = 0; i < SYMBOLS; ++i) {
+			MOD::hard(tmp, symb[i]);
+			complex_type s = MOD::map(tmp);
+			complex_type e = symb[i] - s;
+			sp += std::norm(s);
+			np += std::norm(e);
+		}
+		SNR = 10 * std::log10(sp / np);
+		value_type mean = std::sqrt(sp / SYMBOLS);
+		sigma = std::sqrt(np / (2 * sp));
+		std::cerr << SNR << " Es/N0 => standard deviation of " << sigma << " with mean " << mean << std::endl;
+	}
 
 	if (0) {
 		for (int i = 0; i < SYMBOLS; ++i)
