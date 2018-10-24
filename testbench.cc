@@ -11,6 +11,8 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 #include <cassert>
 #include <algorithm>
 #include <functional>
+#include <complex>
+#include "psk.hh"
 #include "ldpc.hh"
 #include "dvb_s2_tables.hh"
 
@@ -23,19 +25,25 @@ int main(int argc, char **argv)
 {
 	if (argc != 2)
 		return -1;
-	float SNR = atof(argv[1]);
-	float sigma = std::sqrt(1 / std::pow(10, SNR / 10));
-	//float SNR = 10 * log10(1 / (sigma * sigma));
+	typedef float value_type;
+	typedef std::complex<value_type> complex_type;
+	value_type SNR = atof(argv[1]);
+	value_type sigma = std::sqrt(1 / std::pow(10, SNR / 10));
+	//value_type SNR = 10 * log10(1 / (sigma * sigma));
 	std::cerr << SNR << " Eb/N0 => standard deviation of " << sigma << " with mean 1" << std::endl;
 
 	std::random_device rd;
 	std::default_random_engine generator(rd());
 	typedef std::uniform_int_distribution<int> uniform;
-	typedef std::normal_distribution<float> normal;
+	typedef std::normal_distribution<value_type> normal;
 	auto data = std::bind(uniform(0, 1), generator);
 	auto awgn = std::bind(normal(0.0, sigma), generator);
-	LDPC<TABLE, float> ldpc;
-	float code[TABLE::N], orig[TABLE::N], noisy[TABLE::N];
+	typedef PhaseShiftKeying<2, complex_type> MOD;
+	assert(TABLE::N%MOD::BITS == 0);
+	const int SYMBOLS = TABLE::N / MOD::BITS;
+	LDPC<TABLE, value_type> ldpc;
+	value_type code[TABLE::N], orig[TABLE::N], noisy[TABLE::N];
+	complex_type symb[SYMBOLS];
 	const int SHOW = 0;
 
 	//ldpc.examine();
@@ -58,27 +66,34 @@ int main(int argc, char **argv)
 		std::cerr << std::endl;
 	}
 
-	for (int i = 0; i < TABLE::N; ++i)
-		code[i] += awgn();
+	for (int i = 0; i < SYMBOLS; ++i)
+		symb[i] = MOD::map(code + i, SYMBOLS);
+
+	if (0) {
+		for (int i = 0; i < SYMBOLS; ++i)
+			std::cout << symb[i].real() << " " << symb[i].imag() << std::endl;
+	}
+
+	for (int i = 0; i < SYMBOLS; ++i)
+		symb[i] += complex_type(awgn(), awgn());
+
+	if (0) {
+		for (int i = 0; i < SYMBOLS; ++i)
+			std::cout << symb[i].real() << " " << symb[i].imag() << std::endl;
+	}
+
+	// $LLR=log(\frac{p(x=+1|y)}{p(x=-1|y)})$
+	// $p(x|\mu,\sigma)=\frac{1}{\sqrt{2\pi}\sigma}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}$
+	value_type precision = 1 / (sigma * sigma);
+	for (int i = 0; i < SYMBOLS; ++i)
+		MOD::soft(code + i, symb[i], precision, SYMBOLS);
 
 	for (int i = 0; i < TABLE::N; ++i)
 		noisy[i] = code[i];
 
 	if (SHOW) {
-		std::cerr << "recv:";
-		for (int i = 0; i < SHOW; ++i)
-			std::cerr << "	" << code[i+TABLE::K];
-		std::cerr << std::endl;
-	}
-
-	// $LLR=log(\frac{p(x=+1|y)}{p(x=-1|y)})$
-	// $p(x|\mu,\sigma)=\frac{1}{\sqrt{2\pi}\sigma}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}$
-	for (int i = 0; i < TABLE::N; ++i)
-		code[i] = 2 * code[i] / (sigma * sigma);
-
-	if (SHOW) {
 		std::cerr << std::setprecision(4);
-		std::cerr << "pllr:";
+		std::cerr << "recv:";
 		for (int i = 0; i < SHOW; ++i)
 			std::cerr << "	" << code[i+TABLE::K];
 		std::cerr << std::endl;
