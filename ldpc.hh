@@ -61,7 +61,7 @@ struct MinSumCAlgorithm
 	static TYPE min(TYPE a, TYPE b)
 	{
 		TYPE m = std::min(std::abs(a), std::abs(b));
-		TYPE x = a < TYPE(0) != b < TYPE(0) ? -m : m;
+		TYPE x = (a < TYPE(0)) != (b < TYPE(0)) ? -m : m;
 		x += correction_factor(a, b);
 		return x;
 	}
