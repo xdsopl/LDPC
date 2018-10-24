@@ -1,6 +1,7 @@
 
-CXXFLAGS = -stdlib=libc++ -std=c++17 -W -Wall -Ofast -fno-exceptions -fno-rtti -march=native
-CXX = clang++
+CXXFLAGS = -std=c++17 -W -Wall -Ofast -fno-exceptions -fno-rtti -march=native
+CXX = clang++ -stdlib=libc++
+#CXX = g++
 
 test: testbench
 	./testbench 10

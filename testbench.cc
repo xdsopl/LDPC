@@ -8,6 +8,9 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 #include <iomanip>
 #include <random>
 #include <cmath>
+#include <cassert>
+#include <algorithm>
+#include <functional>
 #include "ldpc.hh"
 #include "dvb_s2_tables.hh"
 
