@@ -41,6 +41,18 @@ The sum-product algorithms converge much faster than the min-sum algorithms, but
 Here we see the fastest convergence, where bit nodes go to minus or plus infinity (and sometimes back from):
 ![sum-product](sum-product.png)
 
+### Getting soft information from symbols
+
+For the LDPC codes to work best, one needs soft reliability information for each bit.
+
+Here we see the log-likelihood ratios of the different bits of many 8PSK modulated symbols, disturbed by AWGN:
+
+![LLR of bit 0 in 8PSK](llr_bit0_8psk.png)
+
+![LLR of bit 1 in 8PSK](llr_bit1_8psk.png)
+
+![LLR of bit 2 in 8PSK](llr_bit2_8psk.png)
+
 ### [dvb_s2_tables.hh](dvb_s2_tables.hh)
 
 DVB-S2 LDPC parity bit address tables
