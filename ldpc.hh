@@ -83,7 +83,7 @@ struct LogDomainSPA
 {
 	static TYPE phi(TYPE x)
 	{
-		x = std::clamp(x, TYPE(0.000001), TYPE(14.5));
+		x = std::min(std::max(x, TYPE(0.000001)), TYPE(14.5));
 		return std::log(std::exp(x)+TYPE(1)) - std::log(std::exp(x)-TYPE(1));
 	}
 	static TYPE mul(TYPE a, TYPE b)
@@ -116,7 +116,7 @@ struct LambdaMinAlgorithm
 {
 	static TYPE phi(TYPE x)
 	{
-		x = std::clamp(x, TYPE(0.000001), TYPE(14.5));
+		x = std::min(std::max(x, TYPE(0.000001)), TYPE(14.5));
 		return std::log(std::exp(x)+TYPE(1)) - std::log(std::exp(x)-TYPE(1));
 	}
 	static TYPE mul(TYPE a, TYPE b)
@@ -337,7 +337,7 @@ class LDPC {
 			static int count;
 			std::cout << count++;
 			for (int i = 0; i < N; ++i)
-				std::cout << " " << std::clamp<TYPE>(bnv[i], -1000000, 1000000);
+				std::cout << " " << std::min<TYPE>(std::max<TYPE>(bnv[i], -1000000), 1000000);
 			std::cout << std::endl;
 		}
 	}

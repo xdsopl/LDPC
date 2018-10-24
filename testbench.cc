@@ -14,6 +14,11 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 #include "ldpc.hh"
 #include "dvb_s2_tables.hh"
 
+typedef DVB_S2_TABLE_B4 TABLE;
+constexpr int TABLE::DEG[];
+constexpr int TABLE::LEN[];
+constexpr int TABLE::POS[];
+
 int main(int argc, char **argv)
 {
 	if (argc != 2)
@@ -29,7 +34,6 @@ int main(int argc, char **argv)
 	typedef std::normal_distribution<float> normal;
 	auto data = std::bind(uniform(0, 1), generator);
 	auto awgn = std::bind(normal(0.0, sigma), generator);
-	typedef DVB_S2_TABLE_B4 TABLE;
 	LDPC<TABLE, float> ldpc;
 	float code[TABLE::N], orig[TABLE::N], noisy[TABLE::N];
 	const int SHOW = 0;
