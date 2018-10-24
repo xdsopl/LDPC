@@ -108,6 +108,15 @@ int main(int argc, char **argv)
 	for (int i = 0; i < TABLE::N; ++i)
 		noisy[i] = code[i];
 
+	if (0) {
+		for (int i = 0; i < SYMBOLS; ++i) {
+			std::cout << symb[i].real() << " " << symb[i].imag();
+			for (int j = 0; j < MOD::BITS; ++j)
+				std::cout << " " << code[i + j * SYMBOLS];
+			std::cout << std::endl;
+		}
+	}
+
 	if (SHOW) {
 		std::cerr << std::setprecision(4);
 		std::cerr << "recv:";
