@@ -143,9 +143,6 @@ int main(int argc, char **argv)
 	int decoder_errors = 0;
 	for (int i = 0; i < TABLE::N; ++i)
 		decoder_errors += code[i] * orig[i] <= 0 && orig[i] * noisy[i] > 0;
-	std::cerr << awgn_errors << " errors caused by AWGN." << std::endl;
-	std::cerr << decoder_errors << " errors caused by decoder." << std::endl;
-	std::cerr << uncorrected_errors << " errors uncorrected." << std::endl;
 
 	if (1) {
 		for (int i = 0; i < TABLE::N; ++i)
@@ -162,6 +159,10 @@ int main(int argc, char **argv)
 		sigma = std::sqrt(np / (2 * sp));
 		std::cerr << SNR << " Es/N0, " << sigma << " sigma and " << mean << " mean estimated from corrected symbols." << std::endl;
 	}
+
+	std::cerr << awgn_errors << " errors caused by AWGN." << std::endl;
+	std::cerr << decoder_errors << " errors caused by decoder." << std::endl;
+	std::cerr << uncorrected_errors << " errors uncorrected." << std::endl;
 
 	return 0;
 }
