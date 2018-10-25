@@ -91,7 +91,7 @@ int main(int argc, char **argv)
 		SNR = 10 * std::log10(sp / np);
 		mean = std::sqrt(sp / SYMBOLS);
 		sigma = std::sqrt(np / (2 * sp));
-		std::cerr << SNR << " Es/N0 => standard deviation of " << sigma << " with mean " << mean << std::endl;
+		std::cerr << SNR << " Es/N0, " << sigma << " sigma and " << mean << " mean estimated via hard decision." << std::endl;
 	}
 
 	if (0) {
@@ -146,6 +146,22 @@ int main(int argc, char **argv)
 	std::cerr << awgn_errors << " errors caused by AWGN." << std::endl;
 	std::cerr << decoder_errors << " errors caused by decoder." << std::endl;
 	std::cerr << uncorrected_errors << " errors uncorrected." << std::endl;
+
+	if (1) {
+		for (int i = 0; i < TABLE::N; ++i)
+			code[i] = code[i] < 0 ? -1 : 1;
+		value_type sp = 0, np = 0;
+		for (int i = 0; i < SYMBOLS; ++i) {
+			complex_type s = MOD::map(code + i, SYMBOLS);
+			complex_type e = symb[i] - s;
+			sp += std::norm(s);
+			np += std::norm(e);
+		}
+		SNR = 10 * std::log10(sp / np);
+		mean = std::sqrt(sp / SYMBOLS);
+		sigma = std::sqrt(np / (2 * sp));
+		std::cerr << SNR << " Es/N0, " << sigma << " sigma and " << mean << " mean estimated from corrected symbols." << std::endl;
+	}
 
 	return 0;
 }
