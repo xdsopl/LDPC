@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 	typedef std::normal_distribution<value_type> normal;
 	auto data = std::bind(uniform(0, 1), generator);
 	auto awgn = std::bind(normal(0.0, sigma), generator);
-	typedef PhaseShiftKeying<2, complex_type> MOD;
+	typedef PhaseShiftKeying<8, complex_type> MOD;
 	assert(TABLE::N%MOD::BITS == 0);
 	const int SYMBOLS = TABLE::N / MOD::BITS;
 	LDPC<TABLE, value_type> ldpc;
