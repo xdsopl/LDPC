@@ -7,11 +7,13 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 #ifndef QAM_HH
 #define QAM_HH
 
+#include "modulation.hh"
+
 template <int NUM, typename TYPE>
 struct QuadratureAmplitudeModulation;
 
 template <typename TYPE>
-struct QuadratureAmplitudeModulation<16, TYPE>
+struct QuadratureAmplitudeModulation<16, TYPE> : public Modulation<TYPE>
 {
 	static const int NUM = 16;
 	static const int BITS = 4;
@@ -28,7 +30,12 @@ struct QuadratureAmplitudeModulation<16, TYPE>
 		return AMP * i;
 	}
 
-	static void hard(value_type *b, complex_type c, int stride = 1)
+	int bits()
+	{
+		return BITS;
+	}
+
+	void hard(value_type *b, complex_type c, int stride = 1)
 	{
 		b[0*stride] = c.real() < amp(0) ? value_type(-1) : value_type(1);
 		b[1*stride] = c.imag() < amp(0) ? value_type(-1) : value_type(1);
@@ -36,7 +43,7 @@ struct QuadratureAmplitudeModulation<16, TYPE>
 		b[3*stride] = abs(c.imag()) < amp(2) ? value_type(-1) : value_type(1);
 	}
 
-	static void soft(value_type *b, complex_type c, value_type precision, int stride = 1)
+	void soft(value_type *b, complex_type c, value_type precision, int stride = 1)
 	{
 		b[0*stride] = DIST * precision * c.real();
 		b[1*stride] = DIST * precision * c.imag();
@@ -44,7 +51,7 @@ struct QuadratureAmplitudeModulation<16, TYPE>
 		b[3*stride] = DIST * precision * (abs(c.imag())-amp(2));
 	}
 
-	static TYPE map(value_type *b, int stride = 1)
+	complex_type map(value_type *b, int stride = 1)
 	{
 		return AMP * complex_type(
 			b[0*stride]*(b[2*stride]+value_type(2)),
@@ -54,7 +61,7 @@ struct QuadratureAmplitudeModulation<16, TYPE>
 };
 
 template <typename TYPE>
-struct QuadratureAmplitudeModulation<64, TYPE>
+struct QuadratureAmplitudeModulation<64, TYPE> : public Modulation<TYPE>
 {
 	static const int NUM = 64;
 	static const int BITS = 6;
@@ -71,7 +78,12 @@ struct QuadratureAmplitudeModulation<64, TYPE>
 		return AMP * i;
 	}
 
-	static void hard(value_type *b, complex_type c, int stride = 1)
+	int bits()
+	{
+		return BITS;
+	}
+
+	void hard(value_type *b, complex_type c, int stride = 1)
 	{
 		b[0*stride] = c.real() < amp(0) ? value_type(-1) : value_type(1);
 		b[1*stride] = c.imag() < amp(0) ? value_type(-1) : value_type(1);
@@ -81,7 +93,7 @@ struct QuadratureAmplitudeModulation<64, TYPE>
 		b[5*stride] = abs(abs(c.imag())-amp(4)) < amp(2) ? value_type(-1) : value_type(1);
 	}
 
-	static void soft(value_type *b, complex_type c, value_type precision, int stride = 1)
+	void soft(value_type *b, complex_type c, value_type precision, int stride = 1)
 	{
 		b[0*stride] = DIST * precision * c.real();
 		b[1*stride] = DIST * precision * c.imag();
@@ -91,7 +103,7 @@ struct QuadratureAmplitudeModulation<64, TYPE>
 		b[5*stride] = DIST * precision * (abs(abs(c.imag())-amp(4))-amp(2));
 	}
 
-	static TYPE map(value_type *b, int stride = 1)
+	complex_type map(value_type *b, int stride = 1)
 	{
 		return AMP * complex_type(
 			b[0*stride]*(b[2*stride]*(b[4*stride]+value_type(2))+value_type(4)),
@@ -101,7 +113,7 @@ struct QuadratureAmplitudeModulation<64, TYPE>
 };
 
 template <typename TYPE>
-struct QuadratureAmplitudeModulation<256, TYPE>
+struct QuadratureAmplitudeModulation<256, TYPE> : public Modulation<TYPE>
 {
 	static const int NUM = 256;
 	static const int BITS = 8;
@@ -118,7 +130,12 @@ struct QuadratureAmplitudeModulation<256, TYPE>
 		return AMP * i;
 	}
 
-	static void hard(value_type *b, complex_type c, int stride = 1)
+	int bits()
+	{
+		return BITS;
+	}
+
+	void hard(value_type *b, complex_type c, int stride = 1)
 	{
 		b[0*stride] = c.real() < amp(0) ? value_type(-1) : value_type(1);
 		b[1*stride] = c.imag() < amp(0) ? value_type(-1) : value_type(1);
@@ -130,7 +147,7 @@ struct QuadratureAmplitudeModulation<256, TYPE>
 		b[7*stride] = abs(abs(abs(c.imag())-amp(8))-amp(4)) < amp(2) ? value_type(-1) : value_type(1);
 	}
 
-	static void soft(value_type *b, complex_type c, value_type precision, int stride = 1)
+	void soft(value_type *b, complex_type c, value_type precision, int stride = 1)
 	{
 		b[0*stride] = DIST * precision * c.real();
 		b[1*stride] = DIST * precision * c.imag();
@@ -142,7 +159,7 @@ struct QuadratureAmplitudeModulation<256, TYPE>
 		b[7*stride] = DIST * precision * (abs(abs(abs(c.imag())-amp(8))-amp(4))-amp(2));
 	}
 
-	static TYPE map(value_type *b, int stride = 1)
+	complex_type map(value_type *b, int stride = 1)
 	{
 		return AMP * complex_type(
 			b[0*stride]*(b[2*stride]*(b[4*stride]*(b[6*stride]+value_type(2))+value_type(4))+value_type(8)),
@@ -152,7 +169,7 @@ struct QuadratureAmplitudeModulation<256, TYPE>
 };
 
 template <typename TYPE>
-struct QuadratureAmplitudeModulation<1024, TYPE>
+struct QuadratureAmplitudeModulation<1024, TYPE> : public Modulation<TYPE>
 {
 	static const int NUM = 1024;
 	static const int BITS = 10;
@@ -169,7 +186,12 @@ struct QuadratureAmplitudeModulation<1024, TYPE>
 		return AMP * i;
 	}
 
-	static void hard(value_type *b, complex_type c, int stride = 1)
+	int bits()
+	{
+		return BITS;
+	}
+
+	void hard(value_type *b, complex_type c, int stride = 1)
 	{
 		b[0*stride] = c.real() < amp(0) ? value_type(-1) : value_type(1);
 		b[1*stride] = c.imag() < amp(0) ? value_type(-1) : value_type(1);
@@ -183,7 +205,7 @@ struct QuadratureAmplitudeModulation<1024, TYPE>
 		b[9*stride] = abs(abs(abs(abs(c.imag())-amp(16))-amp(8))-amp(4)) < amp(2) ? value_type(-1) : value_type(1);
 	}
 
-	static void soft(value_type *b, complex_type c, value_type precision, int stride = 1)
+	void soft(value_type *b, complex_type c, value_type precision, int stride = 1)
 	{
 		b[0*stride] = DIST * precision * c.real();
 		b[1*stride] = DIST * precision * c.imag();
@@ -197,7 +219,7 @@ struct QuadratureAmplitudeModulation<1024, TYPE>
 		b[9*stride] = DIST * precision * (abs(abs(abs(abs(c.imag())-amp(16))-amp(8))-amp(4))-amp(2));
 	}
 
-	static TYPE map(value_type *b, int stride = 1)
+	complex_type map(value_type *b, int stride = 1)
 	{
 		return AMP * complex_type(
 			b[0*stride]*(b[2*stride]*(b[4*stride]*(b[6*stride]*(b[8*stride]+value_type(2))+value_type(4))+value_type(8))+value_type(16)),

@@ -9,6 +9,7 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 #include <random>
 #include <cmath>
 #include <cassert>
+#include <cstring>
 #include <algorithm>
 #include <functional>
 #include <complex>
@@ -17,6 +18,25 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 #include "ldpc.hh"
 #include "dvb_s2_tables.hh"
 
+template <typename TYPE>
+Modulation<TYPE> *create_modulation(char *name)
+{
+	if (!strcmp(name, "BPSK"))
+		return new PhaseShiftKeying<2, TYPE>();
+	if (!strcmp(name, "QPSK"))
+		return new PhaseShiftKeying<4, TYPE>();
+	if (!strcmp(name, "8PSK"))
+		return new PhaseShiftKeying<8, TYPE>();
+	if (!strcmp(name, "QAM16"))
+		return new QuadratureAmplitudeModulation<16, TYPE>();
+	if (!strcmp(name, "QAM64"))
+		return new QuadratureAmplitudeModulation<64, TYPE>();
+	if (!strcmp(name, "QAM256"))
+		return new QuadratureAmplitudeModulation<256, TYPE>();
+	if (!strcmp(name, "QAM1024"))
+		return new QuadratureAmplitudeModulation<1024, TYPE>();
+	return 0;
+}
 
 template <typename TYPE>
 LDPCInterface<TYPE> *create_decoder(char prefix, int number)
@@ -76,7 +96,7 @@ LDPCInterface<TYPE> *create_decoder(char prefix, int number)
 
 int main(int argc, char **argv)
 {
-	if (argc != 3)
+	if (argc != 4)
 		return -1;
 	typedef float value_type;
 	typedef std::complex<value_type> complex_type;
@@ -87,6 +107,12 @@ int main(int argc, char **argv)
 		return -1;
 	}
 	std::cerr << "testing LDPC(" << ldpc->code_len() << ", " << ldpc->data_len() << ") code." << std::endl;
+
+	Modulation<complex_type> *mod = create_modulation<complex_type>(argv[3]);
+	if (!mod) {
+		std::cerr << "no such modulation!" << std::endl;
+		return -1;
+	}
 
 	value_type SNR = atof(argv[1]);
 	value_type mean = 1;
@@ -100,10 +126,9 @@ int main(int argc, char **argv)
 	typedef std::normal_distribution<value_type> normal;
 	auto data = std::bind(uniform(0, 1), generator);
 	auto awgn = std::bind(normal(0.0, sigma), generator);
-	//typedef PhaseShiftKeying<8, complex_type> MOD;
-	typedef QuadratureAmplitudeModulation<16, complex_type> MOD;
-	assert(ldpc->code_len()%MOD::BITS == 0);
-	const int SYMBOLS = ldpc->code_len() / MOD::BITS;
+
+	assert(ldpc->code_len() % mod->bits() == 0);
+	const int SYMBOLS = ldpc->code_len() / mod->bits();
 	value_type code[ldpc->code_len()], orig[ldpc->code_len()], noisy[ldpc->code_len()];
 	complex_type symb[SYMBOLS];
 	const int SHOW = 0;
@@ -129,7 +154,7 @@ int main(int argc, char **argv)
 	}
 
 	for (int i = 0; i < SYMBOLS; ++i)
-		symb[i] = MOD::map(code + i, SYMBOLS);
+		symb[i] = mod->map(code + i, SYMBOLS);
 
 	if (0) {
 		for (int i = 0; i < SYMBOLS; ++i)
@@ -140,11 +165,11 @@ int main(int argc, char **argv)
 		symb[i] += complex_type(awgn(), awgn());
 
 	if (1) {
-		value_type tmp[MOD::BITS];
+		value_type tmp[mod->bits()];
 		value_type sp = 0, np = 0;
 		for (int i = 0; i < SYMBOLS; ++i) {
-			MOD::hard(tmp, symb[i]);
-			complex_type s = MOD::map(tmp);
+			mod->hard(tmp, symb[i]);
+			complex_type s = mod->map(tmp);
 			complex_type e = symb[i] - s;
 			sp += std::norm(s);
 			np += std::norm(e);
@@ -164,7 +189,7 @@ int main(int argc, char **argv)
 	// $p(x|\mu,\sigma)=\frac{1}{\sqrt{2\pi}\sigma}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}$
 	value_type precision = 1 / (sigma * sigma);
 	for (int i = 0; i < SYMBOLS; ++i)
-		MOD::soft(code + i, symb[i], precision, SYMBOLS);
+		mod->soft(code + i, symb[i], precision, SYMBOLS);
 
 	for (int i = 0; i < ldpc->code_len(); ++i)
 		noisy[i] = code[i];
@@ -172,7 +197,7 @@ int main(int argc, char **argv)
 	if (0) {
 		for (int i = 0; i < SYMBOLS; ++i) {
 			std::cout << symb[i].real() << " " << symb[i].imag();
-			for (int j = 0; j < MOD::BITS; ++j)
+			for (int j = 0; j < mod->bits(); ++j)
 				std::cout << " " << code[i + j * SYMBOLS];
 			std::cout << std::endl;
 		}
@@ -210,7 +235,7 @@ int main(int argc, char **argv)
 			code[i] = code[i] < 0 ? -1 : 1;
 		value_type sp = 0, np = 0;
 		for (int i = 0; i < SYMBOLS; ++i) {
-			complex_type s = MOD::map(code + i, SYMBOLS);
+			complex_type s = mod->map(code + i, SYMBOLS);
 			complex_type e = symb[i] - s;
 			sp += std::norm(s);
 			np += std::norm(e);
