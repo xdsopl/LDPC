@@ -17,17 +17,77 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 #include "ldpc.hh"
 #include "dvb_s2_tables.hh"
 
-typedef DVB_S2_TABLE_B4 TABLE;
-constexpr int TABLE::DEG[];
-constexpr int TABLE::LEN[];
-constexpr int TABLE::POS[];
+
+template <typename TYPE>
+LDPCInterface<TYPE> *create_decoder(char prefix, int number)
+{
+	if (prefix == 'B') {
+		switch (number) {
+		case 1:
+			return new LDPC<DVB_S2_TABLE_B1, TYPE>();
+		case 2:
+			return new LDPC<DVB_S2_TABLE_B2, TYPE>();
+		case 3:
+			return new LDPC<DVB_S2_TABLE_B3, TYPE>();
+		case 4:
+			return new LDPC<DVB_S2_TABLE_B4, TYPE>();
+		case 5:
+			return new LDPC<DVB_S2_TABLE_B5, TYPE>();
+		case 6:
+			return new LDPC<DVB_S2_TABLE_B6, TYPE>();
+		case 7:
+			return new LDPC<DVB_S2_TABLE_B7, TYPE>();
+		case 8:
+			return new LDPC<DVB_S2_TABLE_B8, TYPE>();
+		case 9:
+			return new LDPC<DVB_S2_TABLE_B9, TYPE>();
+		case 10:
+			return new LDPC<DVB_S2_TABLE_B10, TYPE>();
+		case 11:
+			return new LDPC<DVB_S2_TABLE_B11, TYPE>();
+		}
+	}
+	if (prefix == 'C') {
+		switch (number) {
+		case 1:
+			return new LDPC<DVB_S2_TABLE_C1, TYPE>();
+		case 2:
+			return new LDPC<DVB_S2_TABLE_C2, TYPE>();
+		case 3:
+			return new LDPC<DVB_S2_TABLE_C3, TYPE>();
+		case 4:
+			return new LDPC<DVB_S2_TABLE_C4, TYPE>();
+		case 5:
+			return new LDPC<DVB_S2_TABLE_C5, TYPE>();
+		case 6:
+			return new LDPC<DVB_S2_TABLE_C6, TYPE>();
+		case 7:
+			return new LDPC<DVB_S2_TABLE_C7, TYPE>();
+		case 8:
+			return new LDPC<DVB_S2_TABLE_C8, TYPE>();
+		case 9:
+			return new LDPC<DVB_S2_TABLE_C9, TYPE>();
+		case 10:
+			return new LDPC<DVB_S2_TABLE_C10, TYPE>();
+		}
+	}
+	return 0;
+}
 
 int main(int argc, char **argv)
 {
-	if (argc != 2)
+	if (argc != 3)
 		return -1;
 	typedef float value_type;
 	typedef std::complex<value_type> complex_type;
+
+	LDPCInterface<value_type> *ldpc = create_decoder<value_type>(argv[2][0], atoi(argv[2]+1));
+	if (!ldpc) {
+		std::cerr << "no such table!" << std::endl;
+		return -1;
+	}
+	std::cerr << "testing LDPC(" << ldpc->code_len() << ", " << ldpc->data_len() << ") code." << std::endl;
+
 	value_type SNR = atof(argv[1]);
 	value_type mean = 1;
 	value_type sigma = std::sqrt(mean * mean / (2 * std::pow(10, SNR / 10)));
@@ -42,21 +102,20 @@ int main(int argc, char **argv)
 	auto awgn = std::bind(normal(0.0, sigma), generator);
 	//typedef PhaseShiftKeying<8, complex_type> MOD;
 	typedef QuadratureAmplitudeModulation<16, complex_type> MOD;
-	assert(TABLE::N%MOD::BITS == 0);
-	const int SYMBOLS = TABLE::N / MOD::BITS;
-	LDPC<TABLE, value_type> ldpc;
-	value_type code[TABLE::N], orig[TABLE::N], noisy[TABLE::N];
+	assert(ldpc->code_len()%MOD::BITS == 0);
+	const int SYMBOLS = ldpc->code_len() / MOD::BITS;
+	value_type code[ldpc->code_len()], orig[ldpc->code_len()], noisy[ldpc->code_len()];
 	complex_type symb[SYMBOLS];
 	const int SHOW = 0;
 
-	//ldpc.examine();
+	//ldpc->examine();
 
-	for (int i = 0; i < TABLE::K; ++i)
+	for (int i = 0; i < ldpc->data_len(); ++i)
 		code[i] = 1 - 2 * data();
 
-	ldpc.encode(code, code + TABLE::K);
+	ldpc->encode(code, code + ldpc->data_len());
 
-	for (int i = 0; i < TABLE::N; ++i)
+	for (int i = 0; i < ldpc->code_len(); ++i)
 		orig[i] = code[i];
 
 	std::cerr << std::showpos;
@@ -65,7 +124,7 @@ int main(int argc, char **argv)
 	if (SHOW) {
 		std::cerr << "send:";
 		for (int i = 0; i < SHOW; ++i)
-			std::cerr << "	" << code[i+TABLE::K];
+			std::cerr << "	" << code[i+ldpc->data_len()];
 		std::cerr << std::endl;
 	}
 
@@ -107,7 +166,7 @@ int main(int argc, char **argv)
 	for (int i = 0; i < SYMBOLS; ++i)
 		MOD::soft(code + i, symb[i], precision, SYMBOLS);
 
-	for (int i = 0; i < TABLE::N; ++i)
+	for (int i = 0; i < ldpc->code_len(); ++i)
 		noisy[i] = code[i];
 
 	if (0) {
@@ -123,31 +182,31 @@ int main(int argc, char **argv)
 		std::cerr << std::setprecision(4);
 		std::cerr << "recv:";
 		for (int i = 0; i < SHOW; ++i)
-			std::cerr << "	" << code[i+TABLE::K];
+			std::cerr << "	" << code[i+ldpc->data_len()];
 		std::cerr << std::endl;
 		std::cerr << std::setprecision(3);
 	}
 
-	for (int i = 0; i < TABLE::N; ++i)
+	for (int i = 0; i < ldpc->code_len(); ++i)
 		assert(!std::isnan(code[i]));
 
-	ldpc.decode(code, code + TABLE::K);
+	ldpc->decode(code, code + ldpc->data_len());
 
-	for (int i = 0; i < TABLE::N; ++i)
+	for (int i = 0; i < ldpc->code_len(); ++i)
 		assert(!std::isnan(code[i]));
 
 	int awgn_errors = 0;
-	for (int i = 0; i < TABLE::N; ++i)
+	for (int i = 0; i < ldpc->code_len(); ++i)
 		awgn_errors += noisy[i] * orig[i] <= 0;
 	int uncorrected_errors = 0;
-	for (int i = 0; i < TABLE::N; ++i)
+	for (int i = 0; i < ldpc->code_len(); ++i)
 		uncorrected_errors += code[i] * orig[i] <= 0;
 	int decoder_errors = 0;
-	for (int i = 0; i < TABLE::N; ++i)
+	for (int i = 0; i < ldpc->code_len(); ++i)
 		decoder_errors += code[i] * orig[i] <= 0 && orig[i] * noisy[i] > 0;
 
 	if (1) {
-		for (int i = 0; i < TABLE::N; ++i)
+		for (int i = 0; i < ldpc->code_len(); ++i)
 			code[i] = code[i] < 0 ? -1 : 1;
 		value_type sp = 0, np = 0;
 		for (int i = 0; i < SYMBOLS; ++i) {
@@ -165,6 +224,8 @@ int main(int argc, char **argv)
 	std::cerr << awgn_errors << " errors caused by AWGN." << std::endl;
 	std::cerr << decoder_errors << " errors caused by decoder." << std::endl;
 	std::cerr << uncorrected_errors << " errors uncorrected." << std::endl;
+
+	delete ldpc;
 
 	return 0;
 }

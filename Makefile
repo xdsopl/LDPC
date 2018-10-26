@@ -4,10 +4,10 @@ CXX = clang++ -stdlib=libc++
 #CXX = g++
 
 test: testbench
-	./testbench 10
+	./testbench 10 B4
 
-testbench: testbench.cc *.hh
-	$(CXX) $(CXXFLAGS) $< -o $@
+testbench: testbench.cc dvb_s2_tables.cc *.hh
+	$(CXX) $(CXXFLAGS) testbench.cc dvb_s2_tables.cc -o $@
 
 .PHONY: clean all
 
