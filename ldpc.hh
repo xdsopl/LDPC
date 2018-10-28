@@ -195,7 +195,7 @@ struct LDPCInterface
 	virtual int code_len() = 0;
 	virtual int data_len() = 0;
 	virtual void encode(TYPE *, TYPE *) = 0;
-	virtual void decode(TYPE *, TYPE *) = 0;
+	virtual int decode(TYPE *, TYPE *, int) = 0;
 	virtual void examine() = 0;
 	virtual ~LDPCInterface() = default;
 };
@@ -376,19 +376,22 @@ public:
 	{
 		return K;
 	}
-	void decode(TYPE *data, TYPE *parity)
+	int decode(TYPE *data, TYPE *parity, int trials = 50)
 	{
 		bit_node_init(data, parity);
 		check_node_update();
-		int count = 0, trials = 50;
-		while (count < trials && hard_decision()) {
+		if (!hard_decision())
+			return trials;
+		--trials;
+		bit_node_update();
+		check_node_update();
+		while (hard_decision() && --trials >= 0) {
+			bit_node_init(data, parity);
 			bit_node_update();
 			check_node_update();
-			bit_node_init(data, parity);
-			++count;
 		}
-		bit_node_update();
 		update_user(data, parity);
+		return trials;
 	}
 	void encode(TYPE *data, TYPE *parity)
 	{

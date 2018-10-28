@@ -215,7 +215,12 @@ int main(int argc, char **argv)
 	for (int i = 0; i < ldpc->code_len(); ++i)
 		assert(!std::isnan(code[i]));
 
-	ldpc->decode(code, code + ldpc->data_len());
+	int trials = 50;
+	int count = ldpc->decode(code, code + ldpc->data_len(), trials);
+	if (count < 0)
+		std::cerr << "decoder failed at converging to a code word!" << std::endl;
+	else
+		std::cerr << trials - count << " iterations were needed." << std::endl;
 
 	for (int i = 0; i < ldpc->code_len(); ++i)
 		assert(!std::isnan(code[i]));
