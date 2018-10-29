@@ -127,11 +127,15 @@ struct MinSumCAlgorithm<int>
 {
 	static int add(int a, int b)
 	{
-		return a + b;
+		int x = a + b;
+		x = std::min<int>(std::max<int>(x, -128), 127);
+		return x;
 	}
 	static int sub(int a, int b)
 	{
-		return a - b;
+		int x = a - b;
+		x = std::min<int>(std::max<int>(x, -128), 127);
+		return x;
 	}
 	static int correction_factor(int a, int b)
 	{
