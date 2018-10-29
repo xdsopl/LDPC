@@ -125,15 +125,23 @@ struct MinSumCAlgorithm
 template <>
 struct MinSumCAlgorithm<int>
 {
+	static int add(int a, int b)
+	{
+		return a + b;
+	}
+	static int sub(int a, int b)
+	{
+		return a - b;
+	}
 	static int correction_factor(int a, int b)
 	{
 		int factor = 2;
 		int c = factor / 2;
-		int apb = std::abs(a + b);
-		int amb = std::abs(a - b);
-		if (apb < (2 * factor) && amb > 2 * apb)
+		int apb = std::abs(add(a, b));
+		int amb = std::abs(sub(a, b));
+		if (apb / 2 < factor && amb / 2 > apb)
 			return c;
-		if (amb < (2 * factor) && apb > 2 * amb)
+		if (amb / 2 < factor && apb / 2 > amb)
 			return -c;
 		return 0;
 	}
@@ -141,7 +149,7 @@ struct MinSumCAlgorithm<int>
 	{
 		int m = std::min(std::abs(a), std::abs(b));
 		int x = (a ^ b) < 0 ? -m : m;
-		x += correction_factor(a, b);
+		x = add(x, correction_factor(a, b));
 		return x;
 	}
 	static void finalp(int *links, int cnt)
@@ -150,10 +158,6 @@ struct MinSumCAlgorithm<int>
 		CODE::exclusive_reduce(links, tmp, cnt, min);
 		for (int i = 0; i < cnt; ++i)
 			links[i] = tmp[i];
-	}
-	static int add(int a, int b)
-	{
-		return a + b;
 	}
 	static int update(int, int v)
 	{
