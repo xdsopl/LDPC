@@ -322,8 +322,8 @@ class LDPC : public LDPCInterface<TYPE>
 	TYPE bnl[TABLE::LINKS_TOTAL];
 	TYPE bnv[N];
 	TYPE cnl[R * CNL];
-	int cnv[R];
-	int cnc[R];
+	int8_t cnv[R];
+	uint8_t cnc[R];
 	//MinSumAlgorithm<TYPE> alg;
 	SelfCorrectedMinSumAlgorithm<TYPE> alg;
 	//MinSumCAlgorithm<TYPE> alg;
