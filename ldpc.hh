@@ -309,6 +309,14 @@ class LDPC : public LDPCInterface<TYPE>
 		}
 		for (int i = 0; i < R; ++i)
 			alg.finalp(cnl+CNL*i, cnc[i]);
+		if (0) {
+			TYPE min = 0, max = 0;
+			for (int i = 0; i < R * CNL; ++i) {
+				min = std::min(min, cnl[i]);
+				max = std::max(max, cnl[i]);
+			}
+			std::cerr << "cnl: min = " << min << " max = " << max << std::endl;
+		}
 	}
 	void bit_node_update()
 	{
@@ -344,6 +352,22 @@ class LDPC : public LDPCInterface<TYPE>
 				next_bit();
 			}
 			next_group();
+		}
+		if (0) {
+			TYPE min = 0, max = 0;
+			for (int i = 0; i < TABLE::LINKS_TOTAL; ++i) {
+				min = std::min(min, bnv[i]);
+				max = std::max(max, bnv[i]);
+			}
+			std::cerr << "bnl: min = " << min << " max = " << max << std::endl;
+		}
+		if (0) {
+			TYPE min = 0, max = 0;
+			for (int i = 0; i < N; ++i) {
+				min = std::min(min, bnv[i]);
+				max = std::max(max, bnv[i]);
+			}
+			std::cerr << "bnv: min = " << min << " max = " << max << std::endl;
 		}
 		if (0) {
 			static int count;
