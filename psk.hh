@@ -26,10 +26,10 @@ struct PhaseShiftKeying<2, TYPE, CODE> : public Modulation<TYPE, CODE>
 	static code_type quantize(value_type precision, value_type value)
 	{
 		value *= DIST * precision;
-		if (std::is_integral<code_type>::value) {
+		if (std::is_integral<code_type>::value)
 			value = std::nearbyint(value);
+		if (std::is_same<code_type, int8_t>::value)
 			value = std::min<value_type>(std::max<value_type>(value, -128), 127);
-		}
 		return value;
 	}
 
@@ -70,10 +70,10 @@ struct PhaseShiftKeying<4, TYPE, CODE> : public Modulation<TYPE, CODE>
 	static code_type quantize(value_type precision, value_type value)
 	{
 		value *= DIST * precision;
-		if (std::is_integral<code_type>::value) {
+		if (std::is_integral<code_type>::value)
 			value = std::nearbyint(value);
+		if (std::is_same<code_type, int8_t>::value)
 			value = std::min<value_type>(std::max<value_type>(value, -128), 127);
-		}
 		return value;
 	}
 
@@ -121,10 +121,10 @@ struct PhaseShiftKeying<8, TYPE, CODE> : public Modulation<TYPE, CODE>
 	static code_type quantize(value_type precision, value_type value)
 	{
 		value *= DIST * precision;
-		if (std::is_integral<code_type>::value) {
+		if (std::is_integral<code_type>::value)
 			value = std::nearbyint(value);
+		if (std::is_same<code_type, int8_t>::value)
 			value = std::min<value_type>(std::max<value_type>(value, -128), 127);
-		}
 		return value;
 	}
 

@@ -223,7 +223,7 @@ int main(int argc, char **argv)
 	typedef float value_type;
 	typedef std::complex<value_type> complex_type;
 #if 0
-	typedef int code_type;
+	typedef int8_t code_type;
 	int factor = 2;
 #else
 	typedef float code_type;

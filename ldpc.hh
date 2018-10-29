@@ -123,47 +123,48 @@ struct MinSumCAlgorithm
 };
 
 template <>
-struct MinSumCAlgorithm<int>
+struct MinSumCAlgorithm<int8_t>
 {
-	static int add(int a, int b)
+	static int8_t add(int8_t a, int8_t b)
 	{
-		int x = a + b;
+		int x = int(a) + int(b);
 		x = std::min<int>(std::max<int>(x, -128), 127);
 		return x;
 	}
-	static int sub(int a, int b)
+	static int8_t sub(int8_t a, int8_t b)
 	{
-		int x = a - b;
+		int x = int(a) - int(b);
 		x = std::min<int>(std::max<int>(x, -128), 127);
 		return x;
 	}
-	static int correction_factor(int a, int b)
+	static int8_t correction_factor(int8_t a, int8_t b)
 	{
 		int factor = 2;
 		int c = factor / 2;
-		int apb = std::abs(add(a, b));
-		int amb = std::abs(sub(a, b));
+		int apb = std::abs<int>(add(a, b));
+		int amb = std::abs<int>(sub(a, b));
 		if (apb / 2 < factor && amb / 2 > apb)
 			return c;
 		if (amb / 2 < factor && apb / 2 > amb)
 			return -c;
 		return 0;
 	}
-	static int min(int a, int b)
+	static int8_t min(int8_t a, int8_t b)
 	{
-		int m = std::min(std::abs(a), std::abs(b));
+		int m = std::min(std::abs<int>(a), std::abs<int>(b));
 		int x = (a ^ b) < 0 ? -m : m;
+		x = std::min<int>(std::max<int>(x, -128), 127);
 		x = add(x, correction_factor(a, b));
 		return x;
 	}
-	static void finalp(int *links, int cnt)
+	static void finalp(int8_t *links, int cnt)
 	{
-		int tmp[cnt];
+		int8_t tmp[cnt];
 		CODE::exclusive_reduce(links, tmp, cnt, min);
 		for (int i = 0; i < cnt; ++i)
 			links[i] = tmp[i];
 	}
-	static int update(int, int v)
+	static int8_t update(int8_t, int8_t v)
 	{
 		return v;
 	}
