@@ -20,23 +20,23 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 #include "dvb_s2x_tables.hh"
 #include "dvb_t2_tables.hh"
 
-template <typename TYPE>
-Modulation<TYPE> *create_modulation(char *name)
+template <typename TYPE, typename CODE>
+Modulation<TYPE, CODE> *create_modulation(char *name)
 {
 	if (!strcmp(name, "BPSK"))
-		return new PhaseShiftKeying<2, TYPE>();
+		return new PhaseShiftKeying<2, TYPE, CODE>();
 	if (!strcmp(name, "QPSK"))
-		return new PhaseShiftKeying<4, TYPE>();
+		return new PhaseShiftKeying<4, TYPE, CODE>();
 	if (!strcmp(name, "8PSK"))
-		return new PhaseShiftKeying<8, TYPE>();
+		return new PhaseShiftKeying<8, TYPE, CODE>();
 	if (!strcmp(name, "QAM16"))
-		return new QuadratureAmplitudeModulation<16, TYPE>();
+		return new QuadratureAmplitudeModulation<16, TYPE, CODE>();
 	if (!strcmp(name, "QAM64"))
-		return new QuadratureAmplitudeModulation<64, TYPE>();
+		return new QuadratureAmplitudeModulation<64, TYPE, CODE>();
 	if (!strcmp(name, "QAM256"))
-		return new QuadratureAmplitudeModulation<256, TYPE>();
+		return new QuadratureAmplitudeModulation<256, TYPE, CODE>();
 	if (!strcmp(name, "QAM1024"))
-		return new QuadratureAmplitudeModulation<1024, TYPE>();
+		return new QuadratureAmplitudeModulation<1024, TYPE, CODE>();
 	return 0;
 }
 
@@ -222,15 +222,22 @@ int main(int argc, char **argv)
 		return -1;
 	typedef float value_type;
 	typedef std::complex<value_type> complex_type;
+#if 0
+	typedef int code_type;
+	int factor = 2;
+#else
+	typedef float code_type;
+	int factor = 1;
+#endif
 
-	LDPCInterface<value_type> *ldpc = create_decoder<value_type>(argv[2], argv[3][0], atoi(argv[3]+1));
+	LDPCInterface<code_type> *ldpc = create_decoder<code_type>(argv[2], argv[3][0], atoi(argv[3]+1));
 	if (!ldpc) {
 		std::cerr << "no such table!" << std::endl;
 		return -1;
 	}
 	std::cerr << "testing LDPC(" << ldpc->code_len() << ", " << ldpc->data_len() << ") code." << std::endl;
 
-	Modulation<complex_type> *mod = create_modulation<complex_type>(argv[4]);
+	Modulation<complex_type, code_type> *mod = create_modulation<complex_type, code_type>(argv[4]);
 	if (!mod) {
 		std::cerr << "no such modulation!" << std::endl;
 		return -1;
@@ -251,7 +258,7 @@ int main(int argc, char **argv)
 
 	assert(ldpc->code_len() % mod->bits() == 0);
 	const int SYMBOLS = ldpc->code_len() / mod->bits();
-	value_type code[ldpc->code_len()], orig[ldpc->code_len()], noisy[ldpc->code_len()];
+	code_type code[ldpc->code_len()], orig[ldpc->code_len()], noisy[ldpc->code_len()];
 	complex_type symb[SYMBOLS];
 	const int SHOW = 0;
 
@@ -287,7 +294,7 @@ int main(int argc, char **argv)
 		symb[i] += complex_type(awgn(), awgn());
 
 	if (1) {
-		value_type tmp[mod->bits()];
+		code_type tmp[mod->bits()];
 		value_type sp = 0, np = 0;
 		for (int i = 0; i < SYMBOLS; ++i) {
 			mod->hard(tmp, symb[i]);
@@ -309,7 +316,7 @@ int main(int argc, char **argv)
 
 	// $LLR=log(\frac{p(x=+1|y)}{p(x=-1|y)})$
 	// $p(x|\mu,\sigma)=\frac{1}{\sqrt{2\pi}\sigma}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}$
-	value_type precision = 1 / (sigma * sigma);
+	value_type precision = factor / (sigma * sigma);
 	for (int i = 0; i < SYMBOLS; ++i)
 		mod->soft(code + i, symb[i], precision, SYMBOLS);
 
