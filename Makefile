@@ -4,7 +4,7 @@ CXX = clang++ -stdlib=libc++
 #CXX = g++
 
 test: testbench
-	./testbench 10 B4 QAM16
+	./testbench 10 S2 B4 QAM16
 
 testbench: testbench.cc *_tables.cc *.hh
 	$(CXX) $(CXXFLAGS) testbench.cc *_tables.cc -o $@

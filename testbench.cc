@@ -17,6 +17,7 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 #include "qam.hh"
 #include "ldpc.hh"
 #include "dvb_s2_tables.hh"
+#include "dvb_s2x_tables.hh"
 
 template <typename TYPE>
 Modulation<TYPE> *create_modulation(char *name)
@@ -39,56 +40,136 @@ Modulation<TYPE> *create_modulation(char *name)
 }
 
 template <typename TYPE>
-LDPCInterface<TYPE> *create_decoder(char prefix, int number)
+LDPCInterface<TYPE> *create_decoder(char *standard, char prefix, int number)
 {
-	if (prefix == 'B') {
-		switch (number) {
-		case 1:
-			return new LDPC<DVB_S2_TABLE_B1, TYPE>();
-		case 2:
-			return new LDPC<DVB_S2_TABLE_B2, TYPE>();
-		case 3:
-			return new LDPC<DVB_S2_TABLE_B3, TYPE>();
-		case 4:
-			return new LDPC<DVB_S2_TABLE_B4, TYPE>();
-		case 5:
-			return new LDPC<DVB_S2_TABLE_B5, TYPE>();
-		case 6:
-			return new LDPC<DVB_S2_TABLE_B6, TYPE>();
-		case 7:
-			return new LDPC<DVB_S2_TABLE_B7, TYPE>();
-		case 8:
-			return new LDPC<DVB_S2_TABLE_B8, TYPE>();
-		case 9:
-			return new LDPC<DVB_S2_TABLE_B9, TYPE>();
-		case 10:
-			return new LDPC<DVB_S2_TABLE_B10, TYPE>();
-		case 11:
-			return new LDPC<DVB_S2_TABLE_B11, TYPE>();
+	if (!strcmp(standard, "S2")) {
+		if (prefix == 'B') {
+			switch (number) {
+			case 1:
+				return new LDPC<DVB_S2_TABLE_B1, TYPE>();
+			case 2:
+				return new LDPC<DVB_S2_TABLE_B2, TYPE>();
+			case 3:
+				return new LDPC<DVB_S2_TABLE_B3, TYPE>();
+			case 4:
+				return new LDPC<DVB_S2_TABLE_B4, TYPE>();
+			case 5:
+				return new LDPC<DVB_S2_TABLE_B5, TYPE>();
+			case 6:
+				return new LDPC<DVB_S2_TABLE_B6, TYPE>();
+			case 7:
+				return new LDPC<DVB_S2_TABLE_B7, TYPE>();
+			case 8:
+				return new LDPC<DVB_S2_TABLE_B8, TYPE>();
+			case 9:
+				return new LDPC<DVB_S2_TABLE_B9, TYPE>();
+			case 10:
+				return new LDPC<DVB_S2_TABLE_B10, TYPE>();
+			case 11:
+				return new LDPC<DVB_S2_TABLE_B11, TYPE>();
+			}
+		}
+		if (prefix == 'C') {
+			switch (number) {
+			case 1:
+				return new LDPC<DVB_S2_TABLE_C1, TYPE>();
+			case 2:
+				return new LDPC<DVB_S2_TABLE_C2, TYPE>();
+			case 3:
+				return new LDPC<DVB_S2_TABLE_C3, TYPE>();
+			case 4:
+				return new LDPC<DVB_S2_TABLE_C4, TYPE>();
+			case 5:
+				return new LDPC<DVB_S2_TABLE_C5, TYPE>();
+			case 6:
+				return new LDPC<DVB_S2_TABLE_C6, TYPE>();
+			case 7:
+				return new LDPC<DVB_S2_TABLE_C7, TYPE>();
+			case 8:
+				return new LDPC<DVB_S2_TABLE_C8, TYPE>();
+			case 9:
+				return new LDPC<DVB_S2_TABLE_C9, TYPE>();
+			case 10:
+				return new LDPC<DVB_S2_TABLE_C10, TYPE>();
+			}
 		}
 	}
-	if (prefix == 'C') {
-		switch (number) {
-		case 1:
-			return new LDPC<DVB_S2_TABLE_C1, TYPE>();
-		case 2:
-			return new LDPC<DVB_S2_TABLE_C2, TYPE>();
-		case 3:
-			return new LDPC<DVB_S2_TABLE_C3, TYPE>();
-		case 4:
-			return new LDPC<DVB_S2_TABLE_C4, TYPE>();
-		case 5:
-			return new LDPC<DVB_S2_TABLE_C5, TYPE>();
-		case 6:
-			return new LDPC<DVB_S2_TABLE_C6, TYPE>();
-		case 7:
-			return new LDPC<DVB_S2_TABLE_C7, TYPE>();
-		case 8:
-			return new LDPC<DVB_S2_TABLE_C8, TYPE>();
-		case 9:
-			return new LDPC<DVB_S2_TABLE_C9, TYPE>();
-		case 10:
-			return new LDPC<DVB_S2_TABLE_C10, TYPE>();
+	if (!strcmp(standard, "S2X")) {
+		if (prefix == 'B') {
+			switch (number) {
+			case 1:
+				return new LDPC<DVB_S2X_TABLE_B1, TYPE>();
+			case 2:
+				return new LDPC<DVB_S2X_TABLE_B2, TYPE>();
+			case 3:
+				return new LDPC<DVB_S2X_TABLE_B3, TYPE>();
+			case 4:
+				return new LDPC<DVB_S2X_TABLE_B4, TYPE>();
+			case 5:
+				return new LDPC<DVB_S2X_TABLE_B5, TYPE>();
+			case 6:
+				return new LDPC<DVB_S2X_TABLE_B6, TYPE>();
+			case 7:
+				return new LDPC<DVB_S2X_TABLE_B7, TYPE>();
+			case 8:
+				return new LDPC<DVB_S2X_TABLE_B8, TYPE>();
+			case 9:
+				return new LDPC<DVB_S2X_TABLE_B9, TYPE>();
+			case 10:
+				return new LDPC<DVB_S2X_TABLE_B10, TYPE>();
+			case 11:
+				return new LDPC<DVB_S2X_TABLE_B11, TYPE>();
+			case 12:
+				return new LDPC<DVB_S2X_TABLE_B12, TYPE>();
+			case 13:
+				return new LDPC<DVB_S2X_TABLE_B13, TYPE>();
+			case 14:
+				return new LDPC<DVB_S2X_TABLE_B14, TYPE>();
+			case 15:
+				return new LDPC<DVB_S2X_TABLE_B15, TYPE>();
+			case 16:
+				return new LDPC<DVB_S2X_TABLE_B16, TYPE>();
+			case 17:
+				return new LDPC<DVB_S2X_TABLE_B17, TYPE>();
+			case 18:
+				return new LDPC<DVB_S2X_TABLE_B18, TYPE>();
+			case 19:
+				return new LDPC<DVB_S2X_TABLE_B19, TYPE>();
+			case 20:
+				return new LDPC<DVB_S2X_TABLE_B20, TYPE>();
+			case 21:
+				return new LDPC<DVB_S2X_TABLE_B21, TYPE>();
+			case 22:
+				return new LDPC<DVB_S2X_TABLE_B22, TYPE>();
+			case 23:
+				return new LDPC<DVB_S2X_TABLE_B23, TYPE>();
+			case 24:
+				return new LDPC<DVB_S2X_TABLE_B24, TYPE>();
+			}
+		}
+		if (prefix == 'C') {
+			switch (number) {
+			case 1:
+				return new LDPC<DVB_S2X_TABLE_C1, TYPE>();
+			case 2:
+				return new LDPC<DVB_S2X_TABLE_C2, TYPE>();
+			case 3:
+				return new LDPC<DVB_S2X_TABLE_C3, TYPE>();
+			case 4:
+				return new LDPC<DVB_S2X_TABLE_C4, TYPE>();
+			case 5:
+				return new LDPC<DVB_S2X_TABLE_C5, TYPE>();
+			case 6:
+				return new LDPC<DVB_S2X_TABLE_C6, TYPE>();
+			case 7:
+				return new LDPC<DVB_S2X_TABLE_C7, TYPE>();
+			case 8:
+				return new LDPC<DVB_S2X_TABLE_C8, TYPE>();
+			case 9:
+				return new LDPC<DVB_S2X_TABLE_C9, TYPE>();
+			case 10:
+				return new LDPC<DVB_S2X_TABLE_C10, TYPE>();
+			}
 		}
 	}
 	return 0;
@@ -96,19 +177,19 @@ LDPCInterface<TYPE> *create_decoder(char prefix, int number)
 
 int main(int argc, char **argv)
 {
-	if (argc != 4)
+	if (argc != 5)
 		return -1;
 	typedef float value_type;
 	typedef std::complex<value_type> complex_type;
 
-	LDPCInterface<value_type> *ldpc = create_decoder<value_type>(argv[2][0], atoi(argv[2]+1));
+	LDPCInterface<value_type> *ldpc = create_decoder<value_type>(argv[2], argv[3][0], atoi(argv[3]+1));
 	if (!ldpc) {
 		std::cerr << "no such table!" << std::endl;
 		return -1;
 	}
 	std::cerr << "testing LDPC(" << ldpc->code_len() << ", " << ldpc->data_len() << ") code." << std::endl;
 
-	Modulation<complex_type> *mod = create_modulation<complex_type>(argv[3]);
+	Modulation<complex_type> *mod = create_modulation<complex_type>(argv[4]);
 	if (!mod) {
 		std::cerr << "no such modulation!" << std::endl;
 		return -1;
