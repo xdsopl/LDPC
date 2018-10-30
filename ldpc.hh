@@ -143,6 +143,12 @@ struct MinSumCAlgorithm<int8_t>
 		x = std::min<int>(std::max<int>(x, -128), 127);
 		return x;
 	}
+	static uint8_t subu(uint8_t a, uint8_t b)
+	{
+		int x = int(a) - int(b);
+		x = std::max<int>(x, 0);
+		return x;
+	}
 	static uint8_t abs(int8_t a)
 	{
 		return std::abs<int>(a);
@@ -160,9 +166,9 @@ struct MinSumCAlgorithm<int8_t>
 		uint8_t apb2 = addu(apb, apb);
 		uint8_t amb = abs(sub(a, b));
 		uint8_t amb2 = addu(amb, amb);
-		if (apb < factor2 && amb > apb2)
+		if (subu(factor2, apb) && subu(amb, apb2))
 			return c;
-		if (amb < factor2 && apb > amb2)
+		if (subu(factor2, amb) && subu(apb, amb2))
 			return -c;
 		return 0;
 	}
