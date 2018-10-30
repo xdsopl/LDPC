@@ -6,8 +6,8 @@ CXX = clang++ -stdlib=libc++
 test: testbench
 	./testbench 10 B4 QAM16
 
-testbench: testbench.cc dvb_s2_tables.cc *.hh
-	$(CXX) $(CXXFLAGS) testbench.cc dvb_s2_tables.cc -o $@
+testbench: testbench.cc *_tables.cc *.hh
+	$(CXX) $(CXXFLAGS) testbench.cc *_tables.cc -o $@
 
 .PHONY: clean all
 
