@@ -131,6 +131,12 @@ struct MinSumCAlgorithm<int8_t>
 		x = std::min<int>(std::max<int>(x, -128), 127);
 		return x;
 	}
+	static uint8_t addu(uint8_t a, uint8_t b)
+	{
+		int x = int(a) + int(b);
+		x = std::min<int>(x, 255);
+		return x;
+	}
 	static int8_t sub(int8_t a, int8_t b)
 	{
 		int x = int(a) - int(b);
@@ -148,12 +154,15 @@ struct MinSumCAlgorithm<int8_t>
 	static int8_t correction_factor(int8_t a, int8_t b)
 	{
 		uint8_t factor = 2;
+		uint8_t factor2 = factor * 2;
 		uint8_t c = factor / 2;
 		uint8_t apb = abs(add(a, b));
+		uint8_t apb2 = addu(apb, apb);
 		uint8_t amb = abs(sub(a, b));
-		if (apb / 2 < factor && amb / 2 > apb)
+		uint8_t amb2 = addu(amb, amb);
+		if (apb < factor2 && amb > apb2)
 			return c;
-		if (amb / 2 < factor && apb / 2 > amb)
+		if (amb < factor2 && apb > amb2)
 			return -c;
 		return 0;
 	}
