@@ -3,15 +3,16 @@ Playing with [Low-density parity-check codes](https://en.wikipedia.org/wiki/Low-
 
 To study LDPC codes I've implemented a soft decision decoder using floating point operations only.
 
-You can switch between five [Belief propagation](https://en.wikipedia.org/wiki/Belief_propagation) algorithms:
+You can switch between six [Belief propagation](https://en.wikipedia.org/wiki/Belief_propagation) algorithms:
 
 * min-sum algorithm: using minimum and addition
+* self-corrected min-sum algorithm: using minimum, addition and erasures
 * min-sum-c algorithm: using minimum, addition and a correction factor
 * sum-product algorithm: using tanh+atanh-functions, addition and multiplication
 * log-sum-product algorithm: using log+exp-functions to replace above multiplication with addition in the log domain
 * lambda-min algorithm: same as log-sum-product, but using only lambda minima
 
-Decoding speed varies about 20ms (no errors) to 500ms (max errors) for the rate 1/2 N=64800 code using min-sum-c on my workstation.
+Decoding speed varies about 10ms (no errors) to 300ms (max errors) for the rate 1/2 N=64800 code using self-corrected min-sum on my workstation.
 
 Here some good reads:
 * Low-Density Parity-Check Codes  
@@ -22,6 +23,8 @@ by David J.C. MacKay and Radford M. Neal - 1996
 by William E. Ryan - 2003
 * DVB-S2 Low Density Parity Check Codes with near Shannon Limit Performance  
 by Mustafa Eroz, Feng-Wen Sun and Lin-Nan Lee - 2004
+* Self-Corrected Min-Sum decoding of LDPC codes  
+by Valentin Savin - 2008
 * [en_302307v010201p.pdf](http://www.etsi.org/deliver/etsi_en/302300_302399/302307/01.02.01_60/en_302307v010201p.pdf)
 * [a83-1_dvb-s2_den302307v141.pdf](https://www.dvb.org/resources/public/standards/a83-1_dvb-s2_den302307v141.pdf)
 
@@ -32,7 +35,7 @@ The color on the following three plots are to be interpreted like this:
 * Green: message bit nodes with degree eight
 * Blue: message bit nodes with degree three
 
-This is the fastest algorithm, min-sum-c, but it needs a few iterations longer to converge:
+This is the second fastest algorithm, min-sum-c, but it needs a few iterations longer to converge:
 ![min-sum-c](min-sum-c.png)
 
 The sum-product algorithms converge much faster than the min-sum algorithms, but they involve [transcendental functions](https://en.wikipedia.org/wiki/Transcendental_function).

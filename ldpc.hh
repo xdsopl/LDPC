@@ -46,6 +46,42 @@ struct MinSumAlgorithm
 };
 
 template <typename TYPE>
+struct SelfCorrectedMinSumAlgorithm
+{
+	static TYPE min(TYPE a, TYPE b)
+	{
+		return std::min(a, b);
+	}
+	static TYPE mul(TYPE a, TYPE b)
+	{
+		return a * b;
+	}
+	static void finalp(TYPE *links, int cnt)
+	{
+		TYPE blmags[cnt], mins[cnt];
+		for (int i = 0; i < cnt; ++i)
+			blmags[i] = std::abs(links[i]);
+		CODE::exclusive_reduce(blmags, mins, cnt, min);
+
+		TYPE blsigns[cnt], signs[cnt];
+		for (int i = 0; i < cnt; ++i)
+			blsigns[i] = links[i] < TYPE(0) ? TYPE(-1) : TYPE(1);
+		CODE::exclusive_reduce(blsigns, signs, cnt, mul);
+
+		for (int i = 0; i < cnt; ++i)
+			links[i] = signs[i] * mins[i];
+	}
+	static TYPE add(TYPE a, TYPE b)
+	{
+		return a + b;
+	}
+	static TYPE update(TYPE a, TYPE b)
+	{
+		return (a == TYPE(0) || (a < TYPE(0)) == (b < TYPE(0))) ? b : TYPE(0);
+	}
+};
+
+template <typename TYPE>
 struct MinSumCAlgorithm
 {
 	static TYPE correction_factor(TYPE a, TYPE b)
@@ -241,7 +277,8 @@ class LDPC : public LDPCInterface<TYPE>
 	int cnv[R];
 	int cnc[R];
 	//MinSumAlgorithm<TYPE> alg;
-	MinSumCAlgorithm<TYPE> alg;
+	SelfCorrectedMinSumAlgorithm<TYPE> alg;
+	//MinSumCAlgorithm<TYPE> alg;
 	//LogDomainSPA<TYPE> alg;
 	//LambdaMinAlgorithm<TYPE, 3> alg;
 	//SumProductAlgorithm<TYPE> alg;
