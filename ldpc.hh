@@ -39,6 +39,10 @@ struct MinSumAlgorithm
 	{
 		return a + b;
 	}
+	static TYPE update(TYPE, TYPE v)
+	{
+		return v;
+	}
 };
 
 template <typename TYPE>
@@ -76,6 +80,10 @@ struct MinSumCAlgorithm
 	{
 		return a + b;
 	}
+	static TYPE update(TYPE, TYPE v)
+	{
+		return v;
+	}
 };
 
 template <typename TYPE>
@@ -108,6 +116,10 @@ struct LogDomainSPA
 
 		for (int i = 0; i < cnt; ++i)
 			links[i] = signs[i] * phi(sums[i]);
+	}
+	static TYPE update(TYPE, TYPE v)
+	{
+		return v;
 	}
 };
 
@@ -157,6 +169,10 @@ struct LambdaMinAlgorithm
 		for (int i = 0; i < cnt; ++i)
 			links[i] = signs[i] * phi(sums[i]);
 	}
+	static TYPE update(TYPE, TYPE v)
+	{
+		return v;
+	}
 };
 
 template <typename TYPE>
@@ -186,6 +202,10 @@ struct SumProductAlgorithm
 	static TYPE add(TYPE a, TYPE b)
 	{
 		return a + b;
+	}
+	static TYPE update(TYPE, TYPE v)
+	{
+		return v;
 	}
 };
 
@@ -329,13 +349,13 @@ class LDPC : public LDPCInterface<TYPE>
 		cnc[0] = 1;
 		for (int i = 1; i < R; ++i)
 			cnc[i] = 2;
-		*bl++ = parity[0] + cnl[CNL];
-		*bl++ = parity[0] + cnl[0];
+		*bl = alg.update(*bl, parity[0] + cnl[CNL]); ++bl;
+		*bl = alg.update(*bl, parity[0] + cnl[0]); ++bl;
 		for (int i = 1; i < R-1; ++i) {
-			*bl++ = parity[i] + cnl[CNL*(i+1)];
-			*bl++ = parity[i] + cnl[CNL*i+1];
+			*bl = alg.update(*bl, parity[i] + cnl[CNL*(i+1)]); ++bl;
+			*bl = alg.update(*bl, parity[i] + cnl[CNL*i+1]); ++bl;
 		}
-		*bl++ = parity[R-1];
+		*bl = alg.update(*bl, parity[R-1]); ++bl;
 		first_group();
 		for (int j = 0; j < K; j += M) {
 			for (int m = 0; m < M; ++m) {
@@ -347,8 +367,8 @@ class LDPC : public LDPCInterface<TYPE>
 				TYPE out[bit_deg];
 				CODE::exclusive_reduce(inp, out, bit_deg, alg.add);
 				bnv[j+m+R] = data[j+m] + out[0] + inp[0];
-				for (int n = 0; n < bit_deg; ++n)
-					*bl++ = data[j+m] + out[n];
+				for (int n = 0; n < bit_deg; ++n, ++bl)
+					*bl = alg.update(*bl, data[j+m] + out[n]);
 				next_bit();
 			}
 			next_group();
