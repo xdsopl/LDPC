@@ -318,24 +318,24 @@ class LDPC : public LDPCInterface<TYPE>
 			std::cerr << "cnl: min = " << min << " max = " << max << std::endl;
 		}
 	}
-	void bit_node_update()
+	void bit_node_update(TYPE *data, TYPE *parity)
 	{
-		bnv[0] += cnl[0] + cnl[CNL];
+		bnv[0] = parity[0] + cnl[0] + cnl[CNL];
 		for (int i = 1; i < R-1; ++i)
-			bnv[i] += cnl[CNL*i+1] + cnl[CNL*(i+1)];
-		bnv[R-1] += cnl[CNL*(R-1)+1];
+			bnv[i] = parity[i] + cnl[CNL*i+1] + cnl[CNL*(i+1)];
+		bnv[R-1] = parity[R-1] + cnl[CNL*(R-1)+1];
 
 		TYPE *bl = bnl;
 		cnc[0] = 1;
 		for (int i = 1; i < R; ++i)
 			cnc[i] = 2;
-		*bl++ += cnl[CNL];
-		*bl++ += cnl[0];
+		*bl++ = parity[0] + cnl[CNL];
+		*bl++ = parity[0] + cnl[0];
 		for (int i = 1; i < R-1; ++i) {
-			*bl++ += cnl[CNL*(i+1)];
-			*bl++ += cnl[CNL*i+1];
+			*bl++ = parity[i] + cnl[CNL*(i+1)];
+			*bl++ = parity[i] + cnl[CNL*i+1];
 		}
-		++bl; // alone
+		*bl++ = parity[R-1];
 		first_group();
 		for (int j = 0; j < K; j += M) {
 			for (int m = 0; m < M; ++m) {
@@ -346,9 +346,9 @@ class LDPC : public LDPCInterface<TYPE>
 				}
 				TYPE out[bit_deg];
 				CODE::exclusive_reduce(inp, out, bit_deg, alg.add);
-				bnv[j+m+R] += out[0] + inp[0];
+				bnv[j+m+R] = data[j+m] + out[0] + inp[0];
 				for (int n = 0; n < bit_deg; ++n)
-					*bl++ += out[n];
+					*bl++ = data[j+m] + out[n];
 				next_bit();
 			}
 			next_group();
@@ -407,11 +407,10 @@ public:
 		if (!hard_decision())
 			return trials;
 		--trials;
-		bit_node_update();
+		bit_node_update(data, parity);
 		check_node_update();
 		while (hard_decision() && --trials >= 0) {
-			bit_node_init(data, parity);
-			bit_node_update();
+			bit_node_update(data, parity);
 			check_node_update();
 		}
 		update_user(data, parity);
