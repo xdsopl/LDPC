@@ -447,7 +447,7 @@ int main(int argc, char **argv)
 		return -1;
 	typedef float value_type;
 	typedef std::complex<value_type> complex_type;
-#if 0
+#if 1
 	typedef int8_t code_type;
 	const int factor = 2;
 #else
