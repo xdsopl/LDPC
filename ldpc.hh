@@ -9,7 +9,7 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 
 #include "exclusive_reduce.hh"
 
-template <typename TYPE>
+template <typename TYPE, int FACTOR>
 struct MinSumAlgorithm
 {
 	static TYPE min(TYPE a, TYPE b)
@@ -45,7 +45,7 @@ struct MinSumAlgorithm
 	}
 };
 
-template <typename TYPE>
+template <typename TYPE, int FACTOR>
 struct SelfCorrectedMinSumAlgorithm
 {
 	static TYPE min(TYPE a, TYPE b)
@@ -81,8 +81,8 @@ struct SelfCorrectedMinSumAlgorithm
 	}
 };
 
-template <>
-struct SelfCorrectedMinSumAlgorithm<int8_t>
+template <int FACTOR>
+struct SelfCorrectedMinSumAlgorithm<int8_t, FACTOR>
 {
 	static int8_t add(int8_t a, int8_t b)
 	{
@@ -129,13 +129,13 @@ struct SelfCorrectedMinSumAlgorithm<int8_t>
 	}
 };
 
-template <typename TYPE>
+template <typename TYPE, int FACTOR>
 struct MinSumCAlgorithm
 {
 	static TYPE correction_factor(TYPE a, TYPE b)
 	{
 		if (1) {
-			TYPE c = 0.5;
+			TYPE c = TYPE(FACTOR) / TYPE(2);
 			TYPE apb = std::abs(a + b);
 			TYPE amb = std::abs(a - b);
 			if (apb < TYPE(2) && amb > TYPE(2) * apb)
@@ -170,8 +170,8 @@ struct MinSumCAlgorithm
 	}
 };
 
-template <>
-struct MinSumCAlgorithm<int8_t>
+template <int FACTOR>
+struct MinSumCAlgorithm<int8_t, FACTOR>
 {
 	static int8_t add(int8_t a, int8_t b)
 	{
@@ -207,9 +207,8 @@ struct MinSumCAlgorithm<int8_t>
 	}
 	static int8_t correction_factor(int8_t a, int8_t b)
 	{
-		uint8_t factor = 2;
-		uint8_t factor2 = factor * 2;
-		uint8_t c = factor / 2;
+		uint8_t factor2 = FACTOR * 2;
+		uint8_t c = FACTOR / 2;
 		uint8_t apb = abs(add(a, b));
 		uint8_t apb2 = addu(apb, apb);
 		uint8_t amb = abs(sub(a, b));
@@ -241,7 +240,7 @@ struct MinSumCAlgorithm<int8_t>
 	}
 };
 
-template <typename TYPE>
+template <typename TYPE, int FACTOR>
 struct LogDomainSPA
 {
 	static TYPE phi(TYPE x)
@@ -278,7 +277,7 @@ struct LogDomainSPA
 	}
 };
 
-template <typename TYPE, int LAMBDA>
+template <typename TYPE, int FACTOR, int LAMBDA>
 struct LambdaMinAlgorithm
 {
 	static TYPE phi(TYPE x)
@@ -330,7 +329,7 @@ struct LambdaMinAlgorithm
 	}
 };
 
-template <typename TYPE>
+template <typename TYPE, int FACTOR>
 struct SumProductAlgorithm
 {
 	static TYPE prep(TYPE x)
@@ -375,7 +374,7 @@ struct LDPCInterface
 	virtual ~LDPCInterface() = default;
 };
 
-template <typename TABLE, typename TYPE>
+template <typename TABLE, typename TYPE, int FACTOR>
 class LDPC : public LDPCInterface<TYPE>
 {
 	static const int M = TABLE::M;
@@ -395,12 +394,12 @@ class LDPC : public LDPCInterface<TYPE>
 	TYPE cnl[R * CNL];
 	int8_t cnv[R];
 	uint8_t cnc[R];
-	//MinSumAlgorithm<TYPE> alg;
-	SelfCorrectedMinSumAlgorithm<TYPE> alg;
-	//MinSumCAlgorithm<TYPE> alg;
-	//LogDomainSPA<TYPE> alg;
-	//LambdaMinAlgorithm<TYPE, 3> alg;
-	//SumProductAlgorithm<TYPE> alg;
+	//MinSumAlgorithm<TYPE, FACTOR> alg;
+	SelfCorrectedMinSumAlgorithm<TYPE, FACTOR> alg;
+	//MinSumCAlgorithm<TYPE, FACTOR> alg;
+	//LogDomainSPA<TYPE, FACTOR> alg;
+	//LambdaMinAlgorithm<TYPE, FACTOR, 3> alg;
+	//SumProductAlgorithm<TYPE, FACTOR> alg;
 
 	int signum(TYPE v)
 	{
