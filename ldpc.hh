@@ -491,7 +491,7 @@ class LDPC : public LDPCInterface<TYPE>
 				min = std::min(min, cnl[i]);
 				max = std::max(max, cnl[i]);
 			}
-			std::cerr << "cnl: min = " << min << " max = " << max << std::endl;
+			std::cerr << "cnl: min = " << +min << " max = " << +max << std::endl;
 		}
 	}
 	void bit_node_update(TYPE *data, TYPE *parity)
@@ -535,7 +535,7 @@ class LDPC : public LDPCInterface<TYPE>
 				min = std::min(min, bnv[i]);
 				max = std::max(max, bnv[i]);
 			}
-			std::cerr << "bnl: min = " << min << " max = " << max << std::endl;
+			std::cerr << "bnl: min = " << +min << " max = " << +max << std::endl;
 		}
 		if (0) {
 			TYPE min = 0, max = 0;
@@ -543,13 +543,13 @@ class LDPC : public LDPCInterface<TYPE>
 				min = std::min(min, bnv[i]);
 				max = std::max(max, bnv[i]);
 			}
-			std::cerr << "bnv: min = " << min << " max = " << max << std::endl;
+			std::cerr << "bnv: min = " << +min << " max = " << +max << std::endl;
 		}
 		if (0) {
 			static int count;
 			std::cout << count++;
 			for (int i = 0; i < N; ++i)
-				std::cout << " " << std::min<TYPE>(std::max<TYPE>(bnv[i], -1000000), 1000000);
+				std::cout << " " << +bnv[i];
 			std::cout << std::endl;
 		}
 	}

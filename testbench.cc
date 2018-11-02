@@ -278,7 +278,7 @@ int main(int argc, char **argv)
 	if (SHOW) {
 		std::cerr << "send:";
 		for (int i = 0; i < SHOW; ++i)
-			std::cerr << "	" << code[i+ldpc->data_len()];
+			std::cerr << "	" << +code[i+ldpc->data_len()];
 		std::cerr << std::endl;
 	}
 
@@ -327,7 +327,7 @@ int main(int argc, char **argv)
 		for (int i = 0; i < SYMBOLS; ++i) {
 			std::cout << symb[i].real() << " " << symb[i].imag();
 			for (int j = 0; j < mod->bits(); ++j)
-				std::cout << " " << code[i + j * SYMBOLS];
+				std::cout << " " << +code[i + j * SYMBOLS];
 			std::cout << std::endl;
 		}
 	}
@@ -336,7 +336,7 @@ int main(int argc, char **argv)
 		std::cerr << std::setprecision(4);
 		std::cerr << "recv:";
 		for (int i = 0; i < SHOW; ++i)
-			std::cerr << "	" << code[i+ldpc->data_len()];
+			std::cerr << "	" << +code[i+ldpc->data_len()];
 		std::cerr << std::endl;
 		std::cerr << std::setprecision(3);
 	}
