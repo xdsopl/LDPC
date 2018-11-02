@@ -18,6 +18,7 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 #include "ldpc.hh"
 #include "dvb_s2_tables.hh"
 #include "dvb_s2x_tables.hh"
+#include "dvb_t2_tables.hh"
 
 template <typename TYPE>
 Modulation<TYPE> *create_modulation(char *name)
@@ -169,6 +170,46 @@ LDPCInterface<TYPE> *create_decoder(char *standard, char prefix, int number)
 				return new LDPC<DVB_S2X_TABLE_C9, TYPE>();
 			case 10:
 				return new LDPC<DVB_S2X_TABLE_C10, TYPE>();
+			}
+		}
+	}
+	if (!strcmp(standard, "T2")) {
+		if (prefix == 'A') {
+			switch (number) {
+			case 1:
+				return new LDPC<DVB_T2_TABLE_A1, TYPE>();
+			case 2:
+				return new LDPC<DVB_T2_TABLE_A2, TYPE>();
+			case 3:
+				return new LDPC<DVB_T2_TABLE_A3, TYPE>();
+			case 4:
+				return new LDPC<DVB_T2_TABLE_A4, TYPE>();
+			case 5:
+				return new LDPC<DVB_T2_TABLE_A5, TYPE>();
+			case 6:
+				return new LDPC<DVB_T2_TABLE_A6, TYPE>();
+			}
+		}
+		if (prefix == 'B') {
+			switch (number) {
+			case 1:
+				return new LDPC<DVB_T2_TABLE_B1, TYPE>();
+			case 2:
+				return new LDPC<DVB_T2_TABLE_B2, TYPE>();
+			case 3:
+				return new LDPC<DVB_T2_TABLE_B3, TYPE>();
+			case 4:
+				return new LDPC<DVB_T2_TABLE_B4, TYPE>();
+			case 5:
+				return new LDPC<DVB_T2_TABLE_B5, TYPE>();
+			case 6:
+				return new LDPC<DVB_T2_TABLE_B6, TYPE>();
+			case 7:
+				return new LDPC<DVB_T2_TABLE_B7, TYPE>();
+			case 8:
+				return new LDPC<DVB_T2_TABLE_B8, TYPE>();
+			case 9:
+				return new LDPC<DVB_T2_TABLE_B9, TYPE>();
 			}
 		}
 	}
