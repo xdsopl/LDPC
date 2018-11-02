@@ -356,7 +356,10 @@ int main(int argc, char **argv)
 
 	int awgn_errors = 0;
 	for (int i = 0; i < ldpc->code_len(); ++i)
-		awgn_errors += noisy[i] * orig[i] <= 0;
+		awgn_errors += noisy[i] * orig[i] < 0;
+	int quantization_erasures = 0;
+	for (int i = 0; i < ldpc->code_len(); ++i)
+		quantization_erasures += !noisy[i];
 	int uncorrected_errors = 0;
 	for (int i = 0; i < ldpc->code_len(); ++i)
 		uncorrected_errors += code[i] * orig[i] <= 0;
@@ -381,6 +384,7 @@ int main(int argc, char **argv)
 	}
 
 	std::cerr << awgn_errors << " errors caused by AWGN." << std::endl;
+	std::cerr << quantization_erasures << " erasures caused by quantization." << std::endl;
 	std::cerr << decoder_errors << " errors caused by decoder." << std::endl;
 	std::cerr << uncorrected_errors << " errors uncorrected." << std::endl;
 
