@@ -218,7 +218,7 @@ LDPCInterface<TYPE> *create_decoder(char *standard, char prefix, int number)
 
 int main(int argc, char **argv)
 {
-	if (argc != 5)
+	if (argc != 6)
 		return -1;
 	typedef float value_type;
 	typedef std::complex<value_type> complex_type;
@@ -258,18 +258,25 @@ int main(int argc, char **argv)
 
 	assert(ldpc->code_len() % mod->bits() == 0);
 	const int SYMBOLS = ldpc->code_len() / mod->bits();
-	code_type code[ldpc->code_len()], orig[ldpc->code_len()], noisy[ldpc->code_len()];
-	complex_type symb[SYMBOLS];
+	int BLOCKS = atoi(argv[5]);
+	if (BLOCKS < 1)
+		return -1;
+	code_type *code = new code_type[BLOCKS * ldpc->code_len()];
+	code_type *orig = new code_type[BLOCKS * ldpc->code_len()];
+	code_type *noisy = new code_type[BLOCKS * ldpc->code_len()];
+	complex_type *symb = new complex_type[BLOCKS * SYMBOLS];
 	const int SHOW = 0;
 
 	//ldpc->examine();
 
-	for (int i = 0; i < ldpc->data_len(); ++i)
-		code[i] = 1 - 2 * data();
+	for (int j = 0; j < BLOCKS; ++j)
+		for (int i = 0; i < ldpc->data_len(); ++i)
+			code[j * ldpc->code_len() + i] = 1 - 2 * data();
 
-	ldpc->encode(code, code + ldpc->data_len());
+	for (int i = 0; i < BLOCKS; ++i)
+		ldpc->encode(code + i * ldpc->code_len(), code + i * ldpc->code_len() + ldpc->data_len());
 
-	for (int i = 0; i < ldpc->code_len(); ++i)
+	for (int i = 0; i < BLOCKS * ldpc->code_len(); ++i)
 		orig[i] = code[i];
 
 	std::cerr << std::showpos;
@@ -282,15 +289,16 @@ int main(int argc, char **argv)
 		std::cerr << std::endl;
 	}
 
-	for (int i = 0; i < SYMBOLS; ++i)
-		symb[i] = mod->map(code + i, SYMBOLS);
+	for (int j = 0; j < BLOCKS; ++j)
+		for (int i = 0; i < SYMBOLS; ++i)
+			symb[j*SYMBOLS+i] = mod->map(code + j * ldpc->code_len() + i, SYMBOLS);
 
 	if (0) {
 		for (int i = 0; i < SYMBOLS; ++i)
 			std::cout << symb[i].real() << " " << symb[i].imag() << std::endl;
 	}
 
-	for (int i = 0; i < SYMBOLS; ++i)
+	for (int i = 0; i < BLOCKS * SYMBOLS; ++i)
 		symb[i] += complex_type(awgn(), awgn());
 
 	if (1) {
@@ -317,10 +325,12 @@ int main(int argc, char **argv)
 	// $LLR=log(\frac{p(x=+1|y)}{p(x=-1|y)})$
 	// $p(x|\mu,\sigma)=\frac{1}{\sqrt{2\pi}\sigma}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}$
 	value_type precision = factor / (sigma * sigma);
-	for (int i = 0; i < SYMBOLS; ++i)
-		mod->soft(code + i, symb[i], precision, SYMBOLS);
+	for (int j = 0; j < BLOCKS; ++j) {
+		for (int i = 0; i < SYMBOLS; ++i)
+			mod->soft(code + j * ldpc->code_len() + i, symb[j*SYMBOLS+i], precision, SYMBOLS);
+	}
 
-	for (int i = 0; i < ldpc->code_len(); ++i)
+	for (int i = 0; i < BLOCKS * ldpc->code_len(); ++i)
 		noisy[i] = code[i];
 
 	if (0) {
@@ -341,32 +351,34 @@ int main(int argc, char **argv)
 		std::cerr << std::setprecision(3);
 	}
 
-	for (int i = 0; i < ldpc->code_len(); ++i)
+	for (int i = 0; i < BLOCKS * ldpc->code_len(); ++i)
 		assert(!std::isnan(code[i]));
 
-	int trials = 50;
-	int count = ldpc->decode(code, code + ldpc->data_len(), trials);
-	if (count < 0)
-		std::cerr << "decoder failed at converging to a code word!" << std::endl;
-	else
-		std::cerr << trials - count << " iterations were needed." << std::endl;
+	for (int j = 0; j < BLOCKS; ++j) {
+		int trials = 50;
+		int count = ldpc->decode(code + j * ldpc->code_len(), code + j * ldpc->code_len() + ldpc->data_len(), trials);
+		if (count < 0)
+			std::cerr << "decoder failed at converging to a code word!" << std::endl;
+		else
+			std::cerr << trials - count << " iterations were needed." << std::endl;
+	}
 
-	for (int i = 0; i < ldpc->code_len(); ++i)
+	for (int i = 0; i < BLOCKS * ldpc->code_len(); ++i)
 		assert(!std::isnan(code[i]));
 
 	int awgn_errors = 0;
-	for (int i = 0; i < ldpc->code_len(); ++i)
+	for (int i = 0; i < BLOCKS * ldpc->code_len(); ++i)
 		awgn_errors += noisy[i] * orig[i] < 0;
 	int quantization_erasures = 0;
-	for (int i = 0; i < ldpc->code_len(); ++i)
+	for (int i = 0; i < BLOCKS * ldpc->code_len(); ++i)
 		quantization_erasures += !noisy[i];
 	int uncorrected_errors = 0;
-	for (int i = 0; i < ldpc->code_len(); ++i)
+	for (int i = 0; i < BLOCKS * ldpc->code_len(); ++i)
 		uncorrected_errors += code[i] * orig[i] <= 0;
 	int decoder_errors = 0;
-	for (int i = 0; i < ldpc->code_len(); ++i)
+	for (int i = 0; i < BLOCKS * ldpc->code_len(); ++i)
 		decoder_errors += code[i] * orig[i] <= 0 && orig[i] * noisy[i] > 0;
-	float bit_error_rate = (float)uncorrected_errors / (float)ldpc->code_len();
+	float bit_error_rate = (float)uncorrected_errors / (float)(BLOCKS * ldpc->code_len());
 
 	if (1) {
 		for (int i = 0; i < ldpc->code_len(); ++i)
@@ -391,6 +403,12 @@ int main(int argc, char **argv)
 	std::cerr << bit_error_rate << " bit error rate." << std::endl;
 
 	delete ldpc;
+	delete mod;
+
+	delete[] code;
+	delete[] orig;
+	delete[] noisy;
+	delete[] symb;
 
 	return 0;
 }
