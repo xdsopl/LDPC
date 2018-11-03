@@ -9,6 +9,7 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 #include <random>
 #include <cmath>
 #include <cassert>
+#include <chrono>
 #include <cstring>
 #include <algorithm>
 #include <functional>
@@ -354,6 +355,7 @@ int main(int argc, char **argv)
 	for (int i = 0; i < BLOCKS * ldpc->code_len(); ++i)
 		assert(!std::isnan(code[i]));
 
+	auto start = std::chrono::system_clock::now();
 	for (int j = 0; j < BLOCKS; ++j) {
 		int trials = 50;
 		int count = ldpc->decode(code + j * ldpc->code_len(), code + j * ldpc->code_len() + ldpc->data_len(), trials);
@@ -362,6 +364,10 @@ int main(int argc, char **argv)
 		else
 			std::cerr << trials - count << " iterations were needed." << std::endl;
 	}
+	auto end = std::chrono::system_clock::now();
+	auto msec = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+	int kbs = (BLOCKS * ldpc->data_len() + msec.count() / 2) / msec.count();
+	std::cerr << kbs << " kilobit per second" << std::endl;
 
 	for (int i = 0; i < BLOCKS * ldpc->code_len(); ++i)
 		assert(!std::isnan(code[i]));
