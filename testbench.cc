@@ -312,10 +312,10 @@ int main(int argc, char **argv)
 			sp += std::norm(s);
 			np += std::norm(e);
 		}
-		SNR = 10 * std::log10(sp / np);
+		value_type snr = 10 * std::log10(sp / np);
 		mean = std::sqrt(sp / SYMBOLS);
 		sigma = std::sqrt(np / (2 * sp));
-		std::cerr << SNR << " Es/N0, " << sigma << " sigma and " << mean << " mean estimated via hard decision." << std::endl;
+		std::cerr << snr << " Es/N0, " << sigma << " sigma and " << mean << " mean estimated via hard decision." << std::endl;
 	}
 
 	if (0) {
@@ -355,19 +355,25 @@ int main(int argc, char **argv)
 	for (int i = 0; i < BLOCKS * ldpc->code_len(); ++i)
 		assert(!std::isnan(code[i]));
 
+	int iterations = 0;
 	auto start = std::chrono::system_clock::now();
 	for (int j = 0; j < BLOCKS; ++j) {
 		int trials = 50;
 		int count = ldpc->decode(code + j * ldpc->code_len(), code + j * ldpc->code_len() + ldpc->data_len(), trials);
-		if (count < 0)
+		if (count < 0) {
+			iterations += trials;
 			std::cerr << "decoder failed at converging to a code word!" << std::endl;
-		else
+		} else {
+			iterations += trials - count;
 			std::cerr << trials - count << " iterations were needed." << std::endl;
+		}
 	}
 	auto end = std::chrono::system_clock::now();
 	auto msec = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 	int kbs = (BLOCKS * ldpc->data_len() + msec.count() / 2) / msec.count();
-	std::cerr << kbs << " kilobit per second" << std::endl;
+	std::cerr << kbs << " kilobit per second." << std::endl;
+	float avg_iter = (float)iterations / (float)BLOCKS;
+	std::cerr << avg_iter << " average iterations per block." << std::endl;
 
 	for (int i = 0; i < BLOCKS * ldpc->code_len(); ++i)
 		assert(!std::isnan(code[i]));
@@ -396,10 +402,10 @@ int main(int argc, char **argv)
 			sp += std::norm(s);
 			np += std::norm(e);
 		}
-		SNR = 10 * std::log10(sp / np);
+		value_type snr = 10 * std::log10(sp / np);
 		mean = std::sqrt(sp / SYMBOLS);
 		sigma = std::sqrt(np / (2 * sp));
-		std::cerr << SNR << " Es/N0, " << sigma << " sigma and " << mean << " mean estimated from corrected symbols." << std::endl;
+		std::cerr << snr << " Es/N0, " << sigma << " sigma and " << mean << " mean estimated from corrected symbols." << std::endl;
 	}
 
 	std::cerr << awgn_errors << " errors caused by AWGN." << std::endl;
@@ -407,6 +413,10 @@ int main(int argc, char **argv)
 	std::cerr << decoder_errors << " errors caused by decoder." << std::endl;
 	std::cerr << uncorrected_errors << " errors uncorrected." << std::endl;
 	std::cerr << bit_error_rate << " bit error rate." << std::endl;
+
+	if (0) {
+		std::cout << SNR << " " << bit_error_rate << " " << avg_iter << std::endl;
+	}
 
 	delete ldpc;
 	delete mod;
