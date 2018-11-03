@@ -366,6 +366,7 @@ int main(int argc, char **argv)
 	int decoder_errors = 0;
 	for (int i = 0; i < ldpc->code_len(); ++i)
 		decoder_errors += code[i] * orig[i] <= 0 && orig[i] * noisy[i] > 0;
+	float bit_error_rate = (float)uncorrected_errors / (float)ldpc->code_len();
 
 	if (1) {
 		for (int i = 0; i < ldpc->code_len(); ++i)
@@ -387,6 +388,7 @@ int main(int argc, char **argv)
 	std::cerr << quantization_erasures << " erasures caused by quantization." << std::endl;
 	std::cerr << decoder_errors << " errors caused by decoder." << std::endl;
 	std::cerr << uncorrected_errors << " errors uncorrected." << std::endl;
+	std::cerr << bit_error_rate << " bit error rate." << std::endl;
 
 	delete ldpc;
 
