@@ -377,12 +377,20 @@ struct LDPCInterface
 template <typename TABLE, typename TYPE, int FACTOR>
 class LDPC : public LDPCInterface<TYPE>
 {
+	//typedef MinSumAlgorithm<TYPE, FACTOR> ALG;
+	typedef SelfCorrectedMinSumAlgorithm<TYPE, FACTOR> ALG;
+	//typedef MinSumCAlgorithm<TYPE, FACTOR> ALG;
+	//typedef LogDomainSPA<TYPE, FACTOR> ALG;
+	//typedef LambdaMinAlgorithm<TYPE, FACTOR, 3> ALG;
+	//typedef SumProductAlgorithm<TYPE, FACTOR> ALG;
+
 	static const int M = TABLE::M;
 	static const int N = TABLE::N;
 	static const int K = TABLE::K;
 	static const int R = N-K;
 	static const int q = R/M;
 	static const int CNL = TABLE::LINKS_MAX_CN;
+
 	int acc_pos[TABLE::DEG_MAX];
 	const int *row_ptr;
 	int bit_deg;
@@ -394,12 +402,7 @@ class LDPC : public LDPCInterface<TYPE>
 	TYPE cnl[R * CNL];
 	int8_t cnv[R];
 	uint8_t cnc[R];
-	//MinSumAlgorithm<TYPE, FACTOR> alg;
-	SelfCorrectedMinSumAlgorithm<TYPE, FACTOR> alg;
-	//MinSumCAlgorithm<TYPE, FACTOR> alg;
-	//LogDomainSPA<TYPE, FACTOR> alg;
-	//LambdaMinAlgorithm<TYPE, FACTOR, 3> alg;
-	//SumProductAlgorithm<TYPE, FACTOR> alg;
+	ALG alg;
 
 	int signum(TYPE v)
 	{
