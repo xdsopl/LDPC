@@ -40,7 +40,7 @@ struct PhaseShiftKeying<2, TYPE, CODE> : public Modulation<TYPE, CODE>
 
 	void hard(code_type *b, complex_type c, int stride = 1)
 	{
-		b[0*stride] = c.real() < value_type(0) ? value_type(-1) : value_type(1);
+		b[0*stride] = c.real() < value_type(0) ? code_type(-1) : code_type(1);
 	}
 
 	void soft(code_type *b, complex_type c, value_type precision, int stride = 1)
@@ -84,8 +84,8 @@ struct PhaseShiftKeying<4, TYPE, CODE> : public Modulation<TYPE, CODE>
 
 	void hard(code_type *b, complex_type c, int stride = 1)
 	{
-		b[0*stride] = c.real() < value_type(0) ? value_type(-1) : value_type(1);
-		b[1*stride] = c.imag() < value_type(0) ? value_type(-1) : value_type(1);
+		b[0*stride] = c.real() < value_type(0) ? code_type(-1) : code_type(1);
+		b[1*stride] = c.imag() < value_type(0) ? code_type(-1) : code_type(1);
 	}
 
 	void soft(code_type *b, complex_type c, value_type precision, int stride = 1)
@@ -135,9 +135,9 @@ struct PhaseShiftKeying<8, TYPE, CODE> : public Modulation<TYPE, CODE>
 
 	void hard(code_type *b, complex_type c, int stride = 1)
 	{
-		b[0*stride] = c.real() < value_type(0) ? value_type(-1) : value_type(1);
-		b[1*stride] = c.imag() < value_type(0) ? value_type(-1) : value_type(1);
-		b[2*stride] = abs(c.real()) < abs(c.imag()) ? value_type(-1) : value_type(1);
+		b[0*stride] = c.real() < value_type(0) ? code_type(-1) : code_type(1);
+		b[1*stride] = c.imag() < value_type(0) ? code_type(-1) : code_type(1);
+		b[2*stride] = abs(c.real()) < abs(c.imag()) ? code_type(-1) : code_type(1);
 	}
 
 	void soft(code_type *b, complex_type c, value_type precision, int stride = 1)
