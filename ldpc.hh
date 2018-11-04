@@ -45,6 +45,54 @@ struct MinSumAlgorithm
 	}
 };
 
+template <int FACTOR>
+struct MinSumAlgorithm<int8_t, FACTOR>
+{
+	static int8_t add(int8_t a, int8_t b)
+	{
+		int x = int(a) + int(b);
+		x = std::min<int>(std::max<int>(x, -128), 127);
+		return x;
+	}
+	static uint8_t min(uint8_t a, uint8_t b)
+	{
+		return std::min(a, b);
+	}
+	static int8_t xor_(int8_t a, int8_t b)
+	{
+		return a ^ b;
+	}
+	static uint8_t abs(int8_t a)
+	{
+		return std::abs<int>(a);
+	}
+	static int8_t sign(int8_t a, int8_t b)
+	{
+		return b < 0 ? -a : b > 0 ? a : 0;
+	}
+	static void finalp(int8_t *links, int cnt)
+	{
+		uint8_t mags[cnt], mins[cnt];
+		for (int i = 0; i < cnt; ++i)
+			mags[i] = abs(links[i]);
+		CODE::exclusive_reduce(mags, mins, cnt, min);
+		for (int i = 0; i < cnt; ++i)
+			mins[i] = std::min<uint8_t>(mins[i], 127);
+
+		int8_t signs[cnt];
+		CODE::exclusive_reduce(links, signs, cnt, xor_);
+		for (int i = 0; i < cnt; ++i)
+			signs[i] |= 127;
+
+		for (int i = 0; i < cnt; ++i)
+			links[i] = sign(mins[i], signs[i]);
+	}
+	static int8_t update(int8_t, int8_t v)
+	{
+		return v;
+	}
+};
+
 template <typename TYPE, int FACTOR>
 struct SelfCorrectedMinSumAlgorithm
 {
