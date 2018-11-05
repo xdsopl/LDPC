@@ -28,6 +28,18 @@ by Valentin Savin - 2008
 * [en_302307v010201p.pdf](http://www.etsi.org/deliver/etsi_en/302300_302399/302307/01.02.01_60/en_302307v010201p.pdf)
 * [a83-1_dvb-s2_den302307v141.pdf](https://www.dvb.org/resources/public/standards/a83-1_dvb-s2_den302307v141.pdf)
 
+### BER comparison of the various algorithms
+
+The following plots were made by computing MS, MSC, SCMS and SCMSC with fixed-point saturating arithmetics using a factor of 2 while SP and SCSP are computed using double precision floating-point arithmetics.
+
+Used DVB-S2 B4 table, QPSK modulation and averaged over 1000 blocks:
+
+To better see the behaviour at low SNR, here with a linear [BER](https://en.wikipedia.org/wiki/Bit_error_rate) scale:
+![comparison linear scale](comparison_factor_2_S2_B4_QPSK_1000_lin_scale.png)
+
+To better see the waterfall region and the boundary to quasi-errorless decoding, here the logarithmic BER scale:
+![comparison logarithmic scale](comparison_factor_2_S2_B4_QPSK_1000_log_scale.png)
+
 ### Impact of the varying degrees of the bit nodes on their convergence behaviour
 
 The color on the following three plots are to be interpreted like this:
