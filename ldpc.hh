@@ -9,6 +9,33 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 
 #include "exclusive_reduce.hh"
 
+template <typename TYPE>
+struct NormalUpdate
+{
+	TYPE operator()(TYPE, TYPE v)
+	{
+		return v;
+	}
+};
+
+template <typename TYPE>
+struct SelfCorrectedUpdate
+{
+	TYPE operator()(TYPE a, TYPE b)
+	{
+		return (a == TYPE(0) || (a < TYPE(0)) == (b < TYPE(0))) ? b : TYPE(0);
+	}
+};
+
+template <>
+struct SelfCorrectedUpdate<int8_t>
+{
+	int8_t operator()(int8_t a, int8_t b)
+	{
+		return (a == 0 || ((a ^ b) & 128) == 0) ? b : 0;
+	}
+};
+
 template <typename TYPE, int FACTOR>
 struct MinSumAlgorithm
 {
@@ -38,10 +65,6 @@ struct MinSumAlgorithm
 	static TYPE add(TYPE a, TYPE b)
 	{
 		return a + b;
-	}
-	static TYPE update(TYPE, TYPE v)
-	{
-		return v;
 	}
 };
 
@@ -87,94 +110,6 @@ struct MinSumAlgorithm<int8_t, FACTOR>
 		for (int i = 0; i < cnt; ++i)
 			links[i] = sign(mins[i], signs[i]);
 	}
-	static int8_t update(int8_t, int8_t v)
-	{
-		return v;
-	}
-};
-
-template <typename TYPE, int FACTOR>
-struct SelfCorrectedMinSumAlgorithm
-{
-	static TYPE min(TYPE a, TYPE b)
-	{
-		return std::min(a, b);
-	}
-	static TYPE mul(TYPE a, TYPE b)
-	{
-		return a * b;
-	}
-	static void finalp(TYPE *links, int cnt)
-	{
-		TYPE blmags[cnt], mins[cnt];
-		for (int i = 0; i < cnt; ++i)
-			blmags[i] = std::abs(links[i]);
-		CODE::exclusive_reduce(blmags, mins, cnt, min);
-
-		TYPE blsigns[cnt], signs[cnt];
-		for (int i = 0; i < cnt; ++i)
-			blsigns[i] = links[i] < TYPE(0) ? TYPE(-1) : TYPE(1);
-		CODE::exclusive_reduce(blsigns, signs, cnt, mul);
-
-		for (int i = 0; i < cnt; ++i)
-			links[i] = signs[i] * mins[i];
-	}
-	static TYPE add(TYPE a, TYPE b)
-	{
-		return a + b;
-	}
-	static TYPE update(TYPE a, TYPE b)
-	{
-		return (a == TYPE(0) || (a < TYPE(0)) == (b < TYPE(0))) ? b : TYPE(0);
-	}
-};
-
-template <int FACTOR>
-struct SelfCorrectedMinSumAlgorithm<int8_t, FACTOR>
-{
-	static int8_t add(int8_t a, int8_t b)
-	{
-		int x = int(a) + int(b);
-		x = std::min<int>(std::max<int>(x, -128), 127);
-		return x;
-	}
-	static uint8_t min(uint8_t a, uint8_t b)
-	{
-		return std::min(a, b);
-	}
-	static int8_t xor_(int8_t a, int8_t b)
-	{
-		return a ^ b;
-	}
-	static uint8_t abs(int8_t a)
-	{
-		return std::abs<int>(a);
-	}
-	static int8_t sign(int8_t a, int8_t b)
-	{
-		return b < 0 ? -a : b > 0 ? a : 0;
-	}
-	static void finalp(int8_t *links, int cnt)
-	{
-		uint8_t mags[cnt], mins[cnt];
-		for (int i = 0; i < cnt; ++i)
-			mags[i] = abs(links[i]);
-		CODE::exclusive_reduce(mags, mins, cnt, min);
-		for (int i = 0; i < cnt; ++i)
-			mins[i] = std::min<uint8_t>(mins[i], 127);
-
-		int8_t signs[cnt];
-		CODE::exclusive_reduce(links, signs, cnt, xor_);
-		for (int i = 0; i < cnt; ++i)
-			signs[i] |= 127;
-
-		for (int i = 0; i < cnt; ++i)
-			links[i] = sign(mins[i], signs[i]);
-	}
-	static int8_t update(int8_t a, int8_t b)
-	{
-		return (a == 0 || ((a ^ b) & 128) == 0) ? b : 0;
-	}
 };
 
 template <typename TYPE, int FACTOR>
@@ -211,10 +146,6 @@ struct MinSumCAlgorithm
 	static TYPE add(TYPE a, TYPE b)
 	{
 		return a + b;
-	}
-	static TYPE update(TYPE, TYPE v)
-	{
-		return v;
 	}
 };
 
@@ -282,10 +213,6 @@ struct MinSumCAlgorithm<int8_t, FACTOR>
 		for (int i = 0; i < cnt; ++i)
 			links[i] = tmp[i];
 	}
-	static int8_t update(int8_t, int8_t v)
-	{
-		return v;
-	}
 };
 
 template <typename TYPE, int FACTOR>
@@ -318,10 +245,6 @@ struct LogDomainSPA
 
 		for (int i = 0; i < cnt; ++i)
 			links[i] = signs[i] * phi(sums[i]);
-	}
-	static TYPE update(TYPE, TYPE v)
-	{
-		return v;
 	}
 };
 
@@ -371,10 +294,6 @@ struct LambdaMinAlgorithm
 		for (int i = 0; i < cnt; ++i)
 			links[i] = signs[i] * phi(sums[i]);
 	}
-	static TYPE update(TYPE, TYPE v)
-	{
-		return v;
-	}
 };
 
 template <typename TYPE, int FACTOR>
@@ -405,10 +324,6 @@ struct SumProductAlgorithm
 	{
 		return a + b;
 	}
-	static TYPE update(TYPE, TYPE v)
-	{
-		return v;
-	}
 };
 
 template <typename TYPE>
@@ -425,8 +340,10 @@ struct LDPCInterface
 template <typename TABLE, typename TYPE, int FACTOR>
 class LDPC : public LDPCInterface<TYPE>
 {
-	//typedef MinSumAlgorithm<TYPE, FACTOR> ALG;
-	typedef SelfCorrectedMinSumAlgorithm<TYPE, FACTOR> ALG;
+	//typedef NormalUpdate<TYPE> BLU;
+	typedef SelfCorrectedUpdate<TYPE> BLU;
+
+	typedef MinSumAlgorithm<TYPE, FACTOR> ALG;
 	//typedef MinSumCAlgorithm<TYPE, FACTOR> ALG;
 	//typedef LogDomainSPA<TYPE, FACTOR> ALG;
 	//typedef LambdaMinAlgorithm<TYPE, FACTOR, 3> ALG;
@@ -451,6 +368,7 @@ class LDPC : public LDPCInterface<TYPE>
 	int8_t cnv[R];
 	uint8_t cnc[R];
 	ALG alg;
+	BLU blu;
 
 	int signum(TYPE v)
 	{
@@ -555,13 +473,13 @@ class LDPC : public LDPCInterface<TYPE>
 		cnc[0] = 1;
 		for (int i = 1; i < R; ++i)
 			cnc[i] = 2;
-		*bl = alg.update(*bl, alg.add(parity[0], cnl[CNL])); ++bl;
-		*bl = alg.update(*bl, alg.add(parity[0], cnl[0])); ++bl;
+		*bl = blu(*bl, alg.add(parity[0], cnl[CNL])); ++bl;
+		*bl = blu(*bl, alg.add(parity[0], cnl[0])); ++bl;
 		for (int i = 1; i < R-1; ++i) {
-			*bl = alg.update(*bl, alg.add(parity[i], cnl[CNL*(i+1)])); ++bl;
-			*bl = alg.update(*bl, alg.add(parity[i], cnl[CNL*i+1])); ++bl;
+			*bl = blu(*bl, alg.add(parity[i], cnl[CNL*(i+1)])); ++bl;
+			*bl = blu(*bl, alg.add(parity[i], cnl[CNL*i+1])); ++bl;
 		}
-		*bl = alg.update(*bl, parity[R-1]); ++bl;
+		*bl = blu(*bl, parity[R-1]); ++bl;
 		first_group();
 		for (int j = 0; j < K; j += M) {
 			for (int m = 0; m < M; ++m) {
@@ -574,7 +492,7 @@ class LDPC : public LDPCInterface<TYPE>
 				CODE::exclusive_reduce(inp, out, bit_deg, alg.add);
 				bnv[j+m+R] = alg.add(data[j+m], alg.add(out[0], inp[0]));
 				for (int n = 0; n < bit_deg; ++n, ++bl)
-					*bl = alg.update(*bl, alg.add(data[j+m], out[n]));
+					*bl = blu(*bl, alg.add(data[j+m], out[n]));
 				next_bit();
 			}
 			next_group();
