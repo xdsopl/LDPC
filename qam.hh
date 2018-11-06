@@ -46,27 +46,27 @@ struct QuadratureAmplitudeModulation<16, TYPE, CODE> : public Modulation<TYPE, C
 		return BITS;
 	}
 
-	void hard(code_type *b, complex_type c, int stride = 1)
+	void hard(code_type *b, complex_type c)
 	{
-		b[0*stride] = c.real() < amp(0) ? code_type(-1) : code_type(1);
-		b[1*stride] = c.imag() < amp(0) ? code_type(-1) : code_type(1);
-		b[2*stride] = abs(c.real()) < amp(2) ? code_type(-1) : code_type(1);
-		b[3*stride] = abs(c.imag()) < amp(2) ? code_type(-1) : code_type(1);
+		b[0] = c.real() < amp(0) ? code_type(-1) : code_type(1);
+		b[1] = c.imag() < amp(0) ? code_type(-1) : code_type(1);
+		b[2] = abs(c.real()) < amp(2) ? code_type(-1) : code_type(1);
+		b[3] = abs(c.imag()) < amp(2) ? code_type(-1) : code_type(1);
 	}
 
-	void soft(code_type *b, complex_type c, value_type precision, int stride = 1)
+	void soft(code_type *b, complex_type c, value_type precision)
 	{
-		b[0*stride] = quantize(precision, c.real());
-		b[1*stride] = quantize(precision, c.imag());
-		b[2*stride] = quantize(precision, abs(c.real())-amp(2));
-		b[3*stride] = quantize(precision, abs(c.imag())-amp(2));
+		b[0] = quantize(precision, c.real());
+		b[1] = quantize(precision, c.imag());
+		b[2] = quantize(precision, abs(c.real())-amp(2));
+		b[3] = quantize(precision, abs(c.imag())-amp(2));
 	}
 
-	complex_type map(code_type *b, int stride = 1)
+	complex_type map(code_type *b)
 	{
 		return AMP * complex_type(
-			b[0*stride]*(b[2*stride]+value_type(2)),
-			b[1*stride]*(b[3*stride]+value_type(2))
+			b[0]*(b[2]+value_type(2)),
+			b[1]*(b[3]+value_type(2))
 		);
 	}
 };
@@ -105,31 +105,31 @@ struct QuadratureAmplitudeModulation<64, TYPE, CODE> : public Modulation<TYPE, C
 		return BITS;
 	}
 
-	void hard(code_type *b, complex_type c, int stride = 1)
+	void hard(code_type *b, complex_type c)
 	{
-		b[0*stride] = c.real() < amp(0) ? code_type(-1) : code_type(1);
-		b[1*stride] = c.imag() < amp(0) ? code_type(-1) : code_type(1);
-		b[2*stride] = abs(c.real()) < amp(4) ? code_type(-1) : code_type(1);
-		b[3*stride] = abs(c.imag()) < amp(4) ? code_type(-1) : code_type(1);
-		b[4*stride] = abs(abs(c.real())-amp(4)) < amp(2) ? code_type(-1) : code_type(1);
-		b[5*stride] = abs(abs(c.imag())-amp(4)) < amp(2) ? code_type(-1) : code_type(1);
+		b[0] = c.real() < amp(0) ? code_type(-1) : code_type(1);
+		b[1] = c.imag() < amp(0) ? code_type(-1) : code_type(1);
+		b[2] = abs(c.real()) < amp(4) ? code_type(-1) : code_type(1);
+		b[3] = abs(c.imag()) < amp(4) ? code_type(-1) : code_type(1);
+		b[4] = abs(abs(c.real())-amp(4)) < amp(2) ? code_type(-1) : code_type(1);
+		b[5] = abs(abs(c.imag())-amp(4)) < amp(2) ? code_type(-1) : code_type(1);
 	}
 
-	void soft(code_type *b, complex_type c, value_type precision, int stride = 1)
+	void soft(code_type *b, complex_type c, value_type precision)
 	{
-		b[0*stride] = quantize(precision, c.real());
-		b[1*stride] = quantize(precision, c.imag());
-		b[2*stride] = quantize(precision, abs(c.real())-amp(4));
-		b[3*stride] = quantize(precision, abs(c.imag())-amp(4));
-		b[4*stride] = quantize(precision, abs(abs(c.real())-amp(4))-amp(2));
-		b[5*stride] = quantize(precision, abs(abs(c.imag())-amp(4))-amp(2));
+		b[0] = quantize(precision, c.real());
+		b[1] = quantize(precision, c.imag());
+		b[2] = quantize(precision, abs(c.real())-amp(4));
+		b[3] = quantize(precision, abs(c.imag())-amp(4));
+		b[4] = quantize(precision, abs(abs(c.real())-amp(4))-amp(2));
+		b[5] = quantize(precision, abs(abs(c.imag())-amp(4))-amp(2));
 	}
 
-	complex_type map(code_type *b, int stride = 1)
+	complex_type map(code_type *b)
 	{
 		return AMP * complex_type(
-			b[0*stride]*(b[2*stride]*(b[4*stride]+value_type(2))+value_type(4)),
-			b[1*stride]*(b[3*stride]*(b[5*stride]+value_type(2))+value_type(4))
+			b[0]*(b[2]*(b[4]+value_type(2))+value_type(4)),
+			b[1]*(b[3]*(b[5]+value_type(2))+value_type(4))
 		);
 	}
 };
@@ -168,35 +168,35 @@ struct QuadratureAmplitudeModulation<256, TYPE, CODE> : public Modulation<TYPE, 
 		return BITS;
 	}
 
-	void hard(code_type *b, complex_type c, int stride = 1)
+	void hard(code_type *b, complex_type c)
 	{
-		b[0*stride] = c.real() < amp(0) ? code_type(-1) : code_type(1);
-		b[1*stride] = c.imag() < amp(0) ? code_type(-1) : code_type(1);
-		b[2*stride] = abs(c.real()) < amp(8) ? code_type(-1) : code_type(1);
-		b[3*stride] = abs(c.imag()) < amp(8) ? code_type(-1) : code_type(1);
-		b[4*stride] = abs(abs(c.real())-amp(8)) < amp(4) ? code_type(-1) : code_type(1);
-		b[5*stride] = abs(abs(c.imag())-amp(8)) < amp(4) ? code_type(-1) : code_type(1);
-		b[6*stride] = abs(abs(abs(c.real())-amp(8))-amp(4)) < amp(2) ? code_type(-1) : code_type(1);
-		b[7*stride] = abs(abs(abs(c.imag())-amp(8))-amp(4)) < amp(2) ? code_type(-1) : code_type(1);
+		b[0] = c.real() < amp(0) ? code_type(-1) : code_type(1);
+		b[1] = c.imag() < amp(0) ? code_type(-1) : code_type(1);
+		b[2] = abs(c.real()) < amp(8) ? code_type(-1) : code_type(1);
+		b[3] = abs(c.imag()) < amp(8) ? code_type(-1) : code_type(1);
+		b[4] = abs(abs(c.real())-amp(8)) < amp(4) ? code_type(-1) : code_type(1);
+		b[5] = abs(abs(c.imag())-amp(8)) < amp(4) ? code_type(-1) : code_type(1);
+		b[6] = abs(abs(abs(c.real())-amp(8))-amp(4)) < amp(2) ? code_type(-1) : code_type(1);
+		b[7] = abs(abs(abs(c.imag())-amp(8))-amp(4)) < amp(2) ? code_type(-1) : code_type(1);
 	}
 
-	void soft(code_type *b, complex_type c, value_type precision, int stride = 1)
+	void soft(code_type *b, complex_type c, value_type precision)
 	{
-		b[0*stride] = quantize(precision, c.real());
-		b[1*stride] = quantize(precision, c.imag());
-		b[2*stride] = quantize(precision, abs(c.real())-amp(8));
-		b[3*stride] = quantize(precision, abs(c.imag())-amp(8));
-		b[4*stride] = quantize(precision, abs(abs(c.real())-amp(8))-amp(4));
-		b[5*stride] = quantize(precision, abs(abs(c.imag())-amp(8))-amp(4));
-		b[6*stride] = quantize(precision, abs(abs(abs(c.real())-amp(8))-amp(4))-amp(2));
-		b[7*stride] = quantize(precision, abs(abs(abs(c.imag())-amp(8))-amp(4))-amp(2));
+		b[0] = quantize(precision, c.real());
+		b[1] = quantize(precision, c.imag());
+		b[2] = quantize(precision, abs(c.real())-amp(8));
+		b[3] = quantize(precision, abs(c.imag())-amp(8));
+		b[4] = quantize(precision, abs(abs(c.real())-amp(8))-amp(4));
+		b[5] = quantize(precision, abs(abs(c.imag())-amp(8))-amp(4));
+		b[6] = quantize(precision, abs(abs(abs(c.real())-amp(8))-amp(4))-amp(2));
+		b[7] = quantize(precision, abs(abs(abs(c.imag())-amp(8))-amp(4))-amp(2));
 	}
 
-	complex_type map(code_type *b, int stride = 1)
+	complex_type map(code_type *b)
 	{
 		return AMP * complex_type(
-			b[0*stride]*(b[2*stride]*(b[4*stride]*(b[6*stride]+value_type(2))+value_type(4))+value_type(8)),
-			b[1*stride]*(b[3*stride]*(b[5*stride]*(b[7*stride]+value_type(2))+value_type(4))+value_type(8))
+			b[0]*(b[2]*(b[4]*(b[6]+value_type(2))+value_type(4))+value_type(8)),
+			b[1]*(b[3]*(b[5]*(b[7]+value_type(2))+value_type(4))+value_type(8))
 		);
 	}
 };
@@ -235,39 +235,39 @@ struct QuadratureAmplitudeModulation<1024, TYPE, CODE> : public Modulation<TYPE,
 		return BITS;
 	}
 
-	void hard(code_type *b, complex_type c, int stride = 1)
+	void hard(code_type *b, complex_type c)
 	{
-		b[0*stride] = c.real() < amp(0) ? code_type(-1) : code_type(1);
-		b[1*stride] = c.imag() < amp(0) ? code_type(-1) : code_type(1);
-		b[2*stride] = abs(c.real()) < amp(16) ? code_type(-1) : code_type(1);
-		b[3*stride] = abs(c.imag()) < amp(16) ? code_type(-1) : code_type(1);
-		b[4*stride] = abs(abs(c.real())-amp(16)) < amp(8) ? code_type(-1) : code_type(1);
-		b[5*stride] = abs(abs(c.imag())-amp(16)) < amp(8) ? code_type(-1) : code_type(1);
-		b[6*stride] = abs(abs(abs(c.real())-amp(16))-amp(8)) < amp(4) ? code_type(-1) : code_type(1);
-		b[7*stride] = abs(abs(abs(c.imag())-amp(16))-amp(8)) < amp(4) ? code_type(-1) : code_type(1);
-		b[8*stride] = abs(abs(abs(abs(c.real())-amp(16))-amp(8))-amp(4)) < amp(2) ? code_type(-1) : code_type(1);
-		b[9*stride] = abs(abs(abs(abs(c.imag())-amp(16))-amp(8))-amp(4)) < amp(2) ? code_type(-1) : code_type(1);
+		b[0] = c.real() < amp(0) ? code_type(-1) : code_type(1);
+		b[1] = c.imag() < amp(0) ? code_type(-1) : code_type(1);
+		b[2] = abs(c.real()) < amp(16) ? code_type(-1) : code_type(1);
+		b[3] = abs(c.imag()) < amp(16) ? code_type(-1) : code_type(1);
+		b[4] = abs(abs(c.real())-amp(16)) < amp(8) ? code_type(-1) : code_type(1);
+		b[5] = abs(abs(c.imag())-amp(16)) < amp(8) ? code_type(-1) : code_type(1);
+		b[6] = abs(abs(abs(c.real())-amp(16))-amp(8)) < amp(4) ? code_type(-1) : code_type(1);
+		b[7] = abs(abs(abs(c.imag())-amp(16))-amp(8)) < amp(4) ? code_type(-1) : code_type(1);
+		b[8] = abs(abs(abs(abs(c.real())-amp(16))-amp(8))-amp(4)) < amp(2) ? code_type(-1) : code_type(1);
+		b[9] = abs(abs(abs(abs(c.imag())-amp(16))-amp(8))-amp(4)) < amp(2) ? code_type(-1) : code_type(1);
 	}
 
-	void soft(code_type *b, complex_type c, value_type precision, int stride = 1)
+	void soft(code_type *b, complex_type c, value_type precision)
 	{
-		b[0*stride] = quantize(precision, c.real());
-		b[1*stride] = quantize(precision, c.imag());
-		b[2*stride] = quantize(precision, abs(c.real())-amp(16));
-		b[3*stride] = quantize(precision, abs(c.imag())-amp(16));
-		b[4*stride] = quantize(precision, abs(abs(c.real())-amp(16))-amp(8));
-		b[5*stride] = quantize(precision, abs(abs(c.imag())-amp(16))-amp(8));
-		b[6*stride] = quantize(precision, abs(abs(abs(c.real())-amp(16))-amp(8))-amp(4));
-		b[7*stride] = quantize(precision, abs(abs(abs(c.imag())-amp(16))-amp(8))-amp(4));
-		b[8*stride] = quantize(precision, abs(abs(abs(abs(c.real())-amp(16))-amp(8))-amp(4))-amp(2));
-		b[9*stride] = quantize(precision, abs(abs(abs(abs(c.imag())-amp(16))-amp(8))-amp(4))-amp(2));
+		b[0] = quantize(precision, c.real());
+		b[1] = quantize(precision, c.imag());
+		b[2] = quantize(precision, abs(c.real())-amp(16));
+		b[3] = quantize(precision, abs(c.imag())-amp(16));
+		b[4] = quantize(precision, abs(abs(c.real())-amp(16))-amp(8));
+		b[5] = quantize(precision, abs(abs(c.imag())-amp(16))-amp(8));
+		b[6] = quantize(precision, abs(abs(abs(c.real())-amp(16))-amp(8))-amp(4));
+		b[7] = quantize(precision, abs(abs(abs(c.imag())-amp(16))-amp(8))-amp(4));
+		b[8] = quantize(precision, abs(abs(abs(abs(c.real())-amp(16))-amp(8))-amp(4))-amp(2));
+		b[9] = quantize(precision, abs(abs(abs(abs(c.imag())-amp(16))-amp(8))-amp(4))-amp(2));
 	}
 
-	complex_type map(code_type *b, int stride = 1)
+	complex_type map(code_type *b)
 	{
 		return AMP * complex_type(
-			b[0*stride]*(b[2*stride]*(b[4*stride]*(b[6*stride]*(b[8*stride]+value_type(2))+value_type(4))+value_type(8))+value_type(16)),
-			b[1*stride]*(b[3*stride]*(b[5*stride]*(b[7*stride]*(b[9*stride]+value_type(2))+value_type(4))+value_type(8))+value_type(16))
+			b[0]*(b[2]*(b[4]*(b[6]*(b[8]+value_type(2))+value_type(4))+value_type(8))+value_type(16)),
+			b[1]*(b[3]*(b[5]*(b[7]*(b[9]+value_type(2))+value_type(4))+value_type(8))+value_type(16))
 		);
 	}
 };

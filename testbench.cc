@@ -292,7 +292,7 @@ int main(int argc, char **argv)
 
 	for (int j = 0; j < BLOCKS; ++j)
 		for (int i = 0; i < SYMBOLS; ++i)
-			symb[j*SYMBOLS+i] = mod->map(code + j * ldpc->code_len() + i, SYMBOLS);
+			symb[j*SYMBOLS+i] = mod->map(code + (j * SYMBOLS + i) * mod->bits());
 
 	if (0) {
 		for (int i = 0; i < SYMBOLS; ++i)
@@ -328,7 +328,7 @@ int main(int argc, char **argv)
 	value_type precision = factor / (sigma * sigma);
 	for (int j = 0; j < BLOCKS; ++j) {
 		for (int i = 0; i < SYMBOLS; ++i)
-			mod->soft(code + j * ldpc->code_len() + i, symb[j*SYMBOLS+i], precision, SYMBOLS);
+			mod->soft(code + (j * SYMBOLS + i) * mod->bits(), symb[j*SYMBOLS+i], precision);
 	}
 
 	for (int i = 0; i < BLOCKS * ldpc->code_len(); ++i)
@@ -397,7 +397,7 @@ int main(int argc, char **argv)
 			code[i] = code[i] < 0 ? -1 : 1;
 		value_type sp = 0, np = 0;
 		for (int i = 0; i < SYMBOLS; ++i) {
-			complex_type s = mod->map(code + i, SYMBOLS);
+			complex_type s = mod->map(code + i * mod->bits());
 			complex_type e = symb[i] - s;
 			sp += std::norm(s);
 			np += std::norm(e);
