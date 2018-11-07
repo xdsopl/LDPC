@@ -118,6 +118,9 @@ struct PhaseShiftKeying<8, TYPE, CODE> : public Modulation<TYPE, CODE>
 
 	static constexpr value_type DIST = 2 * sin_pi_8;
 
+	static constexpr complex_type rot_cw = complex_type(cos_pi_8, -sin_pi_8);
+	static constexpr complex_type rot_acw = complex_type(cos_pi_8, sin_pi_8);
+
 	static code_type quantize(value_type precision, value_type value)
 	{
 		value *= DIST * precision;
@@ -135,6 +138,7 @@ struct PhaseShiftKeying<8, TYPE, CODE> : public Modulation<TYPE, CODE>
 
 	void hard(code_type *b, complex_type c)
 	{
+		c *= rot_cw;
 		b[1] = c.real() < value_type(0) ? code_type(-1) : code_type(1);
 		b[2] = c.imag() < value_type(0) ? code_type(-1) : code_type(1);
 		b[0] = abs(c.real()) < abs(c.imag()) ? code_type(-1) : code_type(1);
@@ -142,6 +146,7 @@ struct PhaseShiftKeying<8, TYPE, CODE> : public Modulation<TYPE, CODE>
 
 	void soft(code_type *b, complex_type c, value_type precision)
 	{
+		c *= rot_cw;
 		b[1] = quantize(precision, c.real());
 		b[2] = quantize(precision, c.imag());
 		b[0] = quantize(precision, rcp_sqrt_2 * (abs(c.real()) - abs(c.imag())));
@@ -153,7 +158,7 @@ struct PhaseShiftKeying<8, TYPE, CODE> : public Modulation<TYPE, CODE>
 		value_type imag = sin_pi_8;
 		if (b[0] < code_type(0))
 			std::swap(real, imag);
-		return complex_type(real * b[1], imag * b[2]);
+		return complex_type(real * b[1], imag * b[2]) * rot_acw;
 	}
 };
 
