@@ -20,6 +20,7 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 #include "dvb_s2_tables.hh"
 #include "dvb_s2x_tables.hh"
 #include "dvb_t2_tables.hh"
+#include "interleaver.hh"
 
 template <typename TYPE, typename CODE>
 Modulation<TYPE, CODE> *create_modulation(char *name)
@@ -217,6 +218,110 @@ LDPCInterface<TYPE> *create_decoder(char *standard, char prefix, int number)
 	return 0;
 }
 
+template <typename TYPE>
+Interleaver<TYPE> *create_interleaver(char *modulation, char *standard, char prefix, int number)
+{
+	if (!strcmp(standard, "S2")) {
+		if (!strcmp(modulation, "8PSK")) {
+			if (prefix == 'B') {
+				switch (number) {
+				case 5:
+					return new ITL3<TYPE, 64800, 2, 1, 0>();
+				default:
+					return new ITL3<TYPE, 64800, 0, 1, 2>();
+				}
+			}
+			if (prefix == 'C') {
+				switch (number) {
+				case 5:
+					return new ITL3<TYPE, 16200, 2, 1, 0>();
+				default:
+					return new ITL3<TYPE, 16200, 0, 1, 2>();
+				}
+			}
+		}
+	}
+	if (!strcmp(standard, "S2X")) {
+		if (!strcmp(modulation, "8PSK")) {
+			if (prefix == 'B') {
+				switch (number) {
+				case 7:
+				case 8:
+				case 9:
+					return new ITL3<TYPE, 64800, 1, 0, 2>();
+				default:
+					return new ITL3<TYPE, 64800, 0, 1, 2>();
+				}
+			}
+			if (prefix == 'C') {
+				switch (number) {
+				case 4:
+				case 5:
+				case 6:
+				case 7:
+					return new ITL3<TYPE, 16200, 1, 0, 2>();
+				default:
+					return new ITL3<TYPE, 16200, 0, 1, 2>();
+				}
+			}
+		}
+	}
+	if (!strcmp(standard, "T2")) {
+		if (!strcmp(modulation, "QAM16")) {
+			if (prefix == 'A') {
+				switch (number) {
+				case 2:
+					return new ITL8<TYPE, 64800, 0, 5, 1, 2, 4, 7, 3, 6>();
+				default:
+					return new ITL8<TYPE, 64800, 7, 1, 4, 2, 5, 3, 6, 0>();
+				}
+			}
+			if (prefix == 'B') {
+				switch (number) {
+				default:
+					return new ITL8<TYPE, 16200, 7, 1, 4, 2, 5, 3, 6, 0>();
+				}
+			}
+		}
+		if (!strcmp(modulation, "QAM64")) {
+			if (prefix == 'A') {
+				switch (number) {
+				case 2:
+					return new ITL12<TYPE, 64800, 2, 7, 6, 9, 0, 3, 1, 8, 4, 11, 5, 10>();
+				default:
+					return new ITL12<TYPE, 64800, 11, 7, 3, 10, 6, 2, 9, 5, 1, 8, 4, 0>();
+				}
+			}
+			if (prefix == 'B') {
+				switch (number) {
+				default:
+					return new ITL12<TYPE, 16200, 11, 7, 3, 10, 6, 2, 9, 5, 1, 8, 4, 0>();
+				}
+			}
+		}
+		if (!strcmp(modulation, "QAM256")) {
+			if (prefix == 'A') {
+				switch (number) {
+				case 2:
+					return new ITL16<TYPE, 64800, 2, 11, 3, 4, 0, 9, 1, 8, 10, 13, 7, 14, 6, 15, 5, 12>();
+				case 3:
+					return new ITL16<TYPE, 64800, 7, 2, 9, 0, 4, 6, 13, 3, 14, 10, 15, 5, 8, 12, 11, 1>();
+				default:
+					return new ITL16<TYPE, 64800, 15, 1, 13, 3, 8, 11, 9, 5, 10, 6, 4, 7, 12, 2, 14, 0>();
+				}
+			}
+			if (prefix == 'B') {
+				switch (number) {
+				default:
+					return new ITL8<TYPE, 16200, 7, 3, 1, 5, 2, 6, 4, 0>();
+				}
+			}
+		}
+	}
+	std::cerr << "using noop interleaver." << std::endl;
+	return new ITL0<TYPE>();
+}
+
 int main(int argc, char **argv)
 {
 	if (argc != 6)
@@ -243,6 +348,9 @@ int main(int argc, char **argv)
 		std::cerr << "no such modulation!" << std::endl;
 		return -1;
 	}
+
+	Interleaver<code_type> *itl = create_interleaver<code_type>(argv[4], argv[2], argv[3][0], atoi(argv[3]+1));
+	assert(itl);
 
 	value_type SNR = atof(argv[1]);
 	value_type mean = 1;
@@ -290,6 +398,9 @@ int main(int argc, char **argv)
 		std::cerr << std::endl;
 	}
 
+	for (int i = 0; i < BLOCKS; ++i)
+		itl->fwd(code + i * ldpc->code_len());
+
 	for (int j = 0; j < BLOCKS; ++j)
 		for (int i = 0; i < SYMBOLS; ++i)
 			symb[j*SYMBOLS+i] = mod->map(code + (j * SYMBOLS + i) * mod->bits());
@@ -330,6 +441,9 @@ int main(int argc, char **argv)
 		for (int i = 0; i < SYMBOLS; ++i)
 			mod->soft(code + (j * SYMBOLS + i) * mod->bits(), symb[j*SYMBOLS+i], precision);
 	}
+
+	for (int i = 0; i < BLOCKS; ++i)
+		itl->bwd(code + i * ldpc->code_len());
 
 	for (int i = 0; i < BLOCKS * ldpc->code_len(); ++i)
 		noisy[i] = code[i];
@@ -395,6 +509,7 @@ int main(int argc, char **argv)
 	if (1) {
 		for (int i = 0; i < ldpc->code_len(); ++i)
 			code[i] = code[i] < 0 ? -1 : 1;
+		itl->fwd(code);
 		value_type sp = 0, np = 0;
 		for (int i = 0; i < SYMBOLS; ++i) {
 			complex_type s = mod->map(code + i * mod->bits());
@@ -420,6 +535,7 @@ int main(int argc, char **argv)
 
 	delete ldpc;
 	delete mod;
+	delete itl;
 
 	delete[] code;
 	delete[] orig;
