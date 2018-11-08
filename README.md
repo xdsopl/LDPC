@@ -27,6 +27,8 @@ by Mustafa Eroz, Feng-Wen Sun and Lin-Nan Lee - 2004
 by Valentin Savin - 2008
 * [en_302307v010201p.pdf](http://www.etsi.org/deliver/etsi_en/302300_302399/302307/01.02.01_60/en_302307v010201p.pdf)
 * [a83-1_dvb-s2_den302307v141.pdf](https://www.dvb.org/resources/public/standards/a83-1_dvb-s2_den302307v141.pdf)
+* [en_30230702v010101a.pdf](http://www.etsi.org/deliver/etsi_en/302300_302399/30230702/01.01.01_20/en_30230702v010101a.pdf)
+* [en_302755v010401p.pdf](https://www.etsi.org/deliver/etsi_en/302700_302799/302755/01.04.01_60/en_302755v010401p.pdf)
 
 ### BER comparison of the various algorithms
 
