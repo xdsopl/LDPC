@@ -226,17 +226,17 @@ Interleaver<TYPE> *create_interleaver(char *modulation, char *standard, char pre
 			if (prefix == 'B') {
 				switch (number) {
 				case 5:
-					return new ITL3<TYPE, 64800, 2, 1, 0>();
+					return new S2ITL3<TYPE, 64800, 2, 1, 0>();
 				default:
-					return new ITL3<TYPE, 64800, 0, 1, 2>();
+					return new S2ITL3<TYPE, 64800, 0, 1, 2>();
 				}
 			}
 			if (prefix == 'C') {
 				switch (number) {
 				case 5:
-					return new ITL3<TYPE, 16200, 2, 1, 0>();
+					return new S2ITL3<TYPE, 16200, 2, 1, 0>();
 				default:
-					return new ITL3<TYPE, 16200, 0, 1, 2>();
+					return new S2ITL3<TYPE, 16200, 0, 1, 2>();
 				}
 			}
 		}
@@ -248,9 +248,9 @@ Interleaver<TYPE> *create_interleaver(char *modulation, char *standard, char pre
 				case 7:
 				case 8:
 				case 9:
-					return new ITL3<TYPE, 64800, 1, 0, 2>();
+					return new S2ITL3<TYPE, 64800, 1, 0, 2>();
 				default:
-					return new ITL3<TYPE, 64800, 0, 1, 2>();
+					return new S2ITL3<TYPE, 64800, 0, 1, 2>();
 				}
 			}
 			if (prefix == 'C') {
@@ -259,9 +259,9 @@ Interleaver<TYPE> *create_interleaver(char *modulation, char *standard, char pre
 				case 5:
 				case 6:
 				case 7:
-					return new ITL3<TYPE, 16200, 1, 0, 2>();
+					return new S2ITL3<TYPE, 16200, 1, 0, 2>();
 				default:
-					return new ITL3<TYPE, 16200, 0, 1, 2>();
+					return new S2ITL3<TYPE, 16200, 0, 1, 2>();
 				}
 			}
 		}
@@ -270,50 +270,120 @@ Interleaver<TYPE> *create_interleaver(char *modulation, char *standard, char pre
 		if (!strcmp(modulation, "QAM16")) {
 			if (prefix == 'A') {
 				switch (number) {
+				case 1:
+					return new T2ITL8<TYPE, 64800, 90, 7, 1, 4, 2, 5, 3, 6, 0>();
 				case 2:
-					return new ITL8<TYPE, 64800, 0, 5, 1, 2, 4, 7, 3, 6>();
-				default:
-					return new ITL8<TYPE, 64800, 7, 1, 4, 2, 5, 3, 6, 0>();
+					return new T2ITL8<TYPE, 64800, 72, 0, 5, 1, 2, 4, 7, 3, 6>();
+				case 3:
+					return new T2ITL8<TYPE, 64800, 60, 7, 1, 4, 2, 5, 3, 6, 0>();
+				case 4:
+					return new T2ITL8<TYPE, 64800, 45, 7, 1, 4, 2, 5, 3, 6, 0>();
+				case 5:
+					return new T2ITL8<TYPE, 64800, 36, 7, 1, 4, 2, 5, 3, 6, 0>();
+				case 6:
+					return new T2ITL8<TYPE, 64800, 30, 7, 1, 4, 2, 5, 3, 6, 0>();
 				}
 			}
 			if (prefix == 'B') {
 				switch (number) {
-				default:
-					return new ITL8<TYPE, 16200, 7, 1, 4, 2, 5, 3, 6, 0>();
+				case 1:
+					return new T2ITL8<TYPE, 16200, 36, 7, 1, 4, 2, 5, 3, 6, 0>();
+				case 2:
+					return new T2ITL8<TYPE, 16200, 25, 7, 1, 4, 2, 5, 3, 6, 0>();
+				case 3:
+					return new T2ITL8<TYPE, 16200, 18, 7, 1, 4, 2, 5, 3, 6, 0>();
+				case 4:
+					return new T2ITL8<TYPE, 16200, 15, 7, 1, 4, 2, 5, 3, 6, 0>();
+				case 5:
+					return new T2ITL8<TYPE, 16200, 12, 7, 1, 4, 2, 5, 3, 6, 0>();
+				case 6:
+					return new T2ITL8<TYPE, 16200, 10, 7, 1, 4, 2, 5, 3, 6, 0>();
+				case 7:
+					return new T2ITL8<TYPE, 16200, 8, 7, 1, 4, 2, 5, 3, 6, 0>();
+				case 8:
+					return new T2ITL8<TYPE, 16200, 30, 7, 1, 4, 2, 5, 3, 6, 0>();
+				case 9:
+					return new T2ITL8<TYPE, 16200, 27, 7, 1, 4, 2, 5, 3, 6, 0>();
 				}
 			}
 		}
 		if (!strcmp(modulation, "QAM64")) {
 			if (prefix == 'A') {
 				switch (number) {
+				case 1:
+					return new T2ITL12<TYPE, 64800, 90, 11, 7, 3, 10, 6, 2, 9, 5, 1, 8, 4, 0>();
 				case 2:
-					return new ITL12<TYPE, 64800, 2, 7, 6, 9, 0, 3, 1, 8, 4, 11, 5, 10>();
-				default:
-					return new ITL12<TYPE, 64800, 11, 7, 3, 10, 6, 2, 9, 5, 1, 8, 4, 0>();
+					return new T2ITL12<TYPE, 64800, 72, 2, 7, 6, 9, 0, 3, 1, 8, 4, 11, 5, 10>();
+				case 3:
+					return new T2ITL12<TYPE, 64800, 60, 11, 7, 3, 10, 6, 2, 9, 5, 1, 8, 4, 0>();
+				case 4:
+					return new T2ITL12<TYPE, 64800, 45, 11, 7, 3, 10, 6, 2, 9, 5, 1, 8, 4, 0>();
+				case 5:
+					return new T2ITL12<TYPE, 64800, 36, 11, 7, 3, 10, 6, 2, 9, 5, 1, 8, 4, 0>();
+				case 6:
+					return new T2ITL12<TYPE, 64800, 30, 11, 7, 3, 10, 6, 2, 9, 5, 1, 8, 4, 0>();
 				}
 			}
 			if (prefix == 'B') {
 				switch (number) {
-				default:
-					return new ITL12<TYPE, 16200, 11, 7, 3, 10, 6, 2, 9, 5, 1, 8, 4, 0>();
+				case 1:
+					return new T2ITL12<TYPE, 16200, 36, 11, 7, 3, 10, 6, 2, 9, 5, 1, 8, 4, 0>();
+				case 2:
+					return new T2ITL12<TYPE, 16200, 25, 11, 7, 3, 10, 6, 2, 9, 5, 1, 8, 4, 0>();
+				case 3:
+					return new T2ITL12<TYPE, 16200, 18, 11, 7, 3, 10, 6, 2, 9, 5, 1, 8, 4, 0>();
+				case 4:
+					return new T2ITL12<TYPE, 16200, 15, 11, 7, 3, 10, 6, 2, 9, 5, 1, 8, 4, 0>();
+				case 5:
+					return new T2ITL12<TYPE, 16200, 12, 11, 7, 3, 10, 6, 2, 9, 5, 1, 8, 4, 0>();
+				case 6:
+					return new T2ITL12<TYPE, 16200, 10, 11, 7, 3, 10, 6, 2, 9, 5, 1, 8, 4, 0>();
+				case 7:
+					return new T2ITL12<TYPE, 16200, 8, 11, 7, 3, 10, 6, 2, 9, 5, 1, 8, 4, 0>();
+				case 8:
+					return new T2ITL12<TYPE, 16200, 30, 11, 7, 3, 10, 6, 2, 9, 5, 1, 8, 4, 0>();
+				case 9:
+					return new T2ITL12<TYPE, 16200, 27, 11, 7, 3, 10, 6, 2, 9, 5, 1, 8, 4, 0>();
 				}
 			}
 		}
 		if (!strcmp(modulation, "QAM256")) {
 			if (prefix == 'A') {
 				switch (number) {
+				case 1:
+					return new T2ITL16<TYPE, 64800, 90, 15, 1, 13, 3, 8, 11, 9, 5, 10, 6, 4, 7, 12, 2, 14, 0>();
 				case 2:
-					return new ITL16<TYPE, 64800, 2, 11, 3, 4, 0, 9, 1, 8, 10, 13, 7, 14, 6, 15, 5, 12>();
+					return new T2ITL16<TYPE, 64800, 72, 2, 11, 3, 4, 0, 9, 1, 8, 10, 13, 7, 14, 6, 15, 5, 12>();
 				case 3:
-					return new ITL16<TYPE, 64800, 7, 2, 9, 0, 4, 6, 13, 3, 14, 10, 15, 5, 8, 12, 11, 1>();
-				default:
-					return new ITL16<TYPE, 64800, 15, 1, 13, 3, 8, 11, 9, 5, 10, 6, 4, 7, 12, 2, 14, 0>();
+					return new T2ITL16<TYPE, 64800, 60, 7, 2, 9, 0, 4, 6, 13, 3, 14, 10, 15, 5, 8, 12, 11, 1>();
+				case 4:
+					return new T2ITL16<TYPE, 64800, 45, 15, 1, 13, 3, 8, 11, 9, 5, 10, 6, 4, 7, 12, 2, 14, 0>();
+				case 5:
+					return new T2ITL16<TYPE, 64800, 36, 15, 1, 13, 3, 8, 11, 9, 5, 10, 6, 4, 7, 12, 2, 14, 0>();
+				case 6:
+					return new T2ITL16<TYPE, 64800, 30, 15, 1, 13, 3, 8, 11, 9, 5, 10, 6, 4, 7, 12, 2, 14, 0>();
 				}
 			}
 			if (prefix == 'B') {
 				switch (number) {
-				default:
-					return new ITL8<TYPE, 16200, 7, 3, 1, 5, 2, 6, 4, 0>();
+				case 1:
+					return new T2ITL8<TYPE, 16200, 36, 7, 3, 1, 5, 2, 6, 4, 0>();
+				case 2:
+					return new T2ITL8<TYPE, 16200, 25, 7, 3, 1, 5, 2, 6, 4, 0>();
+				case 3:
+					return new T2ITL8<TYPE, 16200, 18, 7, 3, 1, 5, 2, 6, 4, 0>();
+				case 4:
+					return new T2ITL8<TYPE, 16200, 15, 7, 3, 1, 5, 2, 6, 4, 0>();
+				case 5:
+					return new T2ITL8<TYPE, 16200, 12, 7, 3, 1, 5, 2, 6, 4, 0>();
+				case 6:
+					return new T2ITL8<TYPE, 16200, 10, 7, 3, 1, 5, 2, 6, 4, 0>();
+				case 7:
+					return new T2ITL8<TYPE, 16200, 8, 7, 3, 1, 5, 2, 6, 4, 0>();
+				case 8:
+					return new T2ITL8<TYPE, 16200, 30, 7, 3, 1, 5, 2, 6, 4, 0>();
+				case 9:
+					return new T2ITL8<TYPE, 16200, 27, 7, 3, 1, 5, 2, 6, 4, 0>();
 				}
 			}
 		}
