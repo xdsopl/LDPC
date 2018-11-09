@@ -273,8 +273,8 @@ Interleaver<TYPE> *create_interleaver(char *modulation, char *standard, char pre
 	if (!strcmp(standard, "T2")) {
 		if (!strcmp(modulation, "QAM16")) {
 			typedef MUX8<TYPE, 7, 1, 4, 2, 5, 3, 6, 0> _71425360;
-			typedef MUX8<TYPE, 0, 5, 1, 2, 4, 7, 3, 6> _05124736;
 			if (prefix == 'A') {
+				typedef MUX8<TYPE, 0, 5, 1, 2, 4, 7, 3, 6> _05124736;
 				switch (number) {
 				case 1:
 					return new T2ITL<TYPE, 64800, 90, _71425360>();
@@ -291,6 +291,8 @@ Interleaver<TYPE> *create_interleaver(char *modulation, char *standard, char pre
 				}
 			}
 			if (prefix == 'B') {
+				typedef MUX8<TYPE, 6, 0, 3, 4, 5, 2, 1, 7> _60345217;
+				typedef MUX8<TYPE, 7, 5, 4, 0, 3, 1, 2, 6> _75403126;
 				switch (number) {
 				case 1:
 					return new T2ITL<TYPE, 16200, 36, _71425360>();
@@ -307,16 +309,16 @@ Interleaver<TYPE> *create_interleaver(char *modulation, char *standard, char pre
 				case 7:
 					return new T2ITL<TYPE, 16200, 8, _71425360>();
 				case 8:
-					return new T2ITL<TYPE, 16200, 30, _71425360>();
+					return new T2ITL<TYPE, 16200, 30, _60345217>();
 				case 9:
-					return new T2ITL<TYPE, 16200, 27, _71425360>();
+					return new T2ITL<TYPE, 16200, 27, _75403126>();
 				}
 			}
 		}
 		if (!strcmp(modulation, "QAM64")) {
 			typedef MUX12<TYPE, 11, 7, 3, 10, 6, 2, 9, 5, 1, 8, 4, 0> _11731062951840;
-			typedef MUX12<TYPE, 2, 7, 6, 9, 0, 3, 1, 8, 4, 11, 5, 10> _27690318411510;
 			if (prefix == 'A') {
+				typedef MUX12<TYPE, 2, 7, 6, 9, 0, 3, 1, 8, 4, 11, 5, 10> _27690318411510;
 				switch (number) {
 				case 1:
 					return new T2ITL<TYPE, 64800, 90, _11731062951840>();
@@ -333,6 +335,8 @@ Interleaver<TYPE> *create_interleaver(char *modulation, char *standard, char pre
 				}
 			}
 			if (prefix == 'B') {
+				typedef MUX12<TYPE, 4, 2, 0, 5, 6, 1, 3, 7, 8, 9, 10, 11> _42056137891011;
+				typedef MUX12<TYPE, 4, 0, 1, 6, 2, 3, 5, 8, 7, 10, 9, 11> _40162358710911;
 				switch (number) {
 				case 1:
 					return new T2ITL<TYPE, 16200, 36, _11731062951840>();
@@ -349,9 +353,9 @@ Interleaver<TYPE> *create_interleaver(char *modulation, char *standard, char pre
 				case 7:
 					return new T2ITL<TYPE, 16200, 8, _11731062951840>();
 				case 8:
-					return new T2ITL<TYPE, 16200, 30, _11731062951840>();
+					return new T2ITL<TYPE, 16200, 30, _42056137891011>();
 				case 9:
-					return new T2ITL<TYPE, 16200, 27, _11731062951840>();
+					return new T2ITL<TYPE, 16200, 27, _40162358710911>();
 				}
 			}
 		}
@@ -377,6 +381,8 @@ Interleaver<TYPE> *create_interleaver(char *modulation, char *standard, char pre
 			}
 			if (prefix == 'B') {
 				typedef MUX8<TYPE, 7, 3, 1, 5, 2, 6, 4, 0> _73152640;
+				typedef MUX8<TYPE, 4, 0, 1, 2, 5, 3, 6, 7> _40125367;
+				typedef MUX8<TYPE, 4, 0, 5, 1, 2, 3, 6, 7> _40512367;
 				switch (number) {
 				case 1:
 					return new T2ITL<TYPE, 16200, 36, _73152640>();
@@ -393,9 +399,9 @@ Interleaver<TYPE> *create_interleaver(char *modulation, char *standard, char pre
 				case 7:
 					return new T2ITL<TYPE, 16200, 8, _73152640>();
 				case 8:
-					return new T2ITL<TYPE, 16200, 30, _73152640>();
+					return new T2ITL<TYPE, 16200, 30, _40125367>();
 				case 9:
-					return new T2ITL<TYPE, 16200, 27, _73152640>();
+					return new T2ITL<TYPE, 16200, 27, _40512367>();
 				}
 			}
 		}
