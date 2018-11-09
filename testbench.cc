@@ -228,17 +228,17 @@ Interleaver<TYPE> *create_interleaver(char *modulation, char *standard, char pre
 			if (prefix == 'B') {
 				switch (number) {
 				case 5:
-					return new S2ITL<TYPE, 64800, _210>();
+					return new BITL<TYPE, PITL0<TYPE, 64800>, _210>();
 				default:
-					return new S2ITL<TYPE, 64800, _012>();
+					return new BITL<TYPE, PITL0<TYPE, 64800>, _012>();
 				}
 			}
 			if (prefix == 'C') {
 				switch (number) {
 				case 5:
-					return new S2ITL<TYPE, 16200, _210>();
+					return new BITL<TYPE, PITL0<TYPE, 16200>, _210>();
 				default:
-					return new S2ITL<TYPE, 16200, _012>();
+					return new BITL<TYPE, PITL0<TYPE, 16200>, _012>();
 				}
 			}
 		}
@@ -252,9 +252,9 @@ Interleaver<TYPE> *create_interleaver(char *modulation, char *standard, char pre
 				case 7:
 				case 8:
 				case 9:
-					return new S2ITL<TYPE, 64800, _102>();
+					return new BITL<TYPE, PITL0<TYPE, 64800>, _102>();
 				default:
-					return new S2ITL<TYPE, 64800, _012>();
+					return new BITL<TYPE, PITL0<TYPE, 64800>, _012>();
 				}
 			}
 			if (prefix == 'C') {
@@ -263,9 +263,9 @@ Interleaver<TYPE> *create_interleaver(char *modulation, char *standard, char pre
 				case 5:
 				case 6:
 				case 7:
-					return new S2ITL<TYPE, 16200, _102>();
+					return new BITL<TYPE, PITL0<TYPE, 16200>, _102>();
 				default:
-					return new S2ITL<TYPE, 16200, _012>();
+					return new BITL<TYPE, PITL0<TYPE, 16200>, _012>();
 				}
 			}
 		}
@@ -277,17 +277,17 @@ Interleaver<TYPE> *create_interleaver(char *modulation, char *standard, char pre
 				typedef MUX8<TYPE, 0, 5, 1, 2, 4, 7, 3, 6> _05124736;
 				switch (number) {
 				case 1:
-					return new T2ITL<TYPE, 64800, 90, _71425360>();
+					return new BITL<TYPE, PITL<TYPE, 64800, 90>, _71425360>();
 				case 2:
-					return new T2ITL<TYPE, 64800, 72, _05124736>();
+					return new BITL<TYPE, PITL<TYPE, 64800, 72>, _05124736>();
 				case 3:
-					return new T2ITL<TYPE, 64800, 60, _71425360>();
+					return new BITL<TYPE, PITL<TYPE, 64800, 60>, _71425360>();
 				case 4:
-					return new T2ITL<TYPE, 64800, 45, _71425360>();
+					return new BITL<TYPE, PITL<TYPE, 64800, 45>, _71425360>();
 				case 5:
-					return new T2ITL<TYPE, 64800, 36, _71425360>();
+					return new BITL<TYPE, PITL<TYPE, 64800, 36>, _71425360>();
 				case 6:
-					return new T2ITL<TYPE, 64800, 30, _71425360>();
+					return new BITL<TYPE, PITL<TYPE, 64800, 30>, _71425360>();
 				}
 			}
 			if (prefix == 'B') {
@@ -295,23 +295,23 @@ Interleaver<TYPE> *create_interleaver(char *modulation, char *standard, char pre
 				typedef MUX8<TYPE, 7, 5, 4, 0, 3, 1, 2, 6> _75403126;
 				switch (number) {
 				case 1:
-					return new T2ITL<TYPE, 16200, 36, _71425360>();
+					return new BITL<TYPE, PITL<TYPE, 16200, 36>, _71425360>();
 				case 2:
-					return new T2ITL<TYPE, 16200, 25, _71425360>();
+					return new BITL<TYPE, PITL<TYPE, 16200, 25>, _71425360>();
 				case 3:
-					return new T2ITL<TYPE, 16200, 18, _71425360>();
+					return new BITL<TYPE, PITL<TYPE, 16200, 18>, _71425360>();
 				case 4:
-					return new T2ITL<TYPE, 16200, 15, _71425360>();
+					return new BITL<TYPE, PITL<TYPE, 16200, 15>, _71425360>();
 				case 5:
-					return new T2ITL<TYPE, 16200, 12, _71425360>();
+					return new BITL<TYPE, PITL<TYPE, 16200, 12>, _71425360>();
 				case 6:
-					return new T2ITL<TYPE, 16200, 10, _71425360>();
+					return new BITL<TYPE, PITL<TYPE, 16200, 10>, _71425360>();
 				case 7:
-					return new T2ITL<TYPE, 16200, 8, _71425360>();
+					return new BITL<TYPE, PITL<TYPE, 16200, 8>, _71425360>();
 				case 8:
-					return new T2ITL<TYPE, 16200, 30, _60345217>();
+					return new BITL<TYPE, PITL<TYPE, 16200, 30>, _60345217>();
 				case 9:
-					return new T2ITL<TYPE, 16200, 27, _75403126>();
+					return new BITL<TYPE, PITL<TYPE, 16200, 27>, _75403126>();
 				}
 			}
 		}
@@ -321,17 +321,17 @@ Interleaver<TYPE> *create_interleaver(char *modulation, char *standard, char pre
 				typedef MUX12<TYPE, 2, 7, 6, 9, 0, 3, 1, 8, 4, 11, 5, 10> _27690318411510;
 				switch (number) {
 				case 1:
-					return new T2ITL<TYPE, 64800, 90, _11731062951840>();
+					return new BITL<TYPE, PITL<TYPE, 64800, 90>, _11731062951840>();
 				case 2:
-					return new T2ITL<TYPE, 64800, 72, _27690318411510>();
+					return new BITL<TYPE, PITL<TYPE, 64800, 72>, _27690318411510>();
 				case 3:
-					return new T2ITL<TYPE, 64800, 60, _11731062951840>();
+					return new BITL<TYPE, PITL<TYPE, 64800, 60>, _11731062951840>();
 				case 4:
-					return new T2ITL<TYPE, 64800, 45, _11731062951840>();
+					return new BITL<TYPE, PITL<TYPE, 64800, 45>, _11731062951840>();
 				case 5:
-					return new T2ITL<TYPE, 64800, 36, _11731062951840>();
+					return new BITL<TYPE, PITL<TYPE, 64800, 36>, _11731062951840>();
 				case 6:
-					return new T2ITL<TYPE, 64800, 30, _11731062951840>();
+					return new BITL<TYPE, PITL<TYPE, 64800, 30>, _11731062951840>();
 				}
 			}
 			if (prefix == 'B') {
@@ -339,23 +339,23 @@ Interleaver<TYPE> *create_interleaver(char *modulation, char *standard, char pre
 				typedef MUX12<TYPE, 4, 0, 1, 6, 2, 3, 5, 8, 7, 10, 9, 11> _40162358710911;
 				switch (number) {
 				case 1:
-					return new T2ITL<TYPE, 16200, 36, _11731062951840>();
+					return new BITL<TYPE, PITL<TYPE, 16200, 36>, _11731062951840>();
 				case 2:
-					return new T2ITL<TYPE, 16200, 25, _11731062951840>();
+					return new BITL<TYPE, PITL<TYPE, 16200, 25>, _11731062951840>();
 				case 3:
-					return new T2ITL<TYPE, 16200, 18, _11731062951840>();
+					return new BITL<TYPE, PITL<TYPE, 16200, 18>, _11731062951840>();
 				case 4:
-					return new T2ITL<TYPE, 16200, 15, _11731062951840>();
+					return new BITL<TYPE, PITL<TYPE, 16200, 15>, _11731062951840>();
 				case 5:
-					return new T2ITL<TYPE, 16200, 12, _11731062951840>();
+					return new BITL<TYPE, PITL<TYPE, 16200, 12>, _11731062951840>();
 				case 6:
-					return new T2ITL<TYPE, 16200, 10, _11731062951840>();
+					return new BITL<TYPE, PITL<TYPE, 16200, 10>, _11731062951840>();
 				case 7:
-					return new T2ITL<TYPE, 16200, 8, _11731062951840>();
+					return new BITL<TYPE, PITL<TYPE, 16200, 8>, _11731062951840>();
 				case 8:
-					return new T2ITL<TYPE, 16200, 30, _42056137891011>();
+					return new BITL<TYPE, PITL<TYPE, 16200, 30>, _42056137891011>();
 				case 9:
-					return new T2ITL<TYPE, 16200, 27, _40162358710911>();
+					return new BITL<TYPE, PITL<TYPE, 16200, 27>, _40162358710911>();
 				}
 			}
 		}
@@ -366,17 +366,17 @@ Interleaver<TYPE> *create_interleaver(char *modulation, char *standard, char pre
 				typedef MUX16<TYPE, 7, 2, 9, 0, 4, 6, 13, 3, 14, 10, 15, 5, 8, 12, 11, 1> _7290461331410155812111;
 				switch (number) {
 				case 1:
-					return new T2ITL<TYPE, 64800, 90, _1511338119510647122140>();
+					return new BITL<TYPE, PITL<TYPE, 64800, 90>, _1511338119510647122140>();
 				case 2:
-					return new T2ITL<TYPE, 64800, 72, _2113409181013714615512>();
+					return new BITL<TYPE, PITL<TYPE, 64800, 72>, _2113409181013714615512>();
 				case 3:
-					return new T2ITL<TYPE, 64800, 60, _7290461331410155812111>();
+					return new BITL<TYPE, PITL<TYPE, 64800, 60>, _7290461331410155812111>();
 				case 4:
-					return new T2ITL<TYPE, 64800, 45, _1511338119510647122140>();
+					return new BITL<TYPE, PITL<TYPE, 64800, 45>, _1511338119510647122140>();
 				case 5:
-					return new T2ITL<TYPE, 64800, 36, _1511338119510647122140>();
+					return new BITL<TYPE, PITL<TYPE, 64800, 36>, _1511338119510647122140>();
 				case 6:
-					return new T2ITL<TYPE, 64800, 30, _1511338119510647122140>();
+					return new BITL<TYPE, PITL<TYPE, 64800, 30>, _1511338119510647122140>();
 				}
 			}
 			if (prefix == 'B') {
@@ -385,23 +385,23 @@ Interleaver<TYPE> *create_interleaver(char *modulation, char *standard, char pre
 				typedef MUX8<TYPE, 4, 0, 5, 1, 2, 3, 6, 7> _40512367;
 				switch (number) {
 				case 1:
-					return new T2ITL<TYPE, 16200, 36, _73152640>();
+					return new BITL<TYPE, PITL<TYPE, 16200, 36>, _73152640>();
 				case 2:
-					return new T2ITL<TYPE, 16200, 25, _73152640>();
+					return new BITL<TYPE, PITL<TYPE, 16200, 25>, _73152640>();
 				case 3:
-					return new T2ITL<TYPE, 16200, 18, _73152640>();
+					return new BITL<TYPE, PITL<TYPE, 16200, 18>, _73152640>();
 				case 4:
-					return new T2ITL<TYPE, 16200, 15, _73152640>();
+					return new BITL<TYPE, PITL<TYPE, 16200, 15>, _73152640>();
 				case 5:
-					return new T2ITL<TYPE, 16200, 12, _73152640>();
+					return new BITL<TYPE, PITL<TYPE, 16200, 12>, _73152640>();
 				case 6:
-					return new T2ITL<TYPE, 16200, 10, _73152640>();
+					return new BITL<TYPE, PITL<TYPE, 16200, 10>, _73152640>();
 				case 7:
-					return new T2ITL<TYPE, 16200, 8, _73152640>();
+					return new BITL<TYPE, PITL<TYPE, 16200, 8>, _73152640>();
 				case 8:
-					return new T2ITL<TYPE, 16200, 30, _40125367>();
+					return new BITL<TYPE, PITL<TYPE, 16200, 30>, _40125367>();
 				case 9:
-					return new T2ITL<TYPE, 16200, 27, _40512367>();
+					return new BITL<TYPE, PITL<TYPE, 16200, 27>, _40512367>();
 				}
 			}
 		}

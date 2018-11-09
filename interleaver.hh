@@ -22,16 +22,16 @@ struct ITL0 : public Interleaver<TYPE>
 	void bwd(TYPE *){}
 };
 
-template <typename TYPE, int N, typename MUX>
-struct S2ITL : public Interleaver<TYPE>
+template <typename TYPE, typename PITL, typename MUX>
+struct BITL : public Interleaver<TYPE>
 {
+	static const int N = PITL::N;
 	static const int COLS = MUX::N;
 	static const int ROWS = N / COLS;
 	TYPE tmp[N];
 	void fwd(TYPE *io)
 	{
-		for (int n = 0; n < N; ++n)
-			tmp[n] = io[n];
+		PITL::fwd(tmp, io);
 		for (int row = 0; row < ROWS; ++row)
 			MUX::fwd(io+COLS*row, tmp+row, ROWS);
 	}
@@ -39,38 +39,47 @@ struct S2ITL : public Interleaver<TYPE>
 	{
 		for (int row = 0; row < ROWS; ++row)
 			MUX::bwd(tmp+row, io+COLS*row, ROWS);
-		for (int n = 0; n < N; ++n)
-			io[n] = tmp[n];
+		PITL::bwd(io, tmp);
 	}
 };
 
-template <typename TYPE, int N, int Q, typename MUX>
-struct T2ITL : public Interleaver<TYPE>
+template <typename TYPE, int NUM>
+struct PITL0
 {
+	static const int N = NUM;
+	static void fwd(TYPE *out, TYPE *in)
+	{
+		for (int n = 0; n < N; ++n)
+			out[n] = in[n];
+	}
+	static void bwd(TYPE *out, TYPE *in)
+	{
+		for (int n = 0; n < N; ++n)
+			out[n] = in[n];
+	}
+};
+
+template <typename TYPE, int NUM, int Q>
+struct PITL
+{
+	static const int N = NUM;
 	static const int M = 360;
 	static const int K = N - M * Q;
-	static const int COLS = MUX::N;
-	static const int ROWS = N / COLS;
-	TYPE tmp[N];
-	void fwd(TYPE *io)
+	static void fwd(TYPE *out, TYPE *in)
 	{
 		for (int k = 0; k < K; ++k)
-			tmp[k] = io[k];
+			out[k] = in[k];
 		for (int q = 0; q < Q; ++q)
 			for (int m = 0; m < M; ++m)
-				tmp[K+M*q+m] = io[K+Q*m+q];
-		for (int row = 0; row < ROWS; ++row)
-			MUX::fwd(io+COLS*row, tmp+row, ROWS);
+				out[K+M*q+m] = in[K+Q*m+q];
 	}
-	void bwd(TYPE *io)
+	static void bwd(TYPE *out, TYPE *in)
 	{
-		for (int row = 0; row < ROWS; ++row)
-			MUX::bwd(tmp+row, io+COLS*row, ROWS);
 		for (int k = 0; k < K; ++k)
-			io[k] = tmp[k];
+			out[k] = in[k];
 		for (int q = 0; q < Q; ++q)
 			for (int m = 0; m < M; ++m)
-				io[K+Q*m+q] = tmp[K+M*q+m];
+				out[K+Q*m+q] = in[K+M*q+m];
 	}
 };
 
