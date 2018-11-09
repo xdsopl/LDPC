@@ -223,34 +223,38 @@ Interleaver<TYPE> *create_interleaver(char *modulation, char *standard, char pre
 {
 	if (!strcmp(standard, "S2")) {
 		if (!strcmp(modulation, "8PSK")) {
+			typedef MUX3<TYPE, 0, 1, 2> _012;
+			typedef MUX3<TYPE, 2, 1, 0> _210;
 			if (prefix == 'B') {
 				switch (number) {
 				case 5:
-					return new S2ITL3<TYPE, 64800, 2, 1, 0>();
+					return new S2ITL<TYPE, 64800, _210>();
 				default:
-					return new S2ITL3<TYPE, 64800, 0, 1, 2>();
+					return new S2ITL<TYPE, 64800, _012>();
 				}
 			}
 			if (prefix == 'C') {
 				switch (number) {
 				case 5:
-					return new S2ITL3<TYPE, 16200, 2, 1, 0>();
+					return new S2ITL<TYPE, 16200, _210>();
 				default:
-					return new S2ITL3<TYPE, 16200, 0, 1, 2>();
+					return new S2ITL<TYPE, 16200, _012>();
 				}
 			}
 		}
 	}
 	if (!strcmp(standard, "S2X")) {
 		if (!strcmp(modulation, "8PSK")) {
+			typedef MUX3<TYPE, 0, 1, 2> _012;
+			typedef MUX3<TYPE, 1, 0, 2> _102;
 			if (prefix == 'B') {
 				switch (number) {
 				case 7:
 				case 8:
 				case 9:
-					return new S2ITL3<TYPE, 64800, 1, 0, 2>();
+					return new S2ITL<TYPE, 64800, _102>();
 				default:
-					return new S2ITL3<TYPE, 64800, 0, 1, 2>();
+					return new S2ITL<TYPE, 64800, _012>();
 				}
 			}
 			if (prefix == 'C') {
@@ -259,131 +263,139 @@ Interleaver<TYPE> *create_interleaver(char *modulation, char *standard, char pre
 				case 5:
 				case 6:
 				case 7:
-					return new S2ITL3<TYPE, 16200, 1, 0, 2>();
+					return new S2ITL<TYPE, 16200, _102>();
 				default:
-					return new S2ITL3<TYPE, 16200, 0, 1, 2>();
+					return new S2ITL<TYPE, 16200, _012>();
 				}
 			}
 		}
 	}
 	if (!strcmp(standard, "T2")) {
 		if (!strcmp(modulation, "QAM16")) {
+			typedef MUX8<TYPE, 7, 1, 4, 2, 5, 3, 6, 0> _71425360;
+			typedef MUX8<TYPE, 0, 5, 1, 2, 4, 7, 3, 6> _05124736;
 			if (prefix == 'A') {
 				switch (number) {
 				case 1:
-					return new T2ITL8<TYPE, 64800, 90, 7, 1, 4, 2, 5, 3, 6, 0>();
+					return new T2ITL<TYPE, 64800, 90, _71425360>();
 				case 2:
-					return new T2ITL8<TYPE, 64800, 72, 0, 5, 1, 2, 4, 7, 3, 6>();
+					return new T2ITL<TYPE, 64800, 72, _05124736>();
 				case 3:
-					return new T2ITL8<TYPE, 64800, 60, 7, 1, 4, 2, 5, 3, 6, 0>();
+					return new T2ITL<TYPE, 64800, 60, _71425360>();
 				case 4:
-					return new T2ITL8<TYPE, 64800, 45, 7, 1, 4, 2, 5, 3, 6, 0>();
+					return new T2ITL<TYPE, 64800, 45, _71425360>();
 				case 5:
-					return new T2ITL8<TYPE, 64800, 36, 7, 1, 4, 2, 5, 3, 6, 0>();
+					return new T2ITL<TYPE, 64800, 36, _71425360>();
 				case 6:
-					return new T2ITL8<TYPE, 64800, 30, 7, 1, 4, 2, 5, 3, 6, 0>();
+					return new T2ITL<TYPE, 64800, 30, _71425360>();
 				}
 			}
 			if (prefix == 'B') {
 				switch (number) {
 				case 1:
-					return new T2ITL8<TYPE, 16200, 36, 7, 1, 4, 2, 5, 3, 6, 0>();
+					return new T2ITL<TYPE, 16200, 36, _71425360>();
 				case 2:
-					return new T2ITL8<TYPE, 16200, 25, 7, 1, 4, 2, 5, 3, 6, 0>();
+					return new T2ITL<TYPE, 16200, 25, _71425360>();
 				case 3:
-					return new T2ITL8<TYPE, 16200, 18, 7, 1, 4, 2, 5, 3, 6, 0>();
+					return new T2ITL<TYPE, 16200, 18, _71425360>();
 				case 4:
-					return new T2ITL8<TYPE, 16200, 15, 7, 1, 4, 2, 5, 3, 6, 0>();
+					return new T2ITL<TYPE, 16200, 15, _71425360>();
 				case 5:
-					return new T2ITL8<TYPE, 16200, 12, 7, 1, 4, 2, 5, 3, 6, 0>();
+					return new T2ITL<TYPE, 16200, 12, _71425360>();
 				case 6:
-					return new T2ITL8<TYPE, 16200, 10, 7, 1, 4, 2, 5, 3, 6, 0>();
+					return new T2ITL<TYPE, 16200, 10, _71425360>();
 				case 7:
-					return new T2ITL8<TYPE, 16200, 8, 7, 1, 4, 2, 5, 3, 6, 0>();
+					return new T2ITL<TYPE, 16200, 8, _71425360>();
 				case 8:
-					return new T2ITL8<TYPE, 16200, 30, 7, 1, 4, 2, 5, 3, 6, 0>();
+					return new T2ITL<TYPE, 16200, 30, _71425360>();
 				case 9:
-					return new T2ITL8<TYPE, 16200, 27, 7, 1, 4, 2, 5, 3, 6, 0>();
+					return new T2ITL<TYPE, 16200, 27, _71425360>();
 				}
 			}
 		}
 		if (!strcmp(modulation, "QAM64")) {
+			typedef MUX12<TYPE, 11, 7, 3, 10, 6, 2, 9, 5, 1, 8, 4, 0> _11731062951840;
+			typedef MUX12<TYPE, 2, 7, 6, 9, 0, 3, 1, 8, 4, 11, 5, 10> _27690318411510;
 			if (prefix == 'A') {
 				switch (number) {
 				case 1:
-					return new T2ITL12<TYPE, 64800, 90, 11, 7, 3, 10, 6, 2, 9, 5, 1, 8, 4, 0>();
+					return new T2ITL<TYPE, 64800, 90, _11731062951840>();
 				case 2:
-					return new T2ITL12<TYPE, 64800, 72, 2, 7, 6, 9, 0, 3, 1, 8, 4, 11, 5, 10>();
+					return new T2ITL<TYPE, 64800, 72, _27690318411510>();
 				case 3:
-					return new T2ITL12<TYPE, 64800, 60, 11, 7, 3, 10, 6, 2, 9, 5, 1, 8, 4, 0>();
+					return new T2ITL<TYPE, 64800, 60, _11731062951840>();
 				case 4:
-					return new T2ITL12<TYPE, 64800, 45, 11, 7, 3, 10, 6, 2, 9, 5, 1, 8, 4, 0>();
+					return new T2ITL<TYPE, 64800, 45, _11731062951840>();
 				case 5:
-					return new T2ITL12<TYPE, 64800, 36, 11, 7, 3, 10, 6, 2, 9, 5, 1, 8, 4, 0>();
+					return new T2ITL<TYPE, 64800, 36, _11731062951840>();
 				case 6:
-					return new T2ITL12<TYPE, 64800, 30, 11, 7, 3, 10, 6, 2, 9, 5, 1, 8, 4, 0>();
+					return new T2ITL<TYPE, 64800, 30, _11731062951840>();
 				}
 			}
 			if (prefix == 'B') {
 				switch (number) {
 				case 1:
-					return new T2ITL12<TYPE, 16200, 36, 11, 7, 3, 10, 6, 2, 9, 5, 1, 8, 4, 0>();
+					return new T2ITL<TYPE, 16200, 36, _11731062951840>();
 				case 2:
-					return new T2ITL12<TYPE, 16200, 25, 11, 7, 3, 10, 6, 2, 9, 5, 1, 8, 4, 0>();
+					return new T2ITL<TYPE, 16200, 25, _11731062951840>();
 				case 3:
-					return new T2ITL12<TYPE, 16200, 18, 11, 7, 3, 10, 6, 2, 9, 5, 1, 8, 4, 0>();
+					return new T2ITL<TYPE, 16200, 18, _11731062951840>();
 				case 4:
-					return new T2ITL12<TYPE, 16200, 15, 11, 7, 3, 10, 6, 2, 9, 5, 1, 8, 4, 0>();
+					return new T2ITL<TYPE, 16200, 15, _11731062951840>();
 				case 5:
-					return new T2ITL12<TYPE, 16200, 12, 11, 7, 3, 10, 6, 2, 9, 5, 1, 8, 4, 0>();
+					return new T2ITL<TYPE, 16200, 12, _11731062951840>();
 				case 6:
-					return new T2ITL12<TYPE, 16200, 10, 11, 7, 3, 10, 6, 2, 9, 5, 1, 8, 4, 0>();
+					return new T2ITL<TYPE, 16200, 10, _11731062951840>();
 				case 7:
-					return new T2ITL12<TYPE, 16200, 8, 11, 7, 3, 10, 6, 2, 9, 5, 1, 8, 4, 0>();
+					return new T2ITL<TYPE, 16200, 8, _11731062951840>();
 				case 8:
-					return new T2ITL12<TYPE, 16200, 30, 11, 7, 3, 10, 6, 2, 9, 5, 1, 8, 4, 0>();
+					return new T2ITL<TYPE, 16200, 30, _11731062951840>();
 				case 9:
-					return new T2ITL12<TYPE, 16200, 27, 11, 7, 3, 10, 6, 2, 9, 5, 1, 8, 4, 0>();
+					return new T2ITL<TYPE, 16200, 27, _11731062951840>();
 				}
 			}
 		}
 		if (!strcmp(modulation, "QAM256")) {
 			if (prefix == 'A') {
+				typedef MUX16<TYPE, 15, 1, 13, 3, 8, 11, 9, 5, 10, 6, 4, 7, 12, 2, 14, 0> _1511338119510647122140;
+				typedef MUX16<TYPE, 2, 11, 3, 4, 0, 9, 1, 8, 10, 13, 7, 14, 6, 15, 5, 12> _2113409181013714615512;
+				typedef MUX16<TYPE, 7, 2, 9, 0, 4, 6, 13, 3, 14, 10, 15, 5, 8, 12, 11, 1> _7290461331410155812111;
 				switch (number) {
 				case 1:
-					return new T2ITL16<TYPE, 64800, 90, 15, 1, 13, 3, 8, 11, 9, 5, 10, 6, 4, 7, 12, 2, 14, 0>();
+					return new T2ITL<TYPE, 64800, 90, _1511338119510647122140>();
 				case 2:
-					return new T2ITL16<TYPE, 64800, 72, 2, 11, 3, 4, 0, 9, 1, 8, 10, 13, 7, 14, 6, 15, 5, 12>();
+					return new T2ITL<TYPE, 64800, 72, _2113409181013714615512>();
 				case 3:
-					return new T2ITL16<TYPE, 64800, 60, 7, 2, 9, 0, 4, 6, 13, 3, 14, 10, 15, 5, 8, 12, 11, 1>();
+					return new T2ITL<TYPE, 64800, 60, _7290461331410155812111>();
 				case 4:
-					return new T2ITL16<TYPE, 64800, 45, 15, 1, 13, 3, 8, 11, 9, 5, 10, 6, 4, 7, 12, 2, 14, 0>();
+					return new T2ITL<TYPE, 64800, 45, _1511338119510647122140>();
 				case 5:
-					return new T2ITL16<TYPE, 64800, 36, 15, 1, 13, 3, 8, 11, 9, 5, 10, 6, 4, 7, 12, 2, 14, 0>();
+					return new T2ITL<TYPE, 64800, 36, _1511338119510647122140>();
 				case 6:
-					return new T2ITL16<TYPE, 64800, 30, 15, 1, 13, 3, 8, 11, 9, 5, 10, 6, 4, 7, 12, 2, 14, 0>();
+					return new T2ITL<TYPE, 64800, 30, _1511338119510647122140>();
 				}
 			}
 			if (prefix == 'B') {
+				typedef MUX8<TYPE, 7, 3, 1, 5, 2, 6, 4, 0> _73152640;
 				switch (number) {
 				case 1:
-					return new T2ITL8<TYPE, 16200, 36, 7, 3, 1, 5, 2, 6, 4, 0>();
+					return new T2ITL<TYPE, 16200, 36, _73152640>();
 				case 2:
-					return new T2ITL8<TYPE, 16200, 25, 7, 3, 1, 5, 2, 6, 4, 0>();
+					return new T2ITL<TYPE, 16200, 25, _73152640>();
 				case 3:
-					return new T2ITL8<TYPE, 16200, 18, 7, 3, 1, 5, 2, 6, 4, 0>();
+					return new T2ITL<TYPE, 16200, 18, _73152640>();
 				case 4:
-					return new T2ITL8<TYPE, 16200, 15, 7, 3, 1, 5, 2, 6, 4, 0>();
+					return new T2ITL<TYPE, 16200, 15, _73152640>();
 				case 5:
-					return new T2ITL8<TYPE, 16200, 12, 7, 3, 1, 5, 2, 6, 4, 0>();
+					return new T2ITL<TYPE, 16200, 12, _73152640>();
 				case 6:
-					return new T2ITL8<TYPE, 16200, 10, 7, 3, 1, 5, 2, 6, 4, 0>();
+					return new T2ITL<TYPE, 16200, 10, _73152640>();
 				case 7:
-					return new T2ITL8<TYPE, 16200, 8, 7, 3, 1, 5, 2, 6, 4, 0>();
+					return new T2ITL<TYPE, 16200, 8, _73152640>();
 				case 8:
-					return new T2ITL8<TYPE, 16200, 30, 7, 3, 1, 5, 2, 6, 4, 0>();
+					return new T2ITL<TYPE, 16200, 30, _73152640>();
 				case 9:
-					return new T2ITL8<TYPE, 16200, 27, 7, 3, 1, 5, 2, 6, 4, 0>();
+					return new T2ITL<TYPE, 16200, 27, _73152640>();
 				}
 			}
 		}
