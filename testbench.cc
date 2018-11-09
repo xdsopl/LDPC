@@ -271,6 +271,16 @@ Interleaver<TYPE> *create_interleaver(char *modulation, char *standard, char pre
 		}
 	}
 	if (!strcmp(standard, "T2")) {
+		if (!strcmp(modulation, "QPSK")) {
+			if (prefix == 'B') {
+				switch (number) {
+				case 8:
+					return new BITL<TYPE, PITL<TYPE, 16200, 30>, MUX0<TYPE>>();
+				case 9:
+					return new BITL<TYPE, PITL<TYPE, 16200, 27>, MUX0<TYPE>>();
+				}
+			}
+		}
 		if (!strcmp(modulation, "QAM16")) {
 			typedef MUX8<TYPE, 7, 1, 4, 2, 5, 3, 6, 0> _71425360;
 			if (prefix == 'A') {

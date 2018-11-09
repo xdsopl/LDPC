@@ -83,6 +83,20 @@ struct PITL
 	}
 };
 
+template <typename TYPE>
+struct MUX0
+{
+	static const int N = 1;
+	static void fwd(TYPE *out, TYPE *in, int)
+	{
+		out[0] = in[0];
+	}
+	static void bwd(TYPE *out, TYPE *in, int)
+	{
+		out[0] = in[0];
+	}
+};
+
 template <typename TYPE, int E0, int E1, int E2>
 struct MUX3
 {
