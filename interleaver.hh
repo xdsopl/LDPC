@@ -87,17 +87,11 @@ template <typename TYPE, int NUM, int Q, typename CT>
 struct PCTITL
 {
 	static const int N = NUM;
-	static const int M = 360;
-	static const int K = N - M * Q;
 	static const int COLS = CT::N;
 	static const int ROWS = N / COLS;
 	static void fwd(TYPE *out, TYPE *in)
 	{
-		for (int k = 0; k < K; ++k)
-			out[k] = in[k];
-		for (int q = 0; q < Q; ++q)
-			for (int m = 0; m < M; ++m)
-				out[K+M*q+m] = in[K+Q*m+q];
+		PITL<TYPE, N, Q>::fwd(out, in);
 		for (int n = 0; n < N; ++n)
 			in[n] = out[n];
 		for (int row = 0; row < ROWS; ++row)
@@ -109,11 +103,7 @@ struct PCTITL
 			CT::bwd(out, in+COLS*row, ROWS, row);
 		for (int n = 0; n < N; ++n)
 			in[n] = out[n];
-		for (int k = 0; k < K; ++k)
-			out[k] = in[k];
-		for (int q = 0; q < Q; ++q)
-			for (int m = 0; m < M; ++m)
-				out[K+Q*m+q] = in[K+M*q+m];
+		PITL<TYPE, N, Q>::bwd(out, in);
 	}
 };
 
