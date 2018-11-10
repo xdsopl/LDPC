@@ -1,7 +1,9 @@
 
-Playing with [Low-density parity-check codes](https://en.wikipedia.org/wiki/Low-density_parity-check_code)
+### Playing with [Low-density parity-check codes](https://en.wikipedia.org/wiki/Low-density_parity-check_code)
 
-To study LDPC codes I've implemented a soft decision decoder using floating point operations only.
+To study LDPC codes I've started implementing a soft decision decoder using floating point operations only.
+
+For better speed (at almost the same decoding performance) I've added support for [saturating](https://en.wikipedia.org/wiki/Saturation_arithmetic) [fixed-point](https://en.wikipedia.org/wiki/Fixed-point_arithmetic) operations in order to make use of [SIMD](https://en.wikipedia.org/wiki/SIMD) acceleration.
 
 You can switch between six [Belief propagation](https://en.wikipedia.org/wiki/Belief_propagation) algorithms:
 
@@ -69,12 +71,6 @@ Here we see the log-likelihood ratios of the different bits of many 8PSK modulat
 ![LLR of bit 1 in 8PSK](llr_bit1_8psk.png)
 
 ![LLR of bit 2 in 8PSK](llr_bit2_8psk.png)
-
-### [dvb_s2_tables.hh](dvb_s2_tables.hh)
-
-DVB-S2 LDPC parity bit address tables
-
-Entries are copied from: [a83-1_dvb-s2_den302307v141.pdf](https://www.dvb.org/resources/public/standards/a83-1_dvb-s2_den302307v141.pdf)
 
 ### [exclusive_reduce.hh](exclusive_reduce.hh)
 
