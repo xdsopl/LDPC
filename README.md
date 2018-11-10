@@ -3,7 +3,9 @@
 
 To study LDPC codes I've started implementing a soft decision decoder using floating point operations only.
 
-For better speed (at almost the same decoding performance) I've added support for [saturating](https://en.wikipedia.org/wiki/Saturation_arithmetic) [fixed-point](https://en.wikipedia.org/wiki/Fixed-point_arithmetic) operations in order to make use of [SIMD](https://en.wikipedia.org/wiki/SIMD) acceleration.
+For better speed (at almost the same decoding performance) I've added support for [saturating](https://en.wikipedia.org/wiki/Saturation_arithmetic) [fixed-point](https://en.wikipedia.org/wiki/Fixed-point_arithmetic) operations.
+
+[SIMD](https://en.wikipedia.org/wiki/SIMD) acceleration for floating and fixed-point is in the works.
 
 You can switch between six [Belief propagation](https://en.wikipedia.org/wiki/Belief_propagation) algorithms:
 
