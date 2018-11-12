@@ -21,24 +21,39 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 #include "dvb_s2x_tables.hh"
 #include "dvb_t2_tables.hh"
 #include "interleaver.hh"
+#include "modulation.hh"
 
-template <typename TYPE, typename CODE>
-Modulation<TYPE, CODE> *create_modulation(char *name)
+template <typename TYPE, typename CODE, int LEN>
+ModulationInterface<TYPE, CODE> *create_modulation(char *name)
 {
 	if (!strcmp(name, "BPSK"))
-		return new PhaseShiftKeying<2, TYPE, CODE>();
+		return new Modulation<PhaseShiftKeying<2, TYPE, CODE>, LEN>();
 	if (!strcmp(name, "QPSK"))
-		return new PhaseShiftKeying<4, TYPE, CODE>();
+		return new Modulation<PhaseShiftKeying<4, TYPE, CODE>, LEN / 2>();
 	if (!strcmp(name, "8PSK"))
-		return new PhaseShiftKeying<8, TYPE, CODE>();
+		return new Modulation<PhaseShiftKeying<8, TYPE, CODE>, LEN / 3>();
 	if (!strcmp(name, "QAM16"))
-		return new QuadratureAmplitudeModulation<16, TYPE, CODE>();
+		return new Modulation<QuadratureAmplitudeModulation<16, TYPE, CODE>, LEN / 4>();
 	if (!strcmp(name, "QAM64"))
-		return new QuadratureAmplitudeModulation<64, TYPE, CODE>();
+		return new Modulation<QuadratureAmplitudeModulation<64, TYPE, CODE>, LEN / 6>();
 	if (!strcmp(name, "QAM256"))
-		return new QuadratureAmplitudeModulation<256, TYPE, CODE>();
+		return new Modulation<QuadratureAmplitudeModulation<256, TYPE, CODE>, LEN / 8>();
 	if (!strcmp(name, "QAM1024"))
-		return new QuadratureAmplitudeModulation<1024, TYPE, CODE>();
+		return new Modulation<QuadratureAmplitudeModulation<1024, TYPE, CODE>, LEN / 10>();
+	return 0;
+}
+
+template <typename TYPE, typename CODE>
+ModulationInterface<TYPE, CODE> *create_modulation(char *name, int len)
+{
+	switch (len) {
+	case 16200:
+		return create_modulation<TYPE, CODE, 16200>(name);
+	case 32400:
+		return create_modulation<TYPE, CODE, 32400>(name);
+	case 64800:
+		return create_modulation<TYPE, CODE, 64800>(name);
+	}
 	return 0;
 }
 
@@ -445,13 +460,18 @@ int main(int argc, char **argv)
 		std::cerr << "no such table!" << std::endl;
 		return -1;
 	}
-	std::cerr << "testing LDPC(" << ldpc->code_len() << ", " << ldpc->data_len() << ") code." << std::endl;
+	const int CODE_LEN = ldpc->code_len();
+	const int DATA_LEN = ldpc->data_len();
+	std::cerr << "testing LDPC(" << CODE_LEN << ", " << DATA_LEN << ") code." << std::endl;
 
-	Modulation<complex_type, code_type> *mod = create_modulation<complex_type, code_type>(argv[4]);
+	ModulationInterface<complex_type, code_type> *mod = create_modulation<complex_type, code_type>(argv[4], CODE_LEN);
 	if (!mod) {
 		std::cerr << "no such modulation!" << std::endl;
 		return -1;
 	}
+	const int MOD_BITS = mod->bits();
+	assert(CODE_LEN % MOD_BITS == 0);
+	const int SYMBOLS = CODE_LEN / MOD_BITS;
 
 	Interleaver<code_type> *itl = create_interleaver<code_type>(argv[4], argv[2], argv[3][0], atoi(argv[3]+1));
 	assert(itl);
@@ -469,27 +489,25 @@ int main(int argc, char **argv)
 	auto data = std::bind(uniform(0, 1), generator);
 	auto awgn = std::bind(normal(0.0, sigma), generator);
 
-	assert(ldpc->code_len() % mod->bits() == 0);
-	const int SYMBOLS = ldpc->code_len() / mod->bits();
 	int BLOCKS = atoi(argv[5]);
 	if (BLOCKS < 1)
 		return -1;
-	code_type *code = new code_type[BLOCKS * ldpc->code_len()];
-	code_type *orig = new code_type[BLOCKS * ldpc->code_len()];
-	code_type *noisy = new code_type[BLOCKS * ldpc->code_len()];
+	code_type *code = new code_type[BLOCKS * CODE_LEN];
+	code_type *orig = new code_type[BLOCKS * CODE_LEN];
+	code_type *noisy = new code_type[BLOCKS * CODE_LEN];
 	complex_type *symb = new complex_type[BLOCKS * SYMBOLS];
 	const int SHOW = 0;
 
 	//ldpc->examine();
 
 	for (int j = 0; j < BLOCKS; ++j)
-		for (int i = 0; i < ldpc->data_len(); ++i)
-			code[j * ldpc->code_len() + i] = 1 - 2 * data();
+		for (int i = 0; i < DATA_LEN; ++i)
+			code[j * CODE_LEN + i] = 1 - 2 * data();
 
 	for (int i = 0; i < BLOCKS; ++i)
-		ldpc->encode(code + i * ldpc->code_len(), code + i * ldpc->code_len() + ldpc->data_len());
+		ldpc->encode(code + i * CODE_LEN, code + i * CODE_LEN + DATA_LEN);
 
-	for (int i = 0; i < BLOCKS * ldpc->code_len(); ++i)
+	for (int i = 0; i < BLOCKS * CODE_LEN; ++i)
 		orig[i] = code[i];
 
 	std::cerr << std::showpos;
@@ -498,16 +516,15 @@ int main(int argc, char **argv)
 	if (SHOW) {
 		std::cerr << "send:";
 		for (int i = 0; i < SHOW; ++i)
-			std::cerr << "	" << +code[i+ldpc->data_len()];
+			std::cerr << "	" << +code[i+DATA_LEN];
 		std::cerr << std::endl;
 	}
 
 	for (int i = 0; i < BLOCKS; ++i)
-		itl->fwd(code + i * ldpc->code_len());
+		itl->fwd(code + i * CODE_LEN);
 
 	for (int j = 0; j < BLOCKS; ++j)
-		for (int i = 0; i < SYMBOLS; ++i)
-			symb[j*SYMBOLS+i] = mod->map(code + (j * SYMBOLS + i) * mod->bits());
+		mod->mapN(symb + j * SYMBOLS, code + j * CODE_LEN);
 
 	if (0) {
 		for (int i = 0; i < SYMBOLS; ++i)
@@ -518,7 +535,7 @@ int main(int argc, char **argv)
 		symb[i] += complex_type(awgn(), awgn());
 
 	if (1) {
-		code_type tmp[mod->bits()];
+		code_type tmp[MOD_BITS];
 		value_type sp = 0, np = 0;
 		for (int i = 0; i < SYMBOLS; ++i) {
 			mod->hard(tmp, symb[i]);
@@ -541,21 +558,19 @@ int main(int argc, char **argv)
 	// $LLR=log(\frac{p(x=+1|y)}{p(x=-1|y)})$
 	// $p(x|\mu,\sigma)=\frac{1}{\sqrt{2\pi}\sigma}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}$
 	value_type precision = factor / (sigma * sigma);
-	for (int j = 0; j < BLOCKS; ++j) {
-		for (int i = 0; i < SYMBOLS; ++i)
-			mod->soft(code + (j * SYMBOLS + i) * mod->bits(), symb[j*SYMBOLS+i], precision);
-	}
+	for (int j = 0; j < BLOCKS; ++j)
+		mod->softN(code + j * CODE_LEN, symb + j * SYMBOLS, precision);
 
 	for (int i = 0; i < BLOCKS; ++i)
-		itl->bwd(code + i * ldpc->code_len());
+		itl->bwd(code + i * CODE_LEN);
 
-	for (int i = 0; i < BLOCKS * ldpc->code_len(); ++i)
+	for (int i = 0; i < BLOCKS * CODE_LEN; ++i)
 		noisy[i] = code[i];
 
 	if (0) {
 		for (int i = 0; i < SYMBOLS; ++i) {
 			std::cout << symb[i].real() << " " << symb[i].imag();
-			for (int j = 0; j < mod->bits(); ++j)
+			for (int j = 0; j < MOD_BITS; ++j)
 				std::cout << " " << +code[i + j * SYMBOLS];
 			std::cout << std::endl;
 		}
@@ -565,19 +580,19 @@ int main(int argc, char **argv)
 		std::cerr << std::setprecision(4);
 		std::cerr << "recv:";
 		for (int i = 0; i < SHOW; ++i)
-			std::cerr << "	" << +code[i+ldpc->data_len()];
+			std::cerr << "	" << +code[i+DATA_LEN];
 		std::cerr << std::endl;
 		std::cerr << std::setprecision(3);
 	}
 
-	for (int i = 0; i < BLOCKS * ldpc->code_len(); ++i)
+	for (int i = 0; i < BLOCKS * CODE_LEN; ++i)
 		assert(!std::isnan(code[i]));
 
 	int iterations = 0;
 	auto start = std::chrono::system_clock::now();
 	for (int j = 0; j < BLOCKS; ++j) {
 		int trials = 50;
-		int count = ldpc->decode(code + j * ldpc->code_len(), code + j * ldpc->code_len() + ldpc->data_len(), trials);
+		int count = ldpc->decode(code + j * CODE_LEN, code + j * CODE_LEN + DATA_LEN, trials);
 		if (count < 0) {
 			iterations += trials;
 			std::cerr << "decoder failed at converging to a code word!" << std::endl;
@@ -588,35 +603,35 @@ int main(int argc, char **argv)
 	}
 	auto end = std::chrono::system_clock::now();
 	auto msec = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-	int kbs = (BLOCKS * ldpc->data_len() + msec.count() / 2) / msec.count();
+	int kbs = (BLOCKS * DATA_LEN + msec.count() / 2) / msec.count();
 	std::cerr << kbs << " kilobit per second." << std::endl;
 	float avg_iter = (float)iterations / (float)BLOCKS;
 	std::cerr << avg_iter << " average iterations per block." << std::endl;
 
-	for (int i = 0; i < BLOCKS * ldpc->code_len(); ++i)
+	for (int i = 0; i < BLOCKS * CODE_LEN; ++i)
 		assert(!std::isnan(code[i]));
 
 	int awgn_errors = 0;
-	for (int i = 0; i < BLOCKS * ldpc->code_len(); ++i)
+	for (int i = 0; i < BLOCKS * CODE_LEN; ++i)
 		awgn_errors += noisy[i] * orig[i] < 0;
 	int quantization_erasures = 0;
-	for (int i = 0; i < BLOCKS * ldpc->code_len(); ++i)
+	for (int i = 0; i < BLOCKS * CODE_LEN; ++i)
 		quantization_erasures += !noisy[i];
 	int uncorrected_errors = 0;
-	for (int i = 0; i < BLOCKS * ldpc->code_len(); ++i)
+	for (int i = 0; i < BLOCKS * CODE_LEN; ++i)
 		uncorrected_errors += code[i] * orig[i] <= 0;
 	int decoder_errors = 0;
-	for (int i = 0; i < BLOCKS * ldpc->code_len(); ++i)
+	for (int i = 0; i < BLOCKS * CODE_LEN; ++i)
 		decoder_errors += code[i] * orig[i] <= 0 && orig[i] * noisy[i] > 0;
-	float bit_error_rate = (float)uncorrected_errors / (float)(BLOCKS * ldpc->code_len());
+	float bit_error_rate = (float)uncorrected_errors / (float)(BLOCKS * CODE_LEN);
 
 	if (1) {
-		for (int i = 0; i < ldpc->code_len(); ++i)
+		for (int i = 0; i < CODE_LEN; ++i)
 			code[i] = code[i] < 0 ? -1 : 1;
 		itl->fwd(code);
 		value_type sp = 0, np = 0;
 		for (int i = 0; i < SYMBOLS; ++i) {
-			complex_type s = mod->map(code + i * mod->bits());
+			complex_type s = mod->map(code + i * MOD_BITS);
 			complex_type e = symb[i] - s;
 			sp += std::norm(s);
 			np += std::norm(e);

@@ -7,13 +7,11 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 #ifndef PSK_HH
 #define PSK_HH
 
-#include "modulation.hh"
-
 template <int NUM, typename TYPE, typename CODE>
 struct PhaseShiftKeying;
 
 template <typename TYPE, typename CODE>
-struct PhaseShiftKeying<2, TYPE, CODE> : public Modulation<TYPE, CODE>
+struct PhaseShiftKeying<2, TYPE, CODE>
 {
 	static const int NUM = 2;
 	static const int BITS = 1;
@@ -33,29 +31,24 @@ struct PhaseShiftKeying<2, TYPE, CODE> : public Modulation<TYPE, CODE>
 		return value;
 	}
 
-	int bits()
-	{
-		return BITS;
-	}
-
-	void hard(code_type *b, complex_type c)
+	static void hard(code_type *b, complex_type c)
 	{
 		b[0] = c.real() < value_type(0) ? code_type(-1) : code_type(1);
 	}
 
-	void soft(code_type *b, complex_type c, value_type precision)
+	static void soft(code_type *b, complex_type c, value_type precision)
 	{
 		b[0] = quantize(precision, c.real());
 	}
 
-	complex_type map(code_type *b)
+	static complex_type map(code_type *b)
 	{
 		return complex_type(b[0], 0);
 	}
 };
 
 template <typename TYPE, typename CODE>
-struct PhaseShiftKeying<4, TYPE, CODE> : public Modulation<TYPE, CODE>
+struct PhaseShiftKeying<4, TYPE, CODE>
 {
 	static const int NUM = 4;
 	static const int BITS = 2;
@@ -77,31 +70,26 @@ struct PhaseShiftKeying<4, TYPE, CODE> : public Modulation<TYPE, CODE>
 		return value;
 	}
 
-	int bits()
-	{
-		return BITS;
-	}
-
-	void hard(code_type *b, complex_type c)
+	static void hard(code_type *b, complex_type c)
 	{
 		b[0] = c.real() < value_type(0) ? code_type(-1) : code_type(1);
 		b[1] = c.imag() < value_type(0) ? code_type(-1) : code_type(1);
 	}
 
-	void soft(code_type *b, complex_type c, value_type precision)
+	static void soft(code_type *b, complex_type c, value_type precision)
 	{
 		b[0] = quantize(precision, c.real());
 		b[1] = quantize(precision, c.imag());
 	}
 
-	complex_type map(code_type *b)
+	static complex_type map(code_type *b)
 	{
 		return rcp_sqrt_2 * complex_type(b[0], b[1]);
 	}
 };
 
 template <typename TYPE, typename CODE>
-struct PhaseShiftKeying<8, TYPE, CODE> : public Modulation<TYPE, CODE>
+struct PhaseShiftKeying<8, TYPE, CODE>
 {
 	static const int NUM = 8;
 	static const int BITS = 3;
@@ -131,12 +119,7 @@ struct PhaseShiftKeying<8, TYPE, CODE> : public Modulation<TYPE, CODE>
 		return value;
 	}
 
-	int bits()
-	{
-		return BITS;
-	}
-
-	void hard(code_type *b, complex_type c)
+	static void hard(code_type *b, complex_type c)
 	{
 		c *= rot_cw;
 		b[1] = c.real() < value_type(0) ? code_type(-1) : code_type(1);
@@ -144,7 +127,7 @@ struct PhaseShiftKeying<8, TYPE, CODE> : public Modulation<TYPE, CODE>
 		b[0] = abs(c.real()) < abs(c.imag()) ? code_type(-1) : code_type(1);
 	}
 
-	void soft(code_type *b, complex_type c, value_type precision)
+	static void soft(code_type *b, complex_type c, value_type precision)
 	{
 		c *= rot_cw;
 		b[1] = quantize(precision, c.real());
@@ -152,7 +135,7 @@ struct PhaseShiftKeying<8, TYPE, CODE> : public Modulation<TYPE, CODE>
 		b[0] = quantize(precision, rcp_sqrt_2 * (abs(c.real()) - abs(c.imag())));
 	}
 
-	complex_type map(code_type *b)
+	static complex_type map(code_type *b)
 	{
 		value_type real = cos_pi_8;
 		value_type imag = sin_pi_8;

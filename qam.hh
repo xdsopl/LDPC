@@ -7,13 +7,11 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 #ifndef QAM_HH
 #define QAM_HH
 
-#include "modulation.hh"
-
 template <int NUM, typename TYPE, typename CODE>
 struct QuadratureAmplitudeModulation;
 
 template <typename TYPE, typename CODE>
-struct QuadratureAmplitudeModulation<16, TYPE, CODE> : public Modulation<TYPE, CODE>
+struct QuadratureAmplitudeModulation<16, TYPE, CODE>
 {
 	static const int NUM = 16;
 	static const int BITS = 4;
@@ -41,12 +39,7 @@ struct QuadratureAmplitudeModulation<16, TYPE, CODE> : public Modulation<TYPE, C
 		return value;
 	}
 
-	int bits()
-	{
-		return BITS;
-	}
-
-	void hard(code_type *b, complex_type c)
+	static void hard(code_type *b, complex_type c)
 	{
 		b[0] = c.real() < amp(0) ? code_type(-1) : code_type(1);
 		b[1] = c.imag() < amp(0) ? code_type(-1) : code_type(1);
@@ -54,7 +47,7 @@ struct QuadratureAmplitudeModulation<16, TYPE, CODE> : public Modulation<TYPE, C
 		b[3] = abs(c.imag()) < amp(2) ? code_type(-1) : code_type(1);
 	}
 
-	void soft(code_type *b, complex_type c, value_type precision)
+	static void soft(code_type *b, complex_type c, value_type precision)
 	{
 		b[0] = quantize(precision, c.real());
 		b[1] = quantize(precision, c.imag());
@@ -62,7 +55,7 @@ struct QuadratureAmplitudeModulation<16, TYPE, CODE> : public Modulation<TYPE, C
 		b[3] = quantize(precision, abs(c.imag())-amp(2));
 	}
 
-	complex_type map(code_type *b)
+	static complex_type map(code_type *b)
 	{
 		return AMP * complex_type(
 			b[0]*(b[2]+value_type(2)),
@@ -72,7 +65,7 @@ struct QuadratureAmplitudeModulation<16, TYPE, CODE> : public Modulation<TYPE, C
 };
 
 template <typename TYPE, typename CODE>
-struct QuadratureAmplitudeModulation<64, TYPE, CODE> : public Modulation<TYPE, CODE>
+struct QuadratureAmplitudeModulation<64, TYPE, CODE>
 {
 	static const int NUM = 64;
 	static const int BITS = 6;
@@ -100,12 +93,7 @@ struct QuadratureAmplitudeModulation<64, TYPE, CODE> : public Modulation<TYPE, C
 		return value;
 	}
 
-	int bits()
-	{
-		return BITS;
-	}
-
-	void hard(code_type *b, complex_type c)
+	static void hard(code_type *b, complex_type c)
 	{
 		b[0] = c.real() < amp(0) ? code_type(-1) : code_type(1);
 		b[1] = c.imag() < amp(0) ? code_type(-1) : code_type(1);
@@ -115,7 +103,7 @@ struct QuadratureAmplitudeModulation<64, TYPE, CODE> : public Modulation<TYPE, C
 		b[5] = abs(abs(c.imag())-amp(4)) < amp(2) ? code_type(-1) : code_type(1);
 	}
 
-	void soft(code_type *b, complex_type c, value_type precision)
+	static void soft(code_type *b, complex_type c, value_type precision)
 	{
 		b[0] = quantize(precision, c.real());
 		b[1] = quantize(precision, c.imag());
@@ -125,7 +113,7 @@ struct QuadratureAmplitudeModulation<64, TYPE, CODE> : public Modulation<TYPE, C
 		b[5] = quantize(precision, abs(abs(c.imag())-amp(4))-amp(2));
 	}
 
-	complex_type map(code_type *b)
+	static complex_type map(code_type *b)
 	{
 		return AMP * complex_type(
 			b[0]*(b[2]*(b[4]+value_type(2))+value_type(4)),
@@ -135,7 +123,7 @@ struct QuadratureAmplitudeModulation<64, TYPE, CODE> : public Modulation<TYPE, C
 };
 
 template <typename TYPE, typename CODE>
-struct QuadratureAmplitudeModulation<256, TYPE, CODE> : public Modulation<TYPE, CODE>
+struct QuadratureAmplitudeModulation<256, TYPE, CODE>
 {
 	static const int NUM = 256;
 	static const int BITS = 8;
@@ -163,12 +151,7 @@ struct QuadratureAmplitudeModulation<256, TYPE, CODE> : public Modulation<TYPE, 
 		return value;
 	}
 
-	int bits()
-	{
-		return BITS;
-	}
-
-	void hard(code_type *b, complex_type c)
+	static void hard(code_type *b, complex_type c)
 	{
 		b[0] = c.real() < amp(0) ? code_type(-1) : code_type(1);
 		b[1] = c.imag() < amp(0) ? code_type(-1) : code_type(1);
@@ -180,7 +163,7 @@ struct QuadratureAmplitudeModulation<256, TYPE, CODE> : public Modulation<TYPE, 
 		b[7] = abs(abs(abs(c.imag())-amp(8))-amp(4)) < amp(2) ? code_type(-1) : code_type(1);
 	}
 
-	void soft(code_type *b, complex_type c, value_type precision)
+	static void soft(code_type *b, complex_type c, value_type precision)
 	{
 		b[0] = quantize(precision, c.real());
 		b[1] = quantize(precision, c.imag());
@@ -192,7 +175,7 @@ struct QuadratureAmplitudeModulation<256, TYPE, CODE> : public Modulation<TYPE, 
 		b[7] = quantize(precision, abs(abs(abs(c.imag())-amp(8))-amp(4))-amp(2));
 	}
 
-	complex_type map(code_type *b)
+	static complex_type map(code_type *b)
 	{
 		return AMP * complex_type(
 			b[0]*(b[2]*(b[4]*(b[6]+value_type(2))+value_type(4))+value_type(8)),
@@ -202,7 +185,7 @@ struct QuadratureAmplitudeModulation<256, TYPE, CODE> : public Modulation<TYPE, 
 };
 
 template <typename TYPE, typename CODE>
-struct QuadratureAmplitudeModulation<1024, TYPE, CODE> : public Modulation<TYPE, CODE>
+struct QuadratureAmplitudeModulation<1024, TYPE, CODE>
 {
 	static const int NUM = 1024;
 	static const int BITS = 10;
@@ -230,12 +213,7 @@ struct QuadratureAmplitudeModulation<1024, TYPE, CODE> : public Modulation<TYPE,
 		return value;
 	}
 
-	int bits()
-	{
-		return BITS;
-	}
-
-	void hard(code_type *b, complex_type c)
+	static void hard(code_type *b, complex_type c)
 	{
 		b[0] = c.real() < amp(0) ? code_type(-1) : code_type(1);
 		b[1] = c.imag() < amp(0) ? code_type(-1) : code_type(1);
@@ -249,7 +227,7 @@ struct QuadratureAmplitudeModulation<1024, TYPE, CODE> : public Modulation<TYPE,
 		b[9] = abs(abs(abs(abs(c.imag())-amp(16))-amp(8))-amp(4)) < amp(2) ? code_type(-1) : code_type(1);
 	}
 
-	void soft(code_type *b, complex_type c, value_type precision)
+	static void soft(code_type *b, complex_type c, value_type precision)
 	{
 		b[0] = quantize(precision, c.real());
 		b[1] = quantize(precision, c.imag());
@@ -263,7 +241,7 @@ struct QuadratureAmplitudeModulation<1024, TYPE, CODE> : public Modulation<TYPE,
 		b[9] = quantize(precision, abs(abs(abs(abs(c.imag())-amp(16))-amp(8))-amp(4))-amp(2));
 	}
 
-	complex_type map(code_type *b)
+	static complex_type map(code_type *b)
 	{
 		return AMP * complex_type(
 			b[0]*(b[2]*(b[4]*(b[6]*(b[8]+value_type(2))+value_type(4))+value_type(8))+value_type(16)),
