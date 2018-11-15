@@ -77,7 +77,7 @@ struct MinSumAlgorithm<int8_t, FACTOR>
 		x = std::min<int>(std::max<int>(x, -128), 127);
 		return x;
 	}
-	static uint8_t min(uint8_t a, uint8_t b)
+	static int8_t min(int8_t a, int8_t b)
 	{
 		return std::min(a, b);
 	}
@@ -85,9 +85,9 @@ struct MinSumAlgorithm<int8_t, FACTOR>
 	{
 		return a ^ b;
 	}
-	static uint8_t abs(int8_t a)
+	static int8_t sqabs(int8_t a)
 	{
-		return std::abs<int>(a);
+		return std::abs(std::max<int8_t>(a, -127));
 	}
 	static int8_t sign(int8_t a, int8_t b)
 	{
@@ -95,12 +95,10 @@ struct MinSumAlgorithm<int8_t, FACTOR>
 	}
 	static void finalp(int8_t *links, int cnt)
 	{
-		uint8_t mags[cnt], mins[cnt];
+		int8_t mags[cnt], mins[cnt];
 		for (int i = 0; i < cnt; ++i)
-			mags[i] = abs(links[i]);
+			mags[i] = sqabs(links[i]);
 		CODE::exclusive_reduce(mags, mins, cnt, min);
-		for (int i = 0; i < cnt; ++i)
-			mins[i] = std::min<uint8_t>(mins[i], 127);
 
 		int8_t signs[cnt];
 		CODE::exclusive_reduce(links, signs, cnt, xor_);
@@ -180,6 +178,10 @@ struct MinSumCAlgorithm<int8_t, FACTOR>
 	{
 		return std::abs<int>(a);
 	}
+	static int8_t sqabs(int8_t a)
+	{
+		return std::abs(std::max<int8_t>(a, -127));
+	}
 	static int8_t sign(int8_t a, int8_t b)
 	{
 		return b < 0 ? -a : b > 0 ? a : 0;
@@ -200,8 +202,7 @@ struct MinSumCAlgorithm<int8_t, FACTOR>
 	}
 	static int8_t min(int8_t a, int8_t b)
 	{
-		uint8_t m = std::min(abs(a), abs(b));
-		m = std::min<uint8_t>(m, 127);
+		int8_t m = std::min(sqabs(a), sqabs(b));
 		int8_t x = sign(sign(m, a), b);
 		x = add(x, correction_factor(a, b));
 		return x;
