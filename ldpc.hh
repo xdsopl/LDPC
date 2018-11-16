@@ -43,24 +43,22 @@ struct MinSumAlgorithm
 	{
 		return std::min(a, b);
 	}
-	static TYPE mul(TYPE a, TYPE b)
+	static TYPE sign(TYPE a, TYPE b)
 	{
-		return a * b;
+		return b < TYPE(0) ? -a : b > TYPE(0) ? a : TYPE(0);
 	}
 	static void finalp(TYPE *links, int cnt)
 	{
-		TYPE blmags[cnt], mins[cnt];
+		TYPE mags[cnt], mins[cnt];
 		for (int i = 0; i < cnt; ++i)
-			blmags[i] = std::abs(links[i]);
-		CODE::exclusive_reduce(blmags, mins, cnt, min);
+			mags[i] = std::abs(links[i]);
+		CODE::exclusive_reduce(mags, mins, cnt, min);
 
-		TYPE blsigns[cnt], signs[cnt];
-		for (int i = 0; i < cnt; ++i)
-			blsigns[i] = links[i] < TYPE(0) ? TYPE(-1) : TYPE(1);
-		CODE::exclusive_reduce(blsigns, signs, cnt, mul);
+		TYPE signs[cnt];
+		CODE::exclusive_reduce(links, signs, cnt, sign);
 
 		for (int i = 0; i < cnt; ++i)
-			links[i] = signs[i] * mins[i];
+			links[i] = sign(mins[i], signs[i]);
 	}
 	static TYPE add(TYPE a, TYPE b)
 	{
@@ -127,10 +125,14 @@ struct MinSumCAlgorithm
 		}
 		return std::log(TYPE(1)+std::exp(-std::abs(a+b))) - std::log(TYPE(1)+std::exp(-std::abs(a-b)));
 	}
+	static TYPE sign(TYPE a, TYPE b)
+	{
+		return b < TYPE(0) ? -a : b > TYPE(0) ? a : TYPE(0);
+	}
 	static TYPE min(TYPE a, TYPE b)
 	{
 		TYPE m = std::min(std::abs(a), std::abs(b));
-		TYPE x = (a < TYPE(0)) != (b < TYPE(0)) ? -m : m;
+		TYPE x = sign(sign(m, a), b);
 		x += correction_factor(a, b);
 		return x;
 	}
@@ -224,28 +226,26 @@ struct LogDomainSPA
 		x = std::min(std::max(x, TYPE(0.000001)), TYPE(14.5));
 		return std::log(std::exp(x)+TYPE(1)) - std::log(std::exp(x)-TYPE(1));
 	}
-	static TYPE mul(TYPE a, TYPE b)
-	{
-		return a * b;
-	}
 	static TYPE add(TYPE a, TYPE b)
 	{
 		return a + b;
 	}
+	static TYPE sign(TYPE a, TYPE b)
+	{
+		return b < TYPE(0) ? -a : b > TYPE(0) ? a : TYPE(0);
+	}
 	static void finalp(TYPE *links, int cnt)
 	{
-		TYPE blmags[cnt], sums[cnt];
+		TYPE mags[cnt], sums[cnt];
 		for (int i = 0; i < cnt; ++i)
-			blmags[i] = phi(std::abs(links[i]));
-		CODE::exclusive_reduce(blmags, sums, cnt, add);
+			mags[i] = phi(std::abs(links[i]));
+		CODE::exclusive_reduce(mags, sums, cnt, add);
 
-		TYPE blsigns[cnt], signs[cnt];
-		for (int i = 0; i < cnt; ++i)
-			blsigns[i] = links[i] < TYPE(0) ? TYPE(-1) : TYPE(1);
-		CODE::exclusive_reduce(blsigns, signs, cnt, mul);
+		TYPE signs[cnt];
+		CODE::exclusive_reduce(links, signs, cnt, sign);
 
 		for (int i = 0; i < cnt; ++i)
-			links[i] = signs[i] * phi(sums[i]);
+			links[i] = sign(phi(sums[i]), signs[i]);
 	}
 };
 
@@ -257,43 +257,41 @@ struct LambdaMinAlgorithm
 		x = std::min(std::max(x, TYPE(0.000001)), TYPE(14.5));
 		return std::log(std::exp(x)+TYPE(1)) - std::log(std::exp(x)-TYPE(1));
 	}
-	static TYPE mul(TYPE a, TYPE b)
-	{
-		return a * b;
-	}
 	static TYPE add(TYPE a, TYPE b)
 	{
 		return a + b;
 	}
+	static TYPE sign(TYPE a, TYPE b)
+	{
+		return b < TYPE(0) ? -a : b > TYPE(0) ? a : TYPE(0);
+	}
 	static void finalp(TYPE *links, int cnt)
 	{
 		typedef std::pair<TYPE, int> Pair;
-		Pair blmags[cnt];
+		Pair mags[cnt];
 		for (int i = 0; i < cnt; ++i)
-			blmags[i] = Pair(std::abs(links[i]), i);
-		std::nth_element(blmags, blmags+LAMBDA, blmags+cnt, [](Pair a, Pair b){ return a.first < b.first; });
+			mags[i] = Pair(std::abs(links[i]), i);
+		std::nth_element(mags, mags+LAMBDA, mags+cnt, [](Pair a, Pair b){ return a.first < b.first; });
 
 		TYPE sums[cnt];
 		for (int i = 0; i < cnt; ++i) {
 			int j = 0;
-			if (i == blmags[0].second)
+			if (i == mags[0].second)
 				++j;
-			sums[i] = phi(blmags[j].first);
+			sums[i] = phi(mags[j].first);
 			for (int l = 1; l < LAMBDA; ++l) {
 				++j;
-				if (i == blmags[j].second)
+				if (i == mags[j].second)
 					++j;
-				sums[i] += phi(blmags[j].first);
+				sums[i] += phi(mags[j].first);
 			}
 		}
 
-		TYPE blsigns[cnt], signs[cnt];
-		for (int i = 0; i < cnt; ++i)
-			blsigns[i] = links[i] < TYPE(0) ? TYPE(-1) : TYPE(1);
-		CODE::exclusive_reduce(blsigns, signs, cnt, mul);
+		TYPE signs[cnt];
+		CODE::exclusive_reduce(links, signs, cnt, sign);
 
 		for (int i = 0; i < cnt; ++i)
-			links[i] = signs[i] * phi(sums[i]);
+			links[i] = sign(phi(sums[i]), signs[i]);
 	}
 };
 
@@ -311,6 +309,10 @@ struct SumProductAlgorithm
 	static TYPE mul(TYPE a, TYPE b)
 	{
 		return a * b;
+	}
+	static TYPE sign(TYPE a, TYPE b)
+	{
+		return b < TYPE(0) ? -a : b > TYPE(0) ? a : TYPE(0);
 	}
 	static void finalp(TYPE *links, int cnt)
 	{
@@ -366,15 +368,11 @@ class LDPC : public LDPCInterface<TYPE>
 	TYPE bnl[TABLE::LINKS_TOTAL];
 	TYPE bnv[N];
 	TYPE cnl[R * CNL];
-	int8_t cnv[R];
+	TYPE cnv[R];
 	uint8_t cnc[R];
 	ALG alg;
 	BLU blu;
 
-	int signum(TYPE v)
-	{
-		return (v > TYPE(0)) - (v < TYPE(0));
-	}
 	void next_group()
 	{
 		if (grp_cnt >= grp_len) {
@@ -428,9 +426,9 @@ class LDPC : public LDPCInterface<TYPE>
 	}
 	void check_node_update()
 	{
-		cnv[0] = signum(bnv[0]);
+		cnv[0] = alg.sign(1, bnv[0]);
 		for (int i = 1; i < R; ++i)
-			cnv[i] = signum(bnv[i-1]) * signum(bnv[i]);
+			cnv[i] = alg.sign(alg.sign(1, bnv[i-1]), bnv[i]);
 
 		TYPE *bl = bnl;
 		cnl[0] = *bl++;
@@ -445,7 +443,7 @@ class LDPC : public LDPCInterface<TYPE>
 			for (int m = 0; m < M; ++m) {
 				for (int n = 0; n < bit_deg; ++n) {
 					int i = acc_pos[n];
-					cnv[i] *= signum(bnv[j+m+R]);
+					cnv[i] = alg.sign(cnv[i], bnv[j+m+R]);
 					cnl[CNL*i+cnc[i]++] = *bl++;
 				}
 				next_bit();
