@@ -67,6 +67,43 @@ struct MinSumAlgorithm
 };
 
 template <>
+struct MinSumAlgorithm<float>
+{
+	static float min(float a, float b)
+	{
+		return std::min(a, b);
+	}
+	static int xor_(int a, int b)
+	{
+		return a ^ b;
+	}
+	static void finalp(float *links, int cnt)
+	{
+		int mask = 0x80000000;
+		float mags[cnt], mins[cnt];
+		for (int i = 0; i < cnt; ++i)
+			mags[i] = std::abs(links[i]);
+		CODE::exclusive_reduce(mags, mins, cnt, min);
+
+		int signs[cnt];
+		CODE::exclusive_reduce(reinterpret_cast<int *>(links), signs, cnt, xor_);
+		for (int i = 0; i < cnt; ++i)
+			signs[i] &= mask;
+
+		for (int i = 0; i < cnt; ++i)
+			reinterpret_cast<int *>(links)[i] = signs[i] | reinterpret_cast<int *>(mins)[i];
+	}
+	static float sign(float a, float b)
+	{
+		return b < 0.f ? -a : b > 0.f ? a : 0.f;
+	}
+	static float add(float a, float b)
+	{
+		return a + b;
+	}
+};
+
+template <>
 struct MinSumAlgorithm<int8_t>
 {
 	static int8_t add(int8_t a, int8_t b)
@@ -144,6 +181,46 @@ struct MinSumCAlgorithm
 			links[i] = tmp[i];
 	}
 	static TYPE add(TYPE a, TYPE b)
+	{
+		return a + b;
+	}
+};
+
+template <int FACTOR>
+struct MinSumCAlgorithm<float, FACTOR>
+{
+	static float correction_factor(float a, float b)
+	{
+		float c = 0.5f;
+		float apb = std::abs(a + b);
+		float amb = std::abs(a - b);
+		if (apb < 2.f && amb > 2.f * apb)
+			return c;
+		if (amb < 2.f && apb > 2.f * amb)
+			return -c;
+		return 0;
+	}
+	static float min(float a, float b)
+	{
+		int mask = 0x80000000;
+		float m = std::min(std::abs(a), std::abs(b));
+		int tmp = (mask & (*reinterpret_cast<int *>(&a) ^ *reinterpret_cast<int *>(&b))) | *reinterpret_cast<int *>(&m);
+		float x = *reinterpret_cast<float *>(&tmp);
+		x += correction_factor(a, b);
+		return x;
+	}
+	static void finalp(float *links, int cnt)
+	{
+		float tmp[cnt];
+		CODE::exclusive_reduce(links, tmp, cnt, min);
+		for (int i = 0; i < cnt; ++i)
+			links[i] = tmp[i];
+	}
+	static float sign(float a, float b)
+	{
+		return b < 0.f ? -a : b > 0.f ? a : 0.f;
+	}
+	static float add(float a, float b)
 	{
 		return a + b;
 	}
