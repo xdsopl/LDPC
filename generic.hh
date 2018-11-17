@@ -39,6 +39,10 @@ struct SelfCorrectedUpdate<int8_t>
 template <typename TYPE>
 struct MinSumAlgorithm
 {
+	static TYPE one()
+	{
+		return 1;
+	}
 	static TYPE min(TYPE a, TYPE b)
 	{
 		return std::min(a, b);
@@ -64,11 +68,19 @@ struct MinSumAlgorithm
 	{
 		return a + b;
 	}
+	static bool bad(TYPE v)
+	{
+		return v <= TYPE(0);
+	}
 };
 
 template <>
 struct MinSumAlgorithm<float>
 {
+	static float one()
+	{
+		return 1.f;
+	}
 	static float min(float a, float b)
 	{
 		return std::min(a, b);
@@ -101,11 +113,19 @@ struct MinSumAlgorithm<float>
 	{
 		return a + b;
 	}
+	static bool bad(float v)
+	{
+		return v <= 0.f;
+	}
 };
 
 template <>
 struct MinSumAlgorithm<int8_t>
 {
+	static int8_t one()
+	{
+		return 1;
+	}
 	static int8_t add(int8_t a, int8_t b)
 	{
 		int x = int(a) + int(b);
@@ -143,11 +163,19 @@ struct MinSumAlgorithm<int8_t>
 		for (int i = 0; i < cnt; ++i)
 			links[i] = sign(mins[i], signs[i]);
 	}
+	static bool bad(int8_t v)
+	{
+		return v <= 0;
+	}
 };
 
 template <typename TYPE, int FACTOR>
 struct MinSumCAlgorithm
 {
+	static TYPE one()
+	{
+		return 1;
+	}
 	static TYPE correction_factor(TYPE a, TYPE b)
 	{
 		if (1) {
@@ -184,11 +212,19 @@ struct MinSumCAlgorithm
 	{
 		return a + b;
 	}
+	static bool bad(TYPE v)
+	{
+		return v <= TYPE(0);
+	}
 };
 
 template <int FACTOR>
 struct MinSumCAlgorithm<float, FACTOR>
 {
+	static float one()
+	{
+		return 1.f;
+	}
 	static float correction_factor(float a, float b)
 	{
 		float c = 0.5f;
@@ -224,11 +260,19 @@ struct MinSumCAlgorithm<float, FACTOR>
 	{
 		return a + b;
 	}
+	static bool bad(float v)
+	{
+		return v <= 0.f;
+	}
 };
 
 template <int FACTOR>
 struct MinSumCAlgorithm<int8_t, FACTOR>
 {
+	static int8_t one()
+	{
+		return 1;
+	}
 	static int8_t add(int8_t a, int8_t b)
 	{
 		int x = int(a) + int(b);
@@ -293,11 +337,19 @@ struct MinSumCAlgorithm<int8_t, FACTOR>
 		for (int i = 0; i < cnt; ++i)
 			links[i] = tmp[i];
 	}
+	static bool bad(int8_t v)
+	{
+		return v <= 0;
+	}
 };
 
 template <typename TYPE>
 struct LogDomainSPA
 {
+	static TYPE one()
+	{
+		return 1;
+	}
 	static TYPE phi(TYPE x)
 	{
 		x = std::min(std::max(x, TYPE(0.000001)), TYPE(14.5));
@@ -324,11 +376,19 @@ struct LogDomainSPA
 		for (int i = 0; i < cnt; ++i)
 			links[i] = sign(phi(sums[i]), signs[i]);
 	}
+	static bool bad(TYPE v)
+	{
+		return v <= TYPE(0);
+	}
 };
 
 template <typename TYPE, int LAMBDA>
 struct LambdaMinAlgorithm
 {
+	static TYPE one()
+	{
+		return 1;
+	}
 	static TYPE phi(TYPE x)
 	{
 		x = std::min(std::max(x, TYPE(0.000001)), TYPE(14.5));
@@ -370,11 +430,19 @@ struct LambdaMinAlgorithm
 		for (int i = 0; i < cnt; ++i)
 			links[i] = sign(phi(sums[i]), signs[i]);
 	}
+	static bool bad(TYPE v)
+	{
+		return v <= TYPE(0);
+	}
 };
 
 template <typename TYPE>
 struct SumProductAlgorithm
 {
+	static TYPE one()
+	{
+		return 1;
+	}
 	static TYPE prep(TYPE x)
 	{
 		return std::tanh(TYPE(0.5) * x);
@@ -403,6 +471,10 @@ struct SumProductAlgorithm
 	static TYPE add(TYPE a, TYPE b)
 	{
 		return a + b;
+	}
+	static bool bad(TYPE v)
+	{
+		return v <= TYPE(0);
 	}
 };
 

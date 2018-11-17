@@ -98,9 +98,9 @@ class LDPC : public LDPCInterface<TYPE>
 	}
 	void check_node_update()
 	{
-		cnv[0] = alg.sign(1, bnv[0]);
+		cnv[0] = alg.sign(alg.one(), bnv[0]);
 		for (int i = 1; i < R; ++i)
-			cnv[i] = alg.sign(alg.sign(1, bnv[i-1]), bnv[i]);
+			cnv[i] = alg.sign(alg.sign(alg.one(), bnv[i-1]), bnv[i]);
 
 		TYPE *bl = bnl;
 		cnl[0] = *bl++;
@@ -195,7 +195,7 @@ class LDPC : public LDPCInterface<TYPE>
 	bool hard_decision()
 	{
 		for (int i = 0; i < R; ++i)
-			if (cnv[i] <= 0)
+			if (alg.bad(cnv[i]))
 				return true;
 		return false;
 	}
@@ -234,20 +234,20 @@ public:
 	void encode(TYPE *data, TYPE *parity)
 	{
 		for (int i = 0; i < R; ++i)
-			parity[i] = 1;
+			parity[i] = alg.one();
 		first_group();
 		for (int j = 0; j < K; j += M) {
 			for (int m = 0; m < M; ++m) {
 				for (int n = 0; n < bit_deg; ++n) {
 					int i = acc_pos[n];
-					parity[i] *= data[j+m];
+					parity[i] = alg.sign(parity[i], data[j+m]);
 				}
 				next_bit();
 			}
 			next_group();
 		}
 		for (int i = 1; i < R; ++i)
-			parity[i] *= parity[i-1];
+			parity[i] = alg.sign(parity[i], parity[i-1]);
 	}
 	void examine()
 	{
