@@ -17,6 +17,7 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 #include "psk.hh"
 #include "qam.hh"
 #include "ldpc.hh"
+#include "generic.hh"
 #include "dvb_s2_tables.hh"
 #include "dvb_s2x_tables.hh"
 #include "dvb_t2_tables.hh"
