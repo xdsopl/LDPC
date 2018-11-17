@@ -36,7 +36,7 @@ struct SelfCorrectedUpdate<int8_t>
 	}
 };
 
-template <typename TYPE, int FACTOR>
+template <typename TYPE>
 struct MinSumAlgorithm
 {
 	static TYPE min(TYPE a, TYPE b)
@@ -66,8 +66,8 @@ struct MinSumAlgorithm
 	}
 };
 
-template <int FACTOR>
-struct MinSumAlgorithm<int8_t, FACTOR>
+template <>
+struct MinSumAlgorithm<int8_t>
 {
 	static int8_t add(int8_t a, int8_t b)
 	{
@@ -218,7 +218,7 @@ struct MinSumCAlgorithm<int8_t, FACTOR>
 	}
 };
 
-template <typename TYPE, int FACTOR>
+template <typename TYPE>
 struct LogDomainSPA
 {
 	static TYPE phi(TYPE x)
@@ -249,7 +249,7 @@ struct LogDomainSPA
 	}
 };
 
-template <typename TYPE, int FACTOR, int LAMBDA>
+template <typename TYPE, int LAMBDA>
 struct LambdaMinAlgorithm
 {
 	static TYPE phi(TYPE x)
@@ -295,7 +295,7 @@ struct LambdaMinAlgorithm
 	}
 };
 
-template <typename TYPE, int FACTOR>
+template <typename TYPE>
 struct SumProductAlgorithm
 {
 	static TYPE prep(TYPE x)
@@ -340,17 +340,9 @@ struct LDPCInterface
 	virtual ~LDPCInterface() = default;
 };
 
-template <typename TABLE, typename TYPE, int FACTOR>
+template <typename TABLE, typename TYPE, typename BLU, typename ALG>
 class LDPC : public LDPCInterface<TYPE>
 {
-	//typedef NormalUpdate<TYPE> BLU;
-	typedef SelfCorrectedUpdate<TYPE> BLU;
-
-	typedef MinSumAlgorithm<TYPE, FACTOR> ALG;
-	//typedef MinSumCAlgorithm<TYPE, FACTOR> ALG;
-	//typedef LogDomainSPA<TYPE, FACTOR> ALG;
-	//typedef LambdaMinAlgorithm<TYPE, FACTOR, 3> ALG;
-	//typedef SumProductAlgorithm<TYPE, FACTOR> ALG;
 
 	static const int M = TABLE::M;
 	static const int N = TABLE::N;
