@@ -15,7 +15,7 @@ struct LDPCInterface
 	virtual int code_len() = 0;
 	virtual int data_len() = 0;
 	virtual void encode(TYPE *, TYPE *) = 0;
-	virtual int decode(TYPE *, TYPE *, int) = 0;
+	virtual int decode(TYPE *, TYPE *, int = 50, int = 1) = 0;
 	virtual ~LDPCInterface() = default;
 };
 
@@ -159,10 +159,10 @@ class LDPC : public LDPCInterface<TYPE>
 			next_group();
 		}
 	}
-	bool hard_decision()
+	bool hard_decision(int blocks)
 	{
 		for (int i = 0; i < R; ++i)
-			if (alg.bad(cnv[i]))
+			if (alg.bad(cnv[i], blocks))
 				return true;
 		return false;
 	}
@@ -182,16 +182,16 @@ public:
 	{
 		return K;
 	}
-	int decode(TYPE *data, TYPE *parity, int trials = 50)
+	int decode(TYPE *data, TYPE *parity, int trials = 50, int blocks = 1)
 	{
 		bit_node_init(data, parity);
 		check_node_update();
-		if (!hard_decision())
+		if (!hard_decision(blocks))
 			return trials;
 		--trials;
 		bit_node_update(data, parity);
 		check_node_update();
-		while (hard_decision() && --trials >= 0) {
+		while (hard_decision(blocks) && --trials >= 0) {
 			bit_node_update(data, parity);
 			check_node_update();
 		}

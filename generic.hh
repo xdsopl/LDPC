@@ -68,7 +68,7 @@ struct MinSumAlgorithm
 	{
 		return a + b;
 	}
-	static bool bad(TYPE v)
+	static bool bad(TYPE v, int)
 	{
 		return v <= TYPE(0);
 	}
@@ -117,7 +117,7 @@ struct MinSumAlgorithm<float, UPDATE>
 	{
 		return a + b;
 	}
-	static bool bad(float v)
+	static bool bad(float v, int)
 	{
 		return v <= 0.f;
 	}
@@ -171,7 +171,7 @@ struct MinSumAlgorithm<int8_t, UPDATE>
 		for (int i = 0; i < cnt; ++i)
 			links[i] = sign(mins[i], signs[i]);
 	}
-	static bool bad(int8_t v)
+	static bool bad(int8_t v, int)
 	{
 		return v <= 0;
 	}
@@ -224,7 +224,7 @@ struct MinSumCAlgorithm
 	{
 		return a + b;
 	}
-	static bool bad(TYPE v)
+	static bool bad(TYPE v, int)
 	{
 		return v <= TYPE(0);
 	}
@@ -276,7 +276,7 @@ struct MinSumCAlgorithm<float, UPDATE, FACTOR>
 	{
 		return a + b;
 	}
-	static bool bad(float v)
+	static bool bad(float v, int)
 	{
 		return v <= 0.f;
 	}
@@ -357,7 +357,7 @@ struct MinSumCAlgorithm<int8_t, UPDATE, FACTOR>
 		for (int i = 0; i < cnt; ++i)
 			links[i] = tmp[i];
 	}
-	static bool bad(int8_t v)
+	static bool bad(int8_t v, int)
 	{
 		return v <= 0;
 	}
@@ -400,7 +400,7 @@ struct LogDomainSPA
 		for (int i = 0; i < cnt; ++i)
 			links[i] = sign(phi(sums[i]), signs[i]);
 	}
-	static bool bad(TYPE v)
+	static bool bad(TYPE v, int)
 	{
 		return v <= TYPE(0);
 	}
@@ -458,7 +458,7 @@ struct LambdaMinAlgorithm
 		for (int i = 0; i < cnt; ++i)
 			links[i] = sign(phi(sums[i]), signs[i]);
 	}
-	static bool bad(TYPE v)
+	static bool bad(TYPE v, int)
 	{
 		return v <= TYPE(0);
 	}
@@ -504,7 +504,7 @@ struct SumProductAlgorithm
 	{
 		return a + b;
 	}
-	static bool bad(TYPE v)
+	static bool bad(TYPE v, int)
 	{
 		return v <= TYPE(0);
 	}
