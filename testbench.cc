@@ -591,10 +591,10 @@ int main(int argc, char **argv)
 			for (int i = 0; i < CODE_LEN; ++i)
 				code[(j+n)*CODE_LEN+i] = reinterpret_cast<code_type *>(simd+i)[n];
 		if (count < 0) {
-			iterations += trials;
+			iterations += blocks * trials;
 			std::cerr << "decoder failed at converging to a code word!" << std::endl;
 		} else {
-			iterations += trials - count;
+			iterations += blocks * (trials - count);
 			std::cerr << trials - count << " iterations were needed." << std::endl;
 		}
 	}
