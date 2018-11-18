@@ -506,9 +506,6 @@ int main(int argc, char **argv)
 	code_type *orig = new code_type[BLOCKS * CODE_LEN];
 	code_type *noisy = new code_type[BLOCKS * CODE_LEN];
 	complex_type *symb = new complex_type[BLOCKS * SYMBOLS];
-	const int SHOW = 0;
-
-	//ldpc->examine();
 
 	for (int j = 0; j < BLOCKS; ++j)
 		for (int i = 0; i < DATA_LEN; ++i)
@@ -520,26 +517,11 @@ int main(int argc, char **argv)
 	for (int i = 0; i < BLOCKS * CODE_LEN; ++i)
 		orig[i] = code[i];
 
-	std::cerr << std::showpos;
-	std::cerr << std::setprecision(3);
-
-	if (SHOW) {
-		std::cerr << "send:";
-		for (int i = 0; i < SHOW; ++i)
-			std::cerr << "	" << +code[i+DATA_LEN];
-		std::cerr << std::endl;
-	}
-
 	for (int i = 0; i < BLOCKS; ++i)
 		itl->fwd(code + i * CODE_LEN);
 
 	for (int j = 0; j < BLOCKS; ++j)
 		mod->mapN(symb + j * SYMBOLS, code + j * CODE_LEN);
-
-	if (0) {
-		for (int i = 0; i < SYMBOLS; ++i)
-			std::cout << symb[i].real() << " " << symb[i].imag() << std::endl;
-	}
 
 	for (int i = 0; i < BLOCKS * SYMBOLS; ++i)
 		symb[i] += complex_type(awgn(), awgn());
@@ -560,11 +542,6 @@ int main(int argc, char **argv)
 		std::cerr << snr << " Es/N0, " << sigma << " sigma and " << mean << " mean estimated via hard decision." << std::endl;
 	}
 
-	if (0) {
-		for (int i = 0; i < SYMBOLS; ++i)
-			std::cout << symb[i].real() << " " << symb[i].imag() << std::endl;
-	}
-
 	// $LLR=log(\frac{p(x=+1|y)}{p(x=-1|y)})$
 	// $p(x|\mu,\sigma)=\frac{1}{\sqrt{2\pi}\sigma}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}$
 	value_type precision = factor / (sigma * sigma);
@@ -576,24 +553,6 @@ int main(int argc, char **argv)
 
 	for (int i = 0; i < BLOCKS * CODE_LEN; ++i)
 		noisy[i] = code[i];
-
-	if (0) {
-		for (int i = 0; i < SYMBOLS; ++i) {
-			std::cout << symb[i].real() << " " << symb[i].imag();
-			for (int j = 0; j < MOD_BITS; ++j)
-				std::cout << " " << +code[i + j * SYMBOLS];
-			std::cout << std::endl;
-		}
-	}
-
-	if (SHOW) {
-		std::cerr << std::setprecision(4);
-		std::cerr << "recv:";
-		for (int i = 0; i < SHOW; ++i)
-			std::cerr << "	" << +code[i+DATA_LEN];
-		std::cerr << std::endl;
-		std::cerr << std::setprecision(3);
-	}
 
 	for (int i = 0; i < BLOCKS * CODE_LEN; ++i)
 		assert(!std::isnan(code[i]));

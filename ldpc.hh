@@ -16,7 +16,6 @@ struct LDPCInterface
 	virtual int data_len() = 0;
 	virtual void encode(TYPE *, TYPE *) = 0;
 	virtual int decode(TYPE *, TYPE *, int) = 0;
-	virtual void examine() = 0;
 	virtual ~LDPCInterface() = default;
 };
 
@@ -123,14 +122,6 @@ class LDPC : public LDPCInterface<TYPE>
 		}
 		for (int i = 0; i < R; ++i)
 			alg.finalp(cnl+CNL*i, cnc[i]);
-		if (0) {
-			TYPE min = 0, max = 0;
-			for (int i = 0; i < R * CNL; ++i) {
-				min = std::min(min, cnl[i]);
-				max = std::max(max, cnl[i]);
-			}
-			std::cerr << "cnl: min = " << +min << " max = " << +max << std::endl;
-		}
 	}
 	void bit_node_update(TYPE *data, TYPE *parity)
 	{
@@ -166,29 +157,6 @@ class LDPC : public LDPCInterface<TYPE>
 				next_bit();
 			}
 			next_group();
-		}
-		if (0) {
-			TYPE min = 0, max = 0;
-			for (int i = 0; i < TABLE::LINKS_TOTAL; ++i) {
-				min = std::min(min, bnv[i]);
-				max = std::max(max, bnv[i]);
-			}
-			std::cerr << "bnl: min = " << +min << " max = " << +max << std::endl;
-		}
-		if (0) {
-			TYPE min = 0, max = 0;
-			for (int i = 0; i < N; ++i) {
-				min = std::min(min, bnv[i]);
-				max = std::max(max, bnv[i]);
-			}
-			std::cerr << "bnv: min = " << +min << " max = " << +max << std::endl;
-		}
-		if (0) {
-			static int count;
-			std::cout << count++;
-			for (int i = 0; i < N; ++i)
-				std::cout << " " << +bnv[i];
-			std::cout << std::endl;
 		}
 	}
 	bool hard_decision()
@@ -247,77 +215,6 @@ public:
 		}
 		for (int i = 1; i < R; ++i)
 			parity[i] = alg.sign(parity[i], parity[i-1]);
-	}
-	void examine()
-	{
-		int bit_node_link_count[N];
-		for (int i = 0; i < N; ++i)
-			bit_node_link_count[i] = 0;
-		int check_node_link_count[R];
-		for (int i = 0; i < R; ++i)
-			check_node_link_count[i] = 0;
-		first_group();
-		for (int j = 0; j < K; j += M) {
-			if (0) {
-				for (int n = 0; n < bit_deg; ++n)
-					std::cerr << " " << acc_pos[n];
-				std::cerr << std::endl;
-			}
-			for (int m = 0; m < M; ++m) {
-				bit_node_link_count[j+m] += bit_deg;
-				for (int n = 0; n < bit_deg; ++n) {
-					int i = acc_pos[n];
-					++check_node_link_count[i];
-				}
-				for (int n = 0; n < bit_deg; ++n)
-					for (int k = 0; k < bit_deg; ++k)
-						assert(n == k || acc_pos[n] != acc_pos[k]);
-				next_bit();
-			}
-			next_group();
-		}
-		for (int i = K; i < N-1; ++i)
-			bit_node_link_count[i] = 2;
-		bit_node_link_count[N-1] = 1;
-		int bit_node_max_links = 0;
-		for (int i = 0; i < N; ++i)
-			bit_node_max_links = std::max(bit_node_max_links, bit_node_link_count[i]);
-		int bit_node_hist[bit_node_max_links+1];
-		for (int i = 0; i <= bit_node_max_links; ++i)
-			bit_node_hist[i] = 0;
-		for (int i = 0; i < N; ++i)
-			++bit_node_hist[bit_node_link_count[i]];
-		int bit_node_link_count_total = 0;
-		for (int i = 0; i <= bit_node_max_links; ++i)
-			bit_node_link_count_total += i * bit_node_hist[i];
-		assert(bit_node_link_count_total <= TABLE::LINKS_TOTAL);
-		std::cerr << "total number of bit node links: " << bit_node_link_count_total << " with: (number of bit nodes):(having number of links)";
-		for (int i = 0; i <= bit_node_max_links; ++i)
-			if (bit_node_hist[i])
-				std::cerr << " " << bit_node_hist[i] << ":" << i;
-		std::cerr << std::endl;
-
-		++check_node_link_count[0];
-		for (int i = 1; i < R; ++i)
-			check_node_link_count[i] += 2;
-		int check_node_max_links = 0;
-		for (int i = 0; i < R; ++i)
-			check_node_max_links = std::max(check_node_max_links, check_node_link_count[i]);
-		assert(check_node_max_links <= CNL);
-		int check_node_hist[check_node_max_links+1];
-		for (int i = 0; i <= check_node_max_links; ++i)
-			check_node_hist[i] = 0;
-		for (int i = 0; i < R; ++i)
-			++check_node_hist[check_node_link_count[i]];
-		int check_node_link_count_total = 0;
-		for (int i = 0; i <= check_node_max_links; ++i)
-			check_node_link_count_total += i * check_node_hist[i];
-		assert(check_node_link_count_total <= CNL * R);
-		std::cerr << "total number of check node links: " << check_node_link_count_total << " with: (number of check nodes):(having number of links)";
-		for (int i = 0; i <= check_node_max_links; ++i)
-			if (check_node_hist[i])
-				std::cerr << " " << check_node_hist[i] << ":" << i;
-		std::cerr << std::endl;
 	}
 };
 
