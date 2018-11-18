@@ -58,58 +58,58 @@ ModulationInterface<TYPE, CODE> *create_modulation(char *name, int len)
 	return 0;
 }
 
-template <typename TYPE, typename UPDATE, typename ALGORITHM>
+template <typename TYPE, typename ALGORITHM>
 LDPCInterface<TYPE> *create_decoder(char *standard, char prefix, int number)
 {
 	if (!strcmp(standard, "S2")) {
 		if (prefix == 'B') {
 			switch (number) {
 			case 1:
-				return new LDPC<DVB_S2_TABLE_B1, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2_TABLE_B1, TYPE, ALGORITHM>();
 			case 2:
-				return new LDPC<DVB_S2_TABLE_B2, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2_TABLE_B2, TYPE, ALGORITHM>();
 			case 3:
-				return new LDPC<DVB_S2_TABLE_B3, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2_TABLE_B3, TYPE, ALGORITHM>();
 			case 4:
-				return new LDPC<DVB_S2_TABLE_B4, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2_TABLE_B4, TYPE, ALGORITHM>();
 			case 5:
-				return new LDPC<DVB_S2_TABLE_B5, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2_TABLE_B5, TYPE, ALGORITHM>();
 			case 6:
-				return new LDPC<DVB_S2_TABLE_B6, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2_TABLE_B6, TYPE, ALGORITHM>();
 			case 7:
-				return new LDPC<DVB_S2_TABLE_B7, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2_TABLE_B7, TYPE, ALGORITHM>();
 			case 8:
-				return new LDPC<DVB_S2_TABLE_B8, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2_TABLE_B8, TYPE, ALGORITHM>();
 			case 9:
-				return new LDPC<DVB_S2_TABLE_B9, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2_TABLE_B9, TYPE, ALGORITHM>();
 			case 10:
-				return new LDPC<DVB_S2_TABLE_B10, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2_TABLE_B10, TYPE, ALGORITHM>();
 			case 11:
-				return new LDPC<DVB_S2_TABLE_B11, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2_TABLE_B11, TYPE, ALGORITHM>();
 			}
 		}
 		if (prefix == 'C') {
 			switch (number) {
 			case 1:
-				return new LDPC<DVB_S2_TABLE_C1, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2_TABLE_C1, TYPE, ALGORITHM>();
 			case 2:
-				return new LDPC<DVB_S2_TABLE_C2, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2_TABLE_C2, TYPE, ALGORITHM>();
 			case 3:
-				return new LDPC<DVB_S2_TABLE_C3, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2_TABLE_C3, TYPE, ALGORITHM>();
 			case 4:
-				return new LDPC<DVB_S2_TABLE_C4, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2_TABLE_C4, TYPE, ALGORITHM>();
 			case 5:
-				return new LDPC<DVB_S2_TABLE_C5, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2_TABLE_C5, TYPE, ALGORITHM>();
 			case 6:
-				return new LDPC<DVB_S2_TABLE_C6, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2_TABLE_C6, TYPE, ALGORITHM>();
 			case 7:
-				return new LDPC<DVB_S2_TABLE_C7, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2_TABLE_C7, TYPE, ALGORITHM>();
 			case 8:
-				return new LDPC<DVB_S2_TABLE_C8, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2_TABLE_C8, TYPE, ALGORITHM>();
 			case 9:
-				return new LDPC<DVB_S2_TABLE_C9, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2_TABLE_C9, TYPE, ALGORITHM>();
 			case 10:
-				return new LDPC<DVB_S2_TABLE_C10, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2_TABLE_C10, TYPE, ALGORITHM>();
 			}
 		}
 	}
@@ -117,77 +117,77 @@ LDPCInterface<TYPE> *create_decoder(char *standard, char prefix, int number)
 		if (prefix == 'B') {
 			switch (number) {
 			case 1:
-				return new LDPC<DVB_S2X_TABLE_B1, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2X_TABLE_B1, TYPE, ALGORITHM>();
 			case 2:
-				return new LDPC<DVB_S2X_TABLE_B2, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2X_TABLE_B2, TYPE, ALGORITHM>();
 			case 3:
-				return new LDPC<DVB_S2X_TABLE_B3, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2X_TABLE_B3, TYPE, ALGORITHM>();
 			case 4:
-				return new LDPC<DVB_S2X_TABLE_B4, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2X_TABLE_B4, TYPE, ALGORITHM>();
 			case 5:
-				return new LDPC<DVB_S2X_TABLE_B5, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2X_TABLE_B5, TYPE, ALGORITHM>();
 			case 6:
-				return new LDPC<DVB_S2X_TABLE_B6, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2X_TABLE_B6, TYPE, ALGORITHM>();
 			case 7:
-				return new LDPC<DVB_S2X_TABLE_B7, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2X_TABLE_B7, TYPE, ALGORITHM>();
 			case 8:
-				return new LDPC<DVB_S2X_TABLE_B8, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2X_TABLE_B8, TYPE, ALGORITHM>();
 			case 9:
-				return new LDPC<DVB_S2X_TABLE_B9, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2X_TABLE_B9, TYPE, ALGORITHM>();
 			case 10:
-				return new LDPC<DVB_S2X_TABLE_B10, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2X_TABLE_B10, TYPE, ALGORITHM>();
 			case 11:
-				return new LDPC<DVB_S2X_TABLE_B11, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2X_TABLE_B11, TYPE, ALGORITHM>();
 			case 12:
-				return new LDPC<DVB_S2X_TABLE_B12, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2X_TABLE_B12, TYPE, ALGORITHM>();
 			case 13:
-				return new LDPC<DVB_S2X_TABLE_B13, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2X_TABLE_B13, TYPE, ALGORITHM>();
 			case 14:
-				return new LDPC<DVB_S2X_TABLE_B14, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2X_TABLE_B14, TYPE, ALGORITHM>();
 			case 15:
-				return new LDPC<DVB_S2X_TABLE_B15, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2X_TABLE_B15, TYPE, ALGORITHM>();
 			case 16:
-				return new LDPC<DVB_S2X_TABLE_B16, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2X_TABLE_B16, TYPE, ALGORITHM>();
 			case 17:
-				return new LDPC<DVB_S2X_TABLE_B17, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2X_TABLE_B17, TYPE, ALGORITHM>();
 			case 18:
-				return new LDPC<DVB_S2X_TABLE_B18, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2X_TABLE_B18, TYPE, ALGORITHM>();
 			case 19:
-				return new LDPC<DVB_S2X_TABLE_B19, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2X_TABLE_B19, TYPE, ALGORITHM>();
 			case 20:
-				return new LDPC<DVB_S2X_TABLE_B20, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2X_TABLE_B20, TYPE, ALGORITHM>();
 			case 21:
-				return new LDPC<DVB_S2X_TABLE_B21, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2X_TABLE_B21, TYPE, ALGORITHM>();
 			case 22:
-				return new LDPC<DVB_S2X_TABLE_B22, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2X_TABLE_B22, TYPE, ALGORITHM>();
 			case 23:
-				return new LDPC<DVB_S2X_TABLE_B23, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2X_TABLE_B23, TYPE, ALGORITHM>();
 			case 24:
-				return new LDPC<DVB_S2X_TABLE_B24, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2X_TABLE_B24, TYPE, ALGORITHM>();
 			}
 		}
 		if (prefix == 'C') {
 			switch (number) {
 			case 1:
-				return new LDPC<DVB_S2X_TABLE_C1, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2X_TABLE_C1, TYPE, ALGORITHM>();
 			case 2:
-				return new LDPC<DVB_S2X_TABLE_C2, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2X_TABLE_C2, TYPE, ALGORITHM>();
 			case 3:
-				return new LDPC<DVB_S2X_TABLE_C3, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2X_TABLE_C3, TYPE, ALGORITHM>();
 			case 4:
-				return new LDPC<DVB_S2X_TABLE_C4, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2X_TABLE_C4, TYPE, ALGORITHM>();
 			case 5:
-				return new LDPC<DVB_S2X_TABLE_C5, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2X_TABLE_C5, TYPE, ALGORITHM>();
 			case 6:
-				return new LDPC<DVB_S2X_TABLE_C6, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2X_TABLE_C6, TYPE, ALGORITHM>();
 			case 7:
-				return new LDPC<DVB_S2X_TABLE_C7, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2X_TABLE_C7, TYPE, ALGORITHM>();
 			case 8:
-				return new LDPC<DVB_S2X_TABLE_C8, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2X_TABLE_C8, TYPE, ALGORITHM>();
 			case 9:
-				return new LDPC<DVB_S2X_TABLE_C9, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2X_TABLE_C9, TYPE, ALGORITHM>();
 			case 10:
-				return new LDPC<DVB_S2X_TABLE_C10, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_S2X_TABLE_C10, TYPE, ALGORITHM>();
 			}
 		}
 	}
@@ -195,39 +195,39 @@ LDPCInterface<TYPE> *create_decoder(char *standard, char prefix, int number)
 		if (prefix == 'A') {
 			switch (number) {
 			case 1:
-				return new LDPC<DVB_T2_TABLE_A1, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_T2_TABLE_A1, TYPE, ALGORITHM>();
 			case 2:
-				return new LDPC<DVB_T2_TABLE_A2, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_T2_TABLE_A2, TYPE, ALGORITHM>();
 			case 3:
-				return new LDPC<DVB_T2_TABLE_A3, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_T2_TABLE_A3, TYPE, ALGORITHM>();
 			case 4:
-				return new LDPC<DVB_T2_TABLE_A4, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_T2_TABLE_A4, TYPE, ALGORITHM>();
 			case 5:
-				return new LDPC<DVB_T2_TABLE_A5, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_T2_TABLE_A5, TYPE, ALGORITHM>();
 			case 6:
-				return new LDPC<DVB_T2_TABLE_A6, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_T2_TABLE_A6, TYPE, ALGORITHM>();
 			}
 		}
 		if (prefix == 'B') {
 			switch (number) {
 			case 1:
-				return new LDPC<DVB_T2_TABLE_B1, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_T2_TABLE_B1, TYPE, ALGORITHM>();
 			case 2:
-				return new LDPC<DVB_T2_TABLE_B2, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_T2_TABLE_B2, TYPE, ALGORITHM>();
 			case 3:
-				return new LDPC<DVB_T2_TABLE_B3, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_T2_TABLE_B3, TYPE, ALGORITHM>();
 			case 4:
-				return new LDPC<DVB_T2_TABLE_B4, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_T2_TABLE_B4, TYPE, ALGORITHM>();
 			case 5:
-				return new LDPC<DVB_T2_TABLE_B5, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_T2_TABLE_B5, TYPE, ALGORITHM>();
 			case 6:
-				return new LDPC<DVB_T2_TABLE_B6, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_T2_TABLE_B6, TYPE, ALGORITHM>();
 			case 7:
-				return new LDPC<DVB_T2_TABLE_B7, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_T2_TABLE_B7, TYPE, ALGORITHM>();
 			case 8:
-				return new LDPC<DVB_T2_TABLE_B8, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_T2_TABLE_B8, TYPE, ALGORITHM>();
 			case 9:
-				return new LDPC<DVB_T2_TABLE_B9, TYPE, UPDATE, ALGORITHM>();
+				return new LDPC<DVB_T2_TABLE_B9, TYPE, ALGORITHM>();
 			}
 		}
 	}
@@ -459,13 +459,13 @@ int main(int argc, char **argv)
 	//typedef NormalUpdate<code_type> update_type;
 	typedef SelfCorrectedUpdate<code_type> update_type;
 
-	typedef MinSumAlgorithm<code_type> algorithm_type;
-	//typedef MinSumCAlgorithm<code_type, factor> algorithm_type;
-	//typedef LogDomainSPA<code_type> algorithm_type;
-	//typedef LambdaMinAlgorithm<code_type, 3> algorithm_type;
-	//typedef SumProductAlgorithm<code_type> algorithm_type;
+	typedef MinSumAlgorithm<code_type, update_type> algorithm_type;
+	//typedef MinSumCAlgorithm<code_type, update_type, factor> algorithm_type;
+	//typedef LogDomainSPA<code_type, update_type> algorithm_type;
+	//typedef LambdaMinAlgorithm<code_type, update_type, 3> algorithm_type;
+	//typedef SumProductAlgorithm<code_type, update_type> algorithm_type;
 
-	LDPCInterface<code_type> *ldpc = create_decoder<code_type, update_type, algorithm_type>(argv[2], argv[3][0], atoi(argv[3]+1));
+	LDPCInterface<code_type> *ldpc = create_decoder<code_type, algorithm_type>(argv[2], argv[3][0], atoi(argv[3]+1));
 	if (!ldpc) {
 		std::cerr << "no such table!" << std::endl;
 		return -1;

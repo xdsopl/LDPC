@@ -12,7 +12,7 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 template <typename TYPE>
 struct NormalUpdate
 {
-	TYPE operator()(TYPE, TYPE v)
+	static TYPE update(TYPE, TYPE v)
 	{
 		return v;
 	}
@@ -21,7 +21,7 @@ struct NormalUpdate
 template <typename TYPE>
 struct SelfCorrectedUpdate
 {
-	TYPE operator()(TYPE a, TYPE b)
+	static TYPE update(TYPE a, TYPE b)
 	{
 		return (a == TYPE(0) || (a < TYPE(0)) == (b < TYPE(0))) ? b : TYPE(0);
 	}
@@ -30,13 +30,13 @@ struct SelfCorrectedUpdate
 template <>
 struct SelfCorrectedUpdate<int8_t>
 {
-	int8_t operator()(int8_t a, int8_t b)
+	static int8_t update(int8_t a, int8_t b)
 	{
 		return (a == 0 || ((a ^ b) & 128) == 0) ? b : 0;
 	}
 };
 
-template <typename TYPE>
+template <typename TYPE, typename UPDATE>
 struct MinSumAlgorithm
 {
 	static TYPE one()
@@ -72,10 +72,14 @@ struct MinSumAlgorithm
 	{
 		return v <= TYPE(0);
 	}
+	static TYPE update(TYPE a, TYPE b)
+	{
+		return UPDATE::update(a, b);
+	}
 };
 
-template <>
-struct MinSumAlgorithm<float>
+template <typename UPDATE>
+struct MinSumAlgorithm<float, UPDATE>
 {
 	static float one()
 	{
@@ -117,10 +121,14 @@ struct MinSumAlgorithm<float>
 	{
 		return v <= 0.f;
 	}
+	static float update(float a, float b)
+	{
+		return UPDATE::update(a, b);
+	}
 };
 
-template <>
-struct MinSumAlgorithm<int8_t>
+template <typename UPDATE>
+struct MinSumAlgorithm<int8_t, UPDATE>
 {
 	static int8_t one()
 	{
@@ -167,9 +175,13 @@ struct MinSumAlgorithm<int8_t>
 	{
 		return v <= 0;
 	}
+	static int8_t update(int8_t a, int8_t b)
+	{
+		return UPDATE::update(a, b);
+	}
 };
 
-template <typename TYPE, int FACTOR>
+template <typename TYPE, typename UPDATE, int FACTOR>
 struct MinSumCAlgorithm
 {
 	static TYPE one()
@@ -216,10 +228,14 @@ struct MinSumCAlgorithm
 	{
 		return v <= TYPE(0);
 	}
+	static TYPE update(TYPE a, TYPE b)
+	{
+		return UPDATE::update(a, b);
+	}
 };
 
-template <int FACTOR>
-struct MinSumCAlgorithm<float, FACTOR>
+template <typename UPDATE, int FACTOR>
+struct MinSumCAlgorithm<float, UPDATE, FACTOR>
 {
 	static float one()
 	{
@@ -264,10 +280,14 @@ struct MinSumCAlgorithm<float, FACTOR>
 	{
 		return v <= 0.f;
 	}
+	static float update(float a, float b)
+	{
+		return UPDATE::update(a, b);
+	}
 };
 
-template <int FACTOR>
-struct MinSumCAlgorithm<int8_t, FACTOR>
+template <typename UPDATE, int FACTOR>
+struct MinSumCAlgorithm<int8_t, UPDATE, FACTOR>
 {
 	static int8_t one()
 	{
@@ -341,9 +361,13 @@ struct MinSumCAlgorithm<int8_t, FACTOR>
 	{
 		return v <= 0;
 	}
+	static int8_t update(int8_t a, int8_t b)
+	{
+		return UPDATE::update(a, b);
+	}
 };
 
-template <typename TYPE>
+template <typename TYPE, typename UPDATE>
 struct LogDomainSPA
 {
 	static TYPE one()
@@ -380,9 +404,13 @@ struct LogDomainSPA
 	{
 		return v <= TYPE(0);
 	}
+	static TYPE update(TYPE a, TYPE b)
+	{
+		return UPDATE::update(a, b);
+	}
 };
 
-template <typename TYPE, int LAMBDA>
+template <typename TYPE, typename UPDATE, int LAMBDA>
 struct LambdaMinAlgorithm
 {
 	static TYPE one()
@@ -434,9 +462,13 @@ struct LambdaMinAlgorithm
 	{
 		return v <= TYPE(0);
 	}
+	static TYPE update(TYPE a, TYPE b)
+	{
+		return UPDATE::update(a, b);
+	}
 };
 
-template <typename TYPE>
+template <typename TYPE, typename UPDATE>
 struct SumProductAlgorithm
 {
 	static TYPE one()
@@ -475,6 +507,10 @@ struct SumProductAlgorithm
 	static bool bad(TYPE v)
 	{
 		return v <= TYPE(0);
+	}
+	static TYPE update(TYPE a, TYPE b)
+	{
+		return UPDATE::update(a, b);
 	}
 };
 

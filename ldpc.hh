@@ -20,7 +20,7 @@ struct LDPCInterface
 	virtual ~LDPCInterface() = default;
 };
 
-template <typename TABLE, typename TYPE, typename BLU, typename ALG>
+template <typename TABLE, typename TYPE, typename ALG>
 class LDPC : public LDPCInterface<TYPE>
 {
 
@@ -43,7 +43,6 @@ class LDPC : public LDPCInterface<TYPE>
 	TYPE cnv[R];
 	uint8_t cnc[R];
 	ALG alg;
-	BLU blu;
 
 	void next_group()
 	{
@@ -144,13 +143,13 @@ class LDPC : public LDPCInterface<TYPE>
 		cnc[0] = 1;
 		for (int i = 1; i < R; ++i)
 			cnc[i] = 2;
-		*bl = blu(*bl, alg.add(parity[0], cnl[CNL])); ++bl;
-		*bl = blu(*bl, alg.add(parity[0], cnl[0])); ++bl;
+		*bl = alg.update(*bl, alg.add(parity[0], cnl[CNL])); ++bl;
+		*bl = alg.update(*bl, alg.add(parity[0], cnl[0])); ++bl;
 		for (int i = 1; i < R-1; ++i) {
-			*bl = blu(*bl, alg.add(parity[i], cnl[CNL*(i+1)])); ++bl;
-			*bl = blu(*bl, alg.add(parity[i], cnl[CNL*i+1])); ++bl;
+			*bl = alg.update(*bl, alg.add(parity[i], cnl[CNL*(i+1)])); ++bl;
+			*bl = alg.update(*bl, alg.add(parity[i], cnl[CNL*i+1])); ++bl;
 		}
-		*bl = blu(*bl, parity[R-1]); ++bl;
+		*bl = alg.update(*bl, parity[R-1]); ++bl;
 		first_group();
 		for (int j = 0; j < K; j += M) {
 			for (int m = 0; m < M; ++m) {
@@ -163,7 +162,7 @@ class LDPC : public LDPCInterface<TYPE>
 				CODE::exclusive_reduce(inp, out, bit_deg, alg.add);
 				bnv[j+m+R] = alg.add(data[j+m], alg.add(out[0], inp[0]));
 				for (int n = 0; n < bit_deg; ++n, ++bl)
-					*bl = blu(*bl, alg.add(data[j+m], out[n]));
+					*bl = alg.update(*bl, alg.add(data[j+m], out[n]));
 				next_bit();
 			}
 			next_group();
