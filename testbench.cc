@@ -454,10 +454,10 @@ int main(int argc, char **argv)
 	typedef std::complex<value_type> complex_type;
 #if 1
 	typedef int8_t code_type;
-	const int factor = 2;
+	const int FACTOR = 2;
 #else
 	typedef float code_type;
-	const int factor = 1;
+	const int FACTOR = 1;
 #endif
 
 #if 1
@@ -472,7 +472,7 @@ int main(int argc, char **argv)
 	typedef SelfCorrectedUpdate<simd_type> update_type;
 
 	typedef MinSumAlgorithm<simd_type, update_type> algorithm_type;
-	//typedef MinSumCAlgorithm<simd_type, update_type, factor> algorithm_type;
+	//typedef MinSumCAlgorithm<simd_type, update_type, FACTOR> algorithm_type;
 	//typedef LogDomainSPA<simd_type, update_type> algorithm_type;
 	//typedef LambdaMinAlgorithm<simd_type, update_type, 3> algorithm_type;
 	//typedef SumProductAlgorithm<simd_type, update_type> algorithm_type;
@@ -565,7 +565,7 @@ int main(int argc, char **argv)
 
 	// $LLR=log(\frac{p(x=+1|y)}{p(x=-1|y)})$
 	// $p(x|\mu,\sigma)=\frac{1}{\sqrt{2\pi}\sigma}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}$
-	value_type precision = factor / (sigma * sigma);
+	value_type precision = FACTOR / (sigma * sigma);
 	for (int j = 0; j < BLOCKS; ++j)
 		mod->softN(code + j * CODE_LEN, symb + j * SYMBOLS, precision);
 
