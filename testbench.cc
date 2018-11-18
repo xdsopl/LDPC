@@ -24,6 +24,10 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 #include "interleaver.hh"
 #include "modulation.hh"
 
+#ifdef __AVX2__
+#include "avx2.hh"
+#endif
+
 template <typename TYPE, typename CODE, int LEN>
 ModulationInterface<TYPE, CODE> *create_modulation(char *name)
 {
@@ -456,16 +460,24 @@ int main(int argc, char **argv)
 	const int factor = 1;
 #endif
 
-	//typedef NormalUpdate<code_type> update_type;
-	typedef SelfCorrectedUpdate<code_type> update_type;
+#if 1
+	typedef code_type simd_type;
+	const int SIMD_WIDTH = 1;
+#else
+	typedef __m256i simd_type;
+	const int SIMD_WIDTH = 32;
+#endif
 
-	typedef MinSumAlgorithm<code_type, update_type> algorithm_type;
-	//typedef MinSumCAlgorithm<code_type, update_type, factor> algorithm_type;
-	//typedef LogDomainSPA<code_type, update_type> algorithm_type;
-	//typedef LambdaMinAlgorithm<code_type, update_type, 3> algorithm_type;
-	//typedef SumProductAlgorithm<code_type, update_type> algorithm_type;
+	//typedef NormalUpdate<simd_type> update_type;
+	typedef SelfCorrectedUpdate<simd_type> update_type;
 
-	LDPCInterface<code_type> *ldpc = create_decoder<code_type, algorithm_type>(argv[2], argv[3][0], atoi(argv[3]+1));
+	typedef MinSumAlgorithm<simd_type, update_type> algorithm_type;
+	//typedef MinSumCAlgorithm<simd_type, update_type, factor> algorithm_type;
+	//typedef LogDomainSPA<simd_type, update_type> algorithm_type;
+	//typedef LambdaMinAlgorithm<simd_type, update_type, 3> algorithm_type;
+	//typedef SumProductAlgorithm<simd_type, update_type> algorithm_type;
+
+	LDPCInterface<simd_type> *ldpc = create_decoder<simd_type, algorithm_type>(argv[2], argv[3][0], atoi(argv[3]+1));
 	if (!ldpc) {
 		std::cerr << "no such table!" << std::endl;
 		return -1;
@@ -502,6 +514,7 @@ int main(int argc, char **argv)
 	int BLOCKS = atoi(argv[5]);
 	if (BLOCKS < 1)
 		return -1;
+	simd_type *simd = new simd_type[CODE_LEN];
 	code_type *code = new code_type[BLOCKS * CODE_LEN];
 	code_type *orig = new code_type[BLOCKS * CODE_LEN];
 	code_type *noisy = new code_type[BLOCKS * CODE_LEN];
@@ -511,8 +524,16 @@ int main(int argc, char **argv)
 		for (int i = 0; i < DATA_LEN; ++i)
 			code[j * CODE_LEN + i] = 1 - 2 * data();
 
-	for (int i = 0; i < BLOCKS; ++i)
-		ldpc->encode(code + i * CODE_LEN, code + i * CODE_LEN + DATA_LEN);
+	for (int j = 0; j < BLOCKS; j += SIMD_WIDTH) {
+		int blocks = j + SIMD_WIDTH > BLOCKS ? BLOCKS - j : SIMD_WIDTH;
+		for (int n = 0; n < blocks; ++n)
+			for (int i = 0; i < DATA_LEN; ++i)
+				reinterpret_cast<code_type *>(simd+i)[n] = code[(j+n)*CODE_LEN+i];
+		ldpc->encode(simd, simd + DATA_LEN);
+		for (int n = 0; n < blocks; ++n)
+			for (int i = 0; i < CODE_LEN; ++i)
+				code[(j+n)*CODE_LEN+i] = reinterpret_cast<code_type *>(simd+i)[n];
+	}
 
 	for (int i = 0; i < BLOCKS * CODE_LEN; ++i)
 		orig[i] = code[i];
@@ -559,9 +580,16 @@ int main(int argc, char **argv)
 
 	int iterations = 0;
 	auto start = std::chrono::system_clock::now();
-	for (int j = 0; j < BLOCKS; ++j) {
+	for (int j = 0; j < BLOCKS; j += SIMD_WIDTH) {
+		int blocks = j + SIMD_WIDTH > BLOCKS ? BLOCKS - j : SIMD_WIDTH;
+		for (int n = 0; n < blocks; ++n)
+			for (int i = 0; i < CODE_LEN; ++i)
+				reinterpret_cast<code_type *>(simd+i)[n] = code[(j+n)*CODE_LEN+i];
 		int trials = 50;
-		int count = ldpc->decode(code + j * CODE_LEN, code + j * CODE_LEN + DATA_LEN, trials);
+		int count = ldpc->decode(simd, simd + DATA_LEN, trials, blocks);
+		for (int n = 0; n < blocks; ++n)
+			for (int i = 0; i < CODE_LEN; ++i)
+				code[(j+n)*CODE_LEN+i] = reinterpret_cast<code_type *>(simd+i)[n];
 		if (count < 0) {
 			iterations += trials;
 			std::cerr << "decoder failed at converging to a code word!" << std::endl;
