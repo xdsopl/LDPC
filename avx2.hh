@@ -21,6 +21,19 @@ struct SelfCorrectedUpdate<__m256i>
 	}
 };
 
+template <>
+struct SelfCorrectedUpdate<__m256>
+{
+	static __m256 update(__m256 a, __m256 b)
+	{
+		return _mm256_and_ps(b, _mm256_or_ps(
+			_mm256_cmp_ps(a, _mm256_setzero_ps(), _CMP_EQ_OQ),
+			_mm256_xor_ps(
+				_mm256_cmp_ps(a, _mm256_setzero_ps(), _CMP_GT_OQ),
+				_mm256_cmp_ps(_mm256_setzero_ps(), b, _CMP_GT_OQ))));
+	}
+};
+
 template <typename UPDATE>
 struct MinSumAlgorithm<__m256i, UPDATE>
 {
@@ -60,6 +73,53 @@ struct MinSumAlgorithm<__m256i, UPDATE>
 		return false;
 	}
 	static __m256i update(__m256i a, __m256i b)
+	{
+		return UPDATE::update(a, b);
+	}
+};
+
+template <typename UPDATE>
+struct MinSumAlgorithm<__m256, UPDATE>
+{
+	static __m256 one()
+	{
+		return _mm256_set1_ps(1.f);
+	}
+	static __m256 add(__m256 a, __m256 b)
+	{
+		return _mm256_add_ps(a, b);
+	}
+	static __m256 sign(__m256 a, __m256 b)
+	{
+		return _mm256_andnot_ps(
+			_mm256_cmp_ps(b, _mm256_setzero_ps(), _CMP_EQ_OQ),
+			_mm256_xor_ps(a, _mm256_and_ps(_mm256_set1_ps(-0.f), b)));
+	}
+	static void finalp(__m256 *links, int cnt)
+	{
+		__m256 mask = _mm256_set1_ps(-0.f);
+		__m256 mags[cnt], mins[cnt];
+		for (int i = 0; i < cnt; ++i)
+			mags[i] = _mm256_andnot_ps(mask, links[i]);
+		CODE::exclusive_reduce(mags, mins, cnt, _mm256_min_ps);
+
+		__m256 signs[cnt];
+		CODE::exclusive_reduce(links, signs, cnt, _mm256_xor_ps);
+		for (int i = 0; i < cnt; ++i)
+			signs[i] = _mm256_and_ps(mask, signs[i]);
+
+		for (int i = 0; i < cnt; ++i)
+			links[i] = _mm256_or_ps(signs[i], mins[i]);
+	}
+	static bool bad(__m256 v, int blocks)
+	{
+		__m256 tmp = _mm256_cmp_ps(v, _mm256_setzero_ps(), _CMP_GT_OQ);
+		for (int i = 0; i < blocks; ++i)
+			if (!reinterpret_cast<int *>(&tmp)[i])
+				return true;
+		return false;
+	}
+	static __m256 update(__m256 a, __m256 b)
 	{
 		return UPDATE::update(a, b);
 	}
