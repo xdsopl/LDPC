@@ -454,18 +454,14 @@ int main(int argc, char **argv)
 	typedef std::complex<value_type> complex_type;
 #if 1
 	typedef int8_t code_type;
+	typedef code_type simd_type;
+	//typedef __m256i simd_type;
 	const int FACTOR = 2;
 #else
 	typedef float code_type;
-	const int FACTOR = 1;
-#endif
-
-#if 1
 	typedef code_type simd_type;
-	const int SIMD_WIDTH = 1;
-#else
-	typedef __m256i simd_type;
-	const int SIMD_WIDTH = 32;
+	//typedef __m256 simd_type;
+	const int FACTOR = 1;
 #endif
 
 	//typedef NormalUpdate<simd_type> update_type;
@@ -524,6 +520,7 @@ int main(int argc, char **argv)
 		for (int i = 0; i < DATA_LEN; ++i)
 			code[j * CODE_LEN + i] = 1 - 2 * data();
 
+	const int SIMD_WIDTH = algorithm_type::SIMD_WIDTH;
 	for (int j = 0; j < BLOCKS; j += SIMD_WIDTH) {
 		int blocks = j + SIMD_WIDTH > BLOCKS ? BLOCKS - j : SIMD_WIDTH;
 		for (int n = 0; n < blocks; ++n)

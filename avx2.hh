@@ -39,6 +39,7 @@ struct SelfCorrectedUpdate<__m256>
 template <typename UPDATE>
 struct MinSumAlgorithm<__m256i, UPDATE>
 {
+	static const int SIMD_WIDTH = 32;
 	static __m256i one()
 	{
 		return _mm256_set1_epi8(1);
@@ -83,6 +84,7 @@ struct MinSumAlgorithm<__m256i, UPDATE>
 template <typename UPDATE>
 struct MinSumAlgorithm<__m256, UPDATE>
 {
+	static const int SIMD_WIDTH = 8;
 	static __m256 one()
 	{
 		return _mm256_set1_ps(1.f);
@@ -130,6 +132,7 @@ struct MinSumAlgorithm<__m256, UPDATE>
 template <typename UPDATE, int FACTOR>
 struct MinSumCAlgorithm<__m256i, UPDATE, FACTOR>
 {
+	static const int SIMD_WIDTH = 32;
 	static __m256i one()
 	{
 		return _mm256_set1_epi8(1);
@@ -194,6 +197,7 @@ struct MinSumCAlgorithm<__m256i, UPDATE, FACTOR>
 template <typename UPDATE, int FACTOR>
 struct MinSumCAlgorithm<__m256, UPDATE, FACTOR>
 {
+	static const int SIMD_WIDTH = 8;
 	static __m256 one()
 	{
 		return _mm256_set1_ps(1.f);
