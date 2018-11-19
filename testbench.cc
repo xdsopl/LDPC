@@ -30,6 +30,11 @@ typedef __m256 float_simd_type;
 typedef __m256i int_simd_type;
 #endif
 
+#ifdef __ARM_NEON__
+#include "neon.hh"
+typedef int8x16_t int_simd_type;
+#endif
+
 template <typename TYPE, typename CODE, int LEN>
 ModulationInterface<TYPE, CODE> *create_modulation(char *name)
 {
