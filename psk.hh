@@ -124,7 +124,7 @@ struct PhaseShiftKeying<8, TYPE, CODE>
 		c *= rot_cw;
 		b[1] = c.real() < value_type(0) ? code_type(-1) : code_type(1);
 		b[2] = c.imag() < value_type(0) ? code_type(-1) : code_type(1);
-		b[0] = abs(c.real()) < abs(c.imag()) ? code_type(-1) : code_type(1);
+		b[0] = std::abs(c.real()) < std::abs(c.imag()) ? code_type(-1) : code_type(1);
 	}
 
 	static void soft(code_type *b, complex_type c, value_type precision)
@@ -132,7 +132,7 @@ struct PhaseShiftKeying<8, TYPE, CODE>
 		c *= rot_cw;
 		b[1] = quantize(precision, c.real());
 		b[2] = quantize(precision, c.imag());
-		b[0] = quantize(precision, rcp_sqrt_2 * (abs(c.real()) - abs(c.imag())));
+		b[0] = quantize(precision, rcp_sqrt_2 * (std::abs(c.real()) - std::abs(c.imag())));
 	}
 
 	static complex_type map(code_type *b)
