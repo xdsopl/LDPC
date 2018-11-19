@@ -26,6 +26,8 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 
 #ifdef __AVX2__
 #include "avx2.hh"
+typedef __m256 float_simd_type;
+typedef __m256i int_simd_type;
 #endif
 
 template <typename TYPE, typename CODE, int LEN>
@@ -455,12 +457,12 @@ int main(int argc, char **argv)
 #if 1
 	typedef int8_t code_type;
 	typedef code_type simd_type;
-	//typedef __m256i simd_type;
+	//typedef int_simd_type simd_type;
 	const int FACTOR = 2;
 #else
 	typedef float code_type;
 	typedef code_type simd_type;
-	//typedef __m256 simd_type;
+	//typedef float_simd_type simd_type;
 	const int FACTOR = 1;
 #endif
 
