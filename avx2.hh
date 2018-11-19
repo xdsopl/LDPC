@@ -191,4 +191,61 @@ struct MinSumCAlgorithm<__m256i, UPDATE, FACTOR>
 	}
 };
 
+template <typename UPDATE, int FACTOR>
+struct MinSumCAlgorithm<__m256, UPDATE, FACTOR>
+{
+	static __m256 one()
+	{
+		return _mm256_set1_ps(1.f);
+	}
+	static __m256 add(__m256 a, __m256 b)
+	{
+		return _mm256_add_ps(a, b);
+	}
+	static __m256 sign(__m256 a, __m256 b)
+	{
+		return _mm256_andnot_ps(
+			_mm256_cmp_ps(b, _mm256_setzero_ps(), _CMP_EQ_OQ),
+			_mm256_xor_ps(a, _mm256_and_ps(_mm256_set1_ps(-0.f), b)));
+	}
+	static __m256 correction_factor(__m256 a, __m256 b)
+	{
+		__m256 c = _mm256_set1_ps(0.5f);
+		__m256 mask = _mm256_set1_ps(-0.f);
+		__m256 two = _mm256_set1_ps(2.f);
+		__m256 apb = _mm256_andnot_ps(mask, _mm256_add_ps(a, b));
+		__m256 amb = _mm256_andnot_ps(mask, _mm256_sub_ps(a, b));
+		__m256 pc = _mm256_and_ps(_mm256_and_ps(_mm256_cmp_ps(two, apb, _CMP_GT_OQ), _mm256_cmp_ps(amb, _mm256_mul_ps(two, apb), _CMP_GT_OQ)), c);
+		__m256 nc = _mm256_and_ps(_mm256_and_ps(_mm256_cmp_ps(two, amb, _CMP_GT_OQ), _mm256_cmp_ps(apb, _mm256_mul_ps(two, amb), _CMP_GT_OQ)), _mm256_or_ps(mask, c));
+		return _mm256_or_ps(pc, nc);
+	}
+	static __m256 min(__m256 a, __m256 b)
+	{
+		__m256 mask = _mm256_set1_ps(-0.f);
+		__m256 m = _mm256_min_ps(_mm256_andnot_ps(mask, a), _mm256_andnot_ps(mask, b));
+		__m256 x = _mm256_or_ps(_mm256_and_ps(mask, _mm256_xor_ps(a, b)), m);
+		x = _mm256_add_ps(x, correction_factor(a, b));
+		return x;
+	}
+	static void finalp(__m256 *links, int cnt)
+	{
+		__m256 tmp[cnt];
+		CODE::exclusive_reduce(links, tmp, cnt, min);
+		for (int i = 0; i < cnt; ++i)
+			links[i] = tmp[i];
+	}
+	static bool bad(__m256 v, int blocks)
+	{
+		__m256 tmp = _mm256_cmp_ps(v, _mm256_setzero_ps(), _CMP_GT_OQ);
+		for (int i = 0; i < blocks; ++i)
+			if (!reinterpret_cast<int *>(&tmp)[i])
+				return true;
+		return false;
+	}
+	static __m256 update(__m256 a, __m256 b)
+	{
+		return UPDATE::update(a, b);
+	}
+};
+
 #endif
