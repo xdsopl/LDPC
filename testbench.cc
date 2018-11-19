@@ -653,6 +653,7 @@ int main(int argc, char **argv)
 	delete mod;
 	delete itl;
 
+	delete[] simd;
 	delete[] code;
 	delete[] orig;
 	delete[] noisy;
