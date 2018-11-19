@@ -32,7 +32,7 @@ struct SelfCorrectedUpdate<int8_t>
 {
 	static int8_t update(int8_t a, int8_t b)
 	{
-		return (a == 0 || ((a ^ b) & 128) == 0) ? b : 0;
+		return (a == 0 || (a > 0 != b < 0)) ? b : 0;
 	}
 };
 

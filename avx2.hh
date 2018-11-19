@@ -17,7 +17,9 @@ struct SelfCorrectedUpdate<__m256i>
 	{
 		return _mm256_and_si256(b, _mm256_or_si256(
 			_mm256_cmpeq_epi8(a, _mm256_setzero_si256()),
-			_mm256_cmpeq_epi8(_mm256_and_si256(_mm256_xor_si256(a, b), _mm256_set1_epi8(-128)), _mm256_setzero_si256())));
+			_mm256_xor_si256(
+				_mm256_cmpgt_epi8(a, _mm256_setzero_si256()),
+				_mm256_cmpgt_epi8(_mm256_setzero_si256(), b))));
 	}
 };
 
