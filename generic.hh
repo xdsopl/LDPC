@@ -27,15 +27,6 @@ struct SelfCorrectedUpdate
 	}
 };
 
-template <>
-struct SelfCorrectedUpdate<int8_t>
-{
-	static int8_t update(int8_t a, int8_t b)
-	{
-		return (a == 0 || (a > 0 != b < 0)) ? b : 0;
-	}
-};
-
 template <typename TYPE, typename UPDATE>
 struct MinSumAlgorithm
 {
