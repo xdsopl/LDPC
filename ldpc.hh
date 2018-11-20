@@ -19,29 +19,20 @@ struct LDPCInterface
 	virtual ~LDPCInterface() = default;
 };
 
-template <typename TABLE, typename TYPE, typename ALG>
-class LDPC : public LDPCInterface<TYPE>
+template <typename TABLE>
+struct AccumulatorPositions
 {
-
 	static const int M = TABLE::M;
 	static const int N = TABLE::N;
 	static const int K = TABLE::K;
 	static const int R = N-K;
 	static const int q = R/M;
-	static const int CNL = TABLE::LINKS_MAX_CN;
-
-	int acc_pos[TABLE::DEG_MAX];
+	int pos[TABLE::DEG_MAX];
 	const int *row_ptr;
 	int bit_deg;
-	int grp_cnt;
 	int grp_num;
 	int grp_len;
-	TYPE bnl[TABLE::LINKS_TOTAL];
-	TYPE bnv[N];
-	TYPE cnl[R * CNL];
-	TYPE cnv[R];
-	uint8_t cnc[R];
-	ALG alg;
+	int grp_cnt;
 
 	void next_group()
 	{
@@ -52,16 +43,16 @@ class LDPC : public LDPCInterface<TYPE>
 			++grp_num;
 		}
 		for (int i = 0; i < bit_deg; ++i)
-			acc_pos[i] = row_ptr[i];
+			pos[i] = row_ptr[i];
 		row_ptr += bit_deg;
 		++grp_cnt;
 	}
 	void next_bit()
 	{
 		for (int i = 0; i < bit_deg; ++i)
-			acc_pos[i] += q;
+			pos[i] += q;
 		for (int i = 0; i < bit_deg; ++i)
-			acc_pos[i] %= R;
+			pos[i] %= R;
 	}
 	void first_group()
 	{
@@ -71,6 +62,25 @@ class LDPC : public LDPCInterface<TYPE>
 		row_ptr = TABLE::POS;
 		next_group();
 	}
+};
+
+template <typename TABLE, typename TYPE, typename ALG>
+class LDPC : public LDPCInterface<TYPE>
+{
+	static const int M = TABLE::M;
+	static const int N = TABLE::N;
+	static const int K = TABLE::K;
+	static const int R = N-K;
+	static const int CNL = TABLE::LINKS_MAX_CN;
+
+	TYPE bnl[TABLE::LINKS_TOTAL];
+	TYPE bnv[N];
+	TYPE cnl[R * CNL];
+	TYPE cnv[R];
+	uint8_t cnc[R];
+	ALG alg;
+	AccumulatorPositions<TABLE> acc;
+
 	void bit_node_init(TYPE *data, TYPE *parity)
 	{
 		for (int i = 0; i < R; ++i)
@@ -84,14 +94,14 @@ class LDPC : public LDPCInterface<TYPE>
 			*bl++ = parity[i];
 		}
 		*bl++ = parity[R-1];
-		first_group();
+		acc.first_group();
 		for (int j = 0; j < K; j += M) {
 			for (int m = 0; m < M; ++m) {
-				for (int n = 0; n < bit_deg; ++n)
+				for (int n = 0; n < acc.bit_deg; ++n)
 					*bl++ = data[j+m];
-				next_bit();
+				acc.next_bit();
 			}
-			next_group();
+			acc.next_group();
 		}
 	}
 	void check_node_update()
@@ -108,17 +118,17 @@ class LDPC : public LDPCInterface<TYPE>
 			cnl[CNL*i+1] = *bl++;
 			cnc[i] = 2;
 		}
-		first_group();
+		acc.first_group();
 		for (int j = 0; j < K; j += M) {
 			for (int m = 0; m < M; ++m) {
-				for (int n = 0; n < bit_deg; ++n) {
-					int i = acc_pos[n];
+				for (int n = 0; n < acc.bit_deg; ++n) {
+					int i = acc.pos[n];
 					cnv[i] = alg.sign(cnv[i], bnv[j+m+R]);
 					cnl[CNL*i+cnc[i]++] = *bl++;
 				}
-				next_bit();
+				acc.next_bit();
 			}
-			next_group();
+			acc.next_group();
 		}
 		for (int i = 0; i < R; ++i)
 			alg.finalp(cnl+CNL*i, cnc[i]);
@@ -141,22 +151,22 @@ class LDPC : public LDPCInterface<TYPE>
 			*bl = alg.update(*bl, alg.add(parity[i], cnl[CNL*i+1])); ++bl;
 		}
 		*bl = alg.update(*bl, parity[R-1]); ++bl;
-		first_group();
+		acc.first_group();
 		for (int j = 0; j < K; j += M) {
 			for (int m = 0; m < M; ++m) {
-				TYPE inp[bit_deg];
-				for (int n = 0; n < bit_deg; ++n) {
-					int i = acc_pos[n];
+				TYPE inp[acc.bit_deg];
+				for (int n = 0; n < acc.bit_deg; ++n) {
+					int i = acc.pos[n];
 					inp[n] = cnl[CNL*i+cnc[i]++];
 				}
-				TYPE out[bit_deg];
-				CODE::exclusive_reduce(inp, out, bit_deg, alg.add);
+				TYPE out[acc.bit_deg];
+				CODE::exclusive_reduce(inp, out, acc.bit_deg, alg.add);
 				bnv[j+m+R] = alg.add(data[j+m], alg.add(out[0], inp[0]));
-				for (int n = 0; n < bit_deg; ++n, ++bl)
+				for (int n = 0; n < acc.bit_deg; ++n, ++bl)
 					*bl = alg.update(*bl, alg.add(data[j+m], out[n]));
-				next_bit();
+				acc.next_bit();
 			}
-			next_group();
+			acc.next_group();
 		}
 	}
 	bool hard_decision(int blocks)
@@ -202,16 +212,16 @@ public:
 	{
 		for (int i = 0; i < R; ++i)
 			parity[i] = alg.one();
-		first_group();
+		acc.first_group();
 		for (int j = 0; j < K; j += M) {
 			for (int m = 0; m < M; ++m) {
-				for (int n = 0; n < bit_deg; ++n) {
-					int i = acc_pos[n];
+				for (int n = 0; n < acc.bit_deg; ++n) {
+					int i = acc.pos[n];
 					parity[i] = alg.sign(parity[i], data[j+m]);
 				}
-				next_bit();
+				acc.next_bit();
 			}
-			next_group();
+			acc.next_group();
 		}
 		for (int i = 1; i < R; ++i)
 			parity[i] = alg.sign(parity[i], parity[i-1]);
