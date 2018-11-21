@@ -526,18 +526,9 @@ int main(int argc, char **argv)
 		for (int i = 0; i < DATA_LEN; ++i)
 			code[j * CODE_LEN + i] = 1 - 2 * data();
 
-	LDPCEncoder<simd_type, algorithm_type> encode(ldpc);
-	const int SIMD_WIDTH = algorithm_type::SIMD_WIDTH;
-	for (int j = 0; j < BLOCKS; j += SIMD_WIDTH) {
-		int blocks = j + SIMD_WIDTH > BLOCKS ? BLOCKS - j : SIMD_WIDTH;
-		for (int n = 0; n < blocks; ++n)
-			for (int i = 0; i < DATA_LEN; ++i)
-				reinterpret_cast<code_type *>(simd+i)[n] = code[(j+n)*CODE_LEN+i];
-		encode(simd, simd + DATA_LEN);
-		for (int n = 0; n < blocks; ++n)
-			for (int i = 0; i < CODE_LEN; ++i)
-				code[(j+n)*CODE_LEN+i] = reinterpret_cast<code_type *>(simd+i)[n];
-	}
+	LDPCEncoder<code_type> encode(ldpc);
+	for (int j = 0; j < BLOCKS; ++j)
+		encode(code + j * CODE_LEN, code + j * CODE_LEN + DATA_LEN);
 
 	for (int i = 0; i < BLOCKS * CODE_LEN; ++i)
 		orig[i] = code[i];
@@ -583,6 +574,7 @@ int main(int argc, char **argv)
 		assert(!std::isnan(code[i]));
 
 	LDPCDecoder<simd_type, algorithm_type> decode(ldpc);
+	const int SIMD_WIDTH = algorithm_type::SIMD_WIDTH;
 	int iterations = 0;
 	auto start = std::chrono::system_clock::now();
 	for (int j = 0; j < BLOCKS; j += SIMD_WIDTH) {

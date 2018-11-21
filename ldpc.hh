@@ -246,12 +246,20 @@ public:
 	}
 };
 
-template <typename TYPE, typename ALG>
+template <typename TYPE>
 class LDPCEncoder
 {
 	LDPCInterface *ldpc;
-	ALG alg;
 	int N, K, R;
+
+	TYPE one()
+	{
+		return 1;
+	}
+	TYPE sign(TYPE a, TYPE b)
+	{
+		return b < TYPE(0) ? -a : b > TYPE(0) ? a : TYPE(0);
+	}
 public:
 	LDPCEncoder(LDPCInterface *ldpc) : ldpc(ldpc)
 	{
@@ -262,19 +270,19 @@ public:
 	void operator()(TYPE *data, TYPE *parity)
 	{
 		for (int i = 0; i < R; ++i)
-			parity[i] = alg.one();
+			parity[i] = one();
 		ldpc->first_bit();
 		for (int j = 0; j < K; ++j) {
 			int *acc_pos = ldpc->acc_pos();
 			int bit_deg = ldpc->bit_deg();
 			for (int n = 0; n < bit_deg; ++n) {
 				int i = acc_pos[n];
-				parity[i] = alg.sign(parity[i], data[j]);
+				parity[i] = sign(parity[i], data[j]);
 			}
 			ldpc->next_bit();
 		}
 		for (int i = 1; i < R; ++i)
-			parity[i] = alg.sign(parity[i], parity[i-1]);
+			parity[i] = sign(parity[i], parity[i-1]);
 	}
 };
 
