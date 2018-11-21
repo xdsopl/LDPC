@@ -11,11 +11,14 @@ CXX = clang++ -stdlib=libc++ -march=native
 test: testbench
 	$(QEMU) ./testbench 10 T2 A1 QAM16 32
 
-testbench: testbench.cc *_tables.cc *.hh Makefile
-	$(CXX) $(CXXFLAGS) testbench.cc *_tables.cc -o $@
+testbench: testbench.cc tables_handler.o *.hh Makefile
+	$(CXX) $(CXXFLAGS) testbench.cc tables_handler.o -o $@
+
+tables_handler.o: tables_handler.cc *_tables.hh Makefile
+	$(CXX) $(CXXFLAGS) tables_handler.cc -c -o $@
 
 .PHONY: clean all
 
 clean:
-	rm -f testbench
+	rm -f testbench *.o
 
