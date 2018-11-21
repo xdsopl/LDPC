@@ -7,6 +7,7 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 #ifndef LDPC_HH
 #define LDPC_HH
 
+#include <stdlib.h>
 #include "exclusive_reduce.hh"
 
 struct LDPCInterface
@@ -103,6 +104,7 @@ public:
 template <typename TYPE, typename ALG>
 class LDPCDecoder
 {
+	void *aligned_buffer;
 	TYPE *bnl, *bnv, *cnl, *cnv;
 	uint8_t *cnc;
 	LDPCInterface *ldpc;
@@ -214,10 +216,14 @@ public:
 		K = ldpc->data_len();
 		R = N - K;
 		CNL = ldpc->links_max_cn();
-		bnl = new TYPE[ldpc->links_total()];
-		bnv = new TYPE[N];
-		cnl = new TYPE[R * CNL];
-		cnv = new TYPE[R];
+		int LT = ldpc->links_total();
+		int num = LT + N + R * CNL + R;
+		aligned_buffer = aligned_alloc(sizeof(TYPE), sizeof(TYPE) * num);
+		TYPE *ptr = reinterpret_cast<TYPE *>(aligned_buffer);
+		bnl = ptr; ptr += LT;
+		bnv = ptr; ptr += N;
+		cnl = ptr; ptr += R * CNL;
+		cnv = ptr; ptr += R;
 		cnc = new uint8_t[R];
 	}
 	int operator()(TYPE *data, TYPE *parity, int trials = 50, int blocks = 1)
@@ -238,10 +244,7 @@ public:
 	}
 	~LDPCDecoder()
 	{
-		delete[] bnl;
-		delete[] bnv;
-		delete[] cnl;
-		delete[] cnv;
+		free(aligned_buffer);
 		delete[] cnc;
 	}
 };
