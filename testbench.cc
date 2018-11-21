@@ -14,14 +14,11 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 #include <cstring>
 #include <algorithm>
 #include <functional>
-#include <complex>
-#include "psk.hh"
-#include "qam.hh"
+#include "testbench.hh"
 #include "ldpc.hh"
 #include "generic.hh"
 #include "interleaver.hh"
 #include "modulation.hh"
-#include "testbench.hh"
 
 #ifdef __AVX2__
 #include "avx2.hh"
@@ -33,40 +30,7 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 
 LDPCInterface *create_ldpc(char *standard, char prefix, int number);
 Interleaver<code_type> *create_interleaver(char *modulation, char *standard, char prefix, int number);
-
-template <typename TYPE, typename CODE, int LEN>
-ModulationInterface<TYPE, CODE> *create_modulation(char *name)
-{
-	if (!strcmp(name, "BPSK"))
-		return new Modulation<PhaseShiftKeying<2, TYPE, CODE>, LEN>();
-	if (!strcmp(name, "QPSK"))
-		return new Modulation<PhaseShiftKeying<4, TYPE, CODE>, LEN / 2>();
-	if (!strcmp(name, "8PSK"))
-		return new Modulation<PhaseShiftKeying<8, TYPE, CODE>, LEN / 3>();
-	if (!strcmp(name, "QAM16"))
-		return new Modulation<QuadratureAmplitudeModulation<16, TYPE, CODE>, LEN / 4>();
-	if (!strcmp(name, "QAM64"))
-		return new Modulation<QuadratureAmplitudeModulation<64, TYPE, CODE>, LEN / 6>();
-	if (!strcmp(name, "QAM256"))
-		return new Modulation<QuadratureAmplitudeModulation<256, TYPE, CODE>, LEN / 8>();
-	if (!strcmp(name, "QAM1024"))
-		return new Modulation<QuadratureAmplitudeModulation<1024, TYPE, CODE>, LEN / 10>();
-	return 0;
-}
-
-template <typename TYPE, typename CODE>
-ModulationInterface<TYPE, CODE> *create_modulation(char *name, int len)
-{
-	switch (len) {
-	case 16200:
-		return create_modulation<TYPE, CODE, 16200>(name);
-	case 32400:
-		return create_modulation<TYPE, CODE, 32400>(name);
-	case 64800:
-		return create_modulation<TYPE, CODE, 64800>(name);
-	}
-	return 0;
-}
+ModulationInterface<complex_type, code_type> *create_modulation(char *name, int len);
 
 int main(int argc, char **argv)
 {
@@ -91,7 +55,7 @@ int main(int argc, char **argv)
 	const int DATA_LEN = ldpc->data_len();
 	std::cerr << "testing LDPC(" << CODE_LEN << ", " << DATA_LEN << ") code." << std::endl;
 
-	ModulationInterface<complex_type, code_type> *mod = create_modulation<complex_type, code_type>(argv[4], CODE_LEN);
+	ModulationInterface<complex_type, code_type> *mod = create_modulation(argv[4], CODE_LEN);
 	if (!mod) {
 		std::cerr << "no such modulation!" << std::endl;
 		return -1;
