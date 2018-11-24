@@ -6,16 +6,12 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 
 #include <cstdint>
 #include <complex>
+#include "simd.hh"
 
 #ifdef __AVX2__
-#include <immintrin.h>
-typedef __m256 float_simd_type;
-typedef __m256i int_simd_type;
-#endif
-
-#ifdef __ARM_NEON__
-#include <arm_neon.h>
-typedef int8x16_t int_simd_type;
+const int SIZEOF_SIMD = 32;
+#else
+const int SIZEOF_SIMD = 16;
 #endif
 
 typedef float value_type;
@@ -23,13 +19,17 @@ typedef std::complex<value_type> complex_type;
 
 #if 1
 typedef int8_t code_type;
-typedef code_type simd_type;
-//typedef int_simd_type simd_type;
 const int FACTOR = 2;
 #else
 typedef float code_type;
-typedef code_type simd_type;
-//typedef float_simd_type simd_type;
 const int FACTOR = 1;
 #endif
+
+#if 1
+const int SIMD_WIDTH = 1;
+#else
+const int SIMD_WIDTH = SIZEOF_SIMD / sizeof(code_type);
+#endif
+
+typedef SIMD<code_type, SIMD_WIDTH> simd_type;
 

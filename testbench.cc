@@ -16,17 +16,9 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 #include <functional>
 #include "testbench.hh"
 #include "ldpc.hh"
-#include "generic.hh"
+#include "algorithms.hh"
 #include "interleaver.hh"
 #include "modulation.hh"
-
-#ifdef __AVX2__
-#include "avx2.hh"
-#endif
-
-#ifdef __ARM_NEON__
-#include "neon.hh"
-#endif
 
 LDPCInterface *create_ldpc(char *standard, char prefix, int number);
 Interleaver<code_type> *create_interleaver(char *modulation, char *standard, char prefix, int number);
@@ -142,7 +134,6 @@ int main(int argc, char **argv)
 		assert(!std::isnan(code[i]));
 
 	LDPCDecoder<simd_type, algorithm_type> decode(ldpc);
-	const int SIMD_WIDTH = algorithm_type::SIMD_WIDTH;
 	int iterations = 0;
 	auto start = std::chrono::system_clock::now();
 	for (int j = 0; j < BLOCKS; j += SIMD_WIDTH) {
