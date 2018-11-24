@@ -14,8 +14,10 @@ union SIMD<float, 8>
 {
 	static const int SIZE = 8;
 	typedef float value_type;
+	typedef uint32_t uint_type;
 	__m256 m;
-	float v[8];
+	value_type v[SIZE];
+	uint_type u[SIZE];
 };
 
 template <>
@@ -23,8 +25,10 @@ union SIMD<double, 4>
 {
 	static const int SIZE = 4;
 	typedef double value_type;
+	typedef uint64_t uint_type;
 	__m256d m;
-	double v[4];
+	value_type v[SIZE];
+	uint_type u[SIZE];
 };
 
 template <>
@@ -32,8 +36,10 @@ union SIMD<int8_t, 32>
 {
 	static const int SIZE = 32;
 	typedef int8_t value_type;
+	typedef uint8_t uint_type;
 	__m256i m;
-	int8_t v[32];
+	value_type v[SIZE];
+	uint_type u[SIZE];
 };
 
 template <>
@@ -41,8 +47,10 @@ union SIMD<int16_t, 16>
 {
 	static const int SIZE = 16;
 	typedef int16_t value_type;
+	typedef uint16_t uint_type;
 	__m256i m;
-	int16_t v[16];
+	value_type v[SIZE];
+	uint_type u[SIZE];
 };
 
 template <>
@@ -50,8 +58,10 @@ union SIMD<int32_t, 8>
 {
 	static const int SIZE = 8;
 	typedef int32_t value_type;
+	typedef uint32_t uint_type;
 	__m256i m;
-	int32_t v[8];
+	value_type v[SIZE];
+	uint_type u[SIZE];
 };
 
 template <>
@@ -59,8 +69,10 @@ union SIMD<int64_t, 4>
 {
 	static const int SIZE = 4;
 	typedef int64_t value_type;
+	typedef uint64_t uint_type;
 	__m256i m;
-	int64_t v[4];
+	value_type v[SIZE];
+	uint_type u[SIZE];
 };
 
 template <>
@@ -68,8 +80,10 @@ union SIMD<uint8_t, 32>
 {
 	static const int SIZE = 32;
 	typedef uint8_t value_type;
+	typedef uint8_t uint_type;
 	__m256i m;
-	uint8_t v[32];
+	value_type v[SIZE];
+	uint_type u[SIZE];
 };
 
 template <>
@@ -77,8 +91,10 @@ union SIMD<uint16_t, 16>
 {
 	static const int SIZE = 16;
 	typedef uint16_t value_type;
+	typedef uint16_t uint_type;
 	__m256i m;
-	uint16_t v[16];
+	value_type v[SIZE];
+	uint_type u[SIZE];
 };
 
 template <>
@@ -86,8 +102,10 @@ union SIMD<uint32_t, 8>
 {
 	static const int SIZE = 8;
 	typedef uint32_t value_type;
+	typedef uint32_t uint_type;
 	__m256i m;
-	uint32_t v[8];
+	value_type v[SIZE];
+	uint_type u[SIZE];
 };
 
 template <>
@@ -95,8 +113,10 @@ union SIMD<uint64_t, 4>
 {
 	static const int SIZE = 4;
 	typedef uint64_t value_type;
+	typedef uint64_t uint_type;
 	__m256i m;
-	uint64_t v[4];
+	value_type v[SIZE];
+	uint_type u[SIZE];
 };
 
 template <>

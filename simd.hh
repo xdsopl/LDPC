@@ -12,11 +12,106 @@ Copyright 2018 Ahmet Inan <inan@aicodix.de>
 #include <cmath>
 
 template <typename TYPE, int WIDTH>
-union SIMD
+union SIMD;
+
+template <int WIDTH>
+union SIMD<float, WIDTH>
 {
 	static const int SIZE = WIDTH;
-	typedef TYPE value_type;
-	TYPE v[WIDTH];
+	typedef float value_type;
+	typedef uint32_t uint_type;
+	value_type v[SIZE];
+	uint_type u[SIZE];
+};
+
+template <int WIDTH>
+union SIMD<double, WIDTH>
+{
+	static const int SIZE = WIDTH;
+	typedef double value_type;
+	typedef uint64_t uint_type;
+	value_type v[SIZE];
+	uint_type u[SIZE];
+};
+
+template <int WIDTH>
+union SIMD<int8_t, WIDTH>
+{
+	static const int SIZE = WIDTH;
+	typedef int8_t value_type;
+	typedef uint8_t uint_type;
+	value_type v[SIZE];
+	uint_type u[SIZE];
+};
+
+template <int WIDTH>
+union SIMD<int16_t, WIDTH>
+{
+	static const int SIZE = WIDTH;
+	typedef int16_t value_type;
+	typedef uint16_t uint_type;
+	value_type v[SIZE];
+	uint_type u[SIZE];
+};
+
+template <int WIDTH>
+union SIMD<int32_t, WIDTH>
+{
+	static const int SIZE = WIDTH;
+	typedef int32_t value_type;
+	typedef uint32_t uint_type;
+	value_type v[SIZE];
+	uint_type u[SIZE];
+};
+
+template <int WIDTH>
+union SIMD<int64_t, WIDTH>
+{
+	static const int SIZE = WIDTH;
+	typedef int64_t value_type;
+	typedef uint64_t uint_type;
+	value_type v[SIZE];
+	uint_type u[SIZE];
+};
+
+template <int WIDTH>
+union SIMD<uint8_t, WIDTH>
+{
+	static const int SIZE = WIDTH;
+	typedef uint8_t value_type;
+	typedef uint8_t uint_type;
+	value_type v[SIZE];
+	uint_type u[SIZE];
+};
+
+template <int WIDTH>
+union SIMD<uint16_t, WIDTH>
+{
+	static const int SIZE = WIDTH;
+	typedef uint16_t value_type;
+	typedef uint16_t uint_type;
+	value_type v[SIZE];
+	uint_type u[SIZE];
+};
+
+template <int WIDTH>
+union SIMD<uint32_t, WIDTH>
+{
+	static const int SIZE = WIDTH;
+	typedef uint32_t value_type;
+	typedef uint32_t uint_type;
+	value_type v[SIZE];
+	uint_type u[SIZE];
+};
+
+template <int WIDTH>
+union SIMD<uint64_t, WIDTH>
+{
+	static const int SIZE = WIDTH;
+	typedef uint64_t value_type;
+	typedef uint64_t uint_type;
+	value_type v[SIZE];
+	uint_type u[SIZE];
 };
 
 template <typename TYPE>
@@ -31,8 +126,12 @@ static inline TYPE vdup(typename TYPE::value_type a)
 template <typename DST, typename SRC>
 static inline DST vreinterpret(SRC a)
 {
-	static_assert(sizeof(SRC) == sizeof(DST), "source and destination type sizes must be same");
-	return *reinterpret_cast<DST *>(&a);
+	static_assert(SRC::SIZE == DST::SIZE, "source and destination width must be same");
+	static_assert(sizeof(typename SRC::value_type) == sizeof(typename DST::value_type), "source and destination value type sizes must be same");
+	DST tmp;
+	for (int i = 0; i < DST::SIZE; ++i)
+		tmp.u[i] = a.u[i];
+	return tmp;
 }
 
 template <int WIDTH>
