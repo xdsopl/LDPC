@@ -395,7 +395,7 @@ template <>
 inline SIMD<uint8_t, 32> vbic(SIMD<uint8_t, 32> a, SIMD<uint8_t, 32> b)
 {
 	SIMD<uint8_t, 32> tmp;
-	tmp.m = _mm256_andnot_si256(a.m, b.m);
+	tmp.m = _mm256_andnot_si256(b.m, a.m);
 	return tmp;
 }
 
@@ -403,7 +403,7 @@ template <>
 inline SIMD<uint16_t, 16> vbic(SIMD<uint16_t, 16> a, SIMD<uint16_t, 16> b)
 {
 	SIMD<uint16_t, 16> tmp;
-	tmp.m = _mm256_andnot_si256(a.m, b.m);
+	tmp.m = _mm256_andnot_si256(b.m, a.m);
 	return tmp;
 }
 
@@ -411,7 +411,7 @@ template <>
 inline SIMD<uint32_t, 8> vbic(SIMD<uint32_t, 8> a, SIMD<uint32_t, 8> b)
 {
 	SIMD<uint32_t, 8> tmp;
-	tmp.m = _mm256_andnot_si256(a.m, b.m);
+	tmp.m = _mm256_andnot_si256(b.m, a.m);
 	return tmp;
 }
 
@@ -419,7 +419,7 @@ template <>
 inline SIMD<uint64_t, 4> vbic(SIMD<uint64_t, 4> a, SIMD<uint64_t, 4> b)
 {
 	SIMD<uint64_t, 4> tmp;
-	tmp.m = _mm256_andnot_si256(a.m, b.m);
+	tmp.m = _mm256_andnot_si256(b.m, a.m);
 	return tmp;
 }
 
