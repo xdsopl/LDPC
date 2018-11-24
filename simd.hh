@@ -782,4 +782,10 @@ static inline SIMD<int64_t, WIDTH> vsign(SIMD<int64_t, WIDTH> a, SIMD<int64_t, W
 	return tmp;
 }
 
+#if 1
+#ifdef __AVX2__
+#include "avx2.hh"
+#endif
+#endif
+
 #endif
