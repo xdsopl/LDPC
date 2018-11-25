@@ -301,6 +301,62 @@ inline SIMD<int16_t, 8> vqadd(SIMD<int16_t, 8> a, SIMD<int16_t, 8> b)
 }
 
 template <>
+inline SIMD<float, 4> vsub(SIMD<float, 4> a, SIMD<float, 4> b)
+{
+	SIMD<float, 4> tmp;
+	tmp.m = vsubq_f32(a.m, b.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<int8_t, 16> vsub(SIMD<int8_t, 16> a, SIMD<int8_t, 16> b)
+{
+	SIMD<int8_t, 16> tmp;
+	tmp.m = vsubq_s8(a.m, b.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<int16_t, 8> vsub(SIMD<int16_t, 8> a, SIMD<int16_t, 8> b)
+{
+	SIMD<int16_t, 8> tmp;
+	tmp.m = vsubq_s16(a.m, b.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<int32_t, 4> vsub(SIMD<int32_t, 4> a, SIMD<int32_t, 4> b)
+{
+	SIMD<int32_t, 4> tmp;
+	tmp.m = vsubq_s32(a.m, b.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<int64_t, 2> vsub(SIMD<int64_t, 2> a, SIMD<int64_t, 2> b)
+{
+	SIMD<int64_t, 2> tmp;
+	tmp.m = vsubq_s64(a.m, b.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<int8_t, 16> vqsub(SIMD<int8_t, 16> a, SIMD<int8_t, 16> b)
+{
+	SIMD<int8_t, 16> tmp;
+	tmp.m = vqsubq_s8(a.m, b.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<int16_t, 8> vqsub(SIMD<int16_t, 8> a, SIMD<int16_t, 8> b)
+{
+	SIMD<int16_t, 8> tmp;
+	tmp.m = vqsubq_s16(a.m, b.m);
+	return tmp;
+}
+
+template <>
 inline SIMD<float, 4> vabs(SIMD<float, 4> a)
 {
 	SIMD<float, 4> tmp;

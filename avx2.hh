@@ -328,6 +328,70 @@ inline SIMD<int16_t, 16> vqadd(SIMD<int16_t, 16> a, SIMD<int16_t, 16> b)
 }
 
 template <>
+inline SIMD<float, 8> vsub(SIMD<float, 8> a, SIMD<float, 8> b)
+{
+	SIMD<float, 8> tmp;
+	tmp.m = _mm256_sub_ps(a.m, b.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<double, 4> vsub(SIMD<double, 4> a, SIMD<double, 4> b)
+{
+	SIMD<double, 4> tmp;
+	tmp.m = _mm256_sub_pd(a.m, b.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<int8_t, 32> vsub(SIMD<int8_t, 32> a, SIMD<int8_t, 32> b)
+{
+	SIMD<int8_t, 32> tmp;
+	tmp.m = _mm256_sub_epi8(a.m, b.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<int16_t, 16> vsub(SIMD<int16_t, 16> a, SIMD<int16_t, 16> b)
+{
+	SIMD<int16_t, 16> tmp;
+	tmp.m = _mm256_sub_epi16(a.m, b.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<int32_t, 8> vsub(SIMD<int32_t, 8> a, SIMD<int32_t, 8> b)
+{
+	SIMD<int32_t, 8> tmp;
+	tmp.m = _mm256_sub_epi32(a.m, b.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<int64_t, 4> vsub(SIMD<int64_t, 4> a, SIMD<int64_t, 4> b)
+{
+	SIMD<int64_t, 4> tmp;
+	tmp.m = _mm256_sub_epi64(a.m, b.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<int8_t, 32> vqsub(SIMD<int8_t, 32> a, SIMD<int8_t, 32> b)
+{
+	SIMD<int8_t, 32> tmp;
+	tmp.m = _mm256_subs_epi8(a.m, b.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<int16_t, 16> vqsub(SIMD<int16_t, 16> a, SIMD<int16_t, 16> b)
+{
+	SIMD<int16_t, 16> tmp;
+	tmp.m = _mm256_subs_epi16(a.m, b.m);
+	return tmp;
+}
+
+template <>
 inline SIMD<float, 8> vabs(SIMD<float, 8> a)
 {
 	SIMD<float, 8> tmp;

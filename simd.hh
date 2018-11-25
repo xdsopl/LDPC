@@ -828,6 +828,78 @@ static inline SIMD<int16_t, WIDTH> vqadd(SIMD<int16_t, WIDTH> a, SIMD<int16_t, W
 }
 
 template <int WIDTH>
+static inline SIMD<float, WIDTH> vsub(SIMD<float, WIDTH> a, SIMD<float, WIDTH> b)
+{
+	SIMD<float, WIDTH> tmp;
+	for (int i = 0; i < WIDTH; ++i)
+		tmp.v[i] = a.v[i] - b.v[i];
+	return tmp;
+}
+
+template <int WIDTH>
+static inline SIMD<double, WIDTH> vsub(SIMD<double, WIDTH> a, SIMD<double, WIDTH> b)
+{
+	SIMD<double, WIDTH> tmp;
+	for (int i = 0; i < WIDTH; ++i)
+		tmp.v[i] = a.v[i] - b.v[i];
+	return tmp;
+}
+
+template <int WIDTH>
+static inline SIMD<int8_t, WIDTH> vsub(SIMD<int8_t, WIDTH> a, SIMD<int8_t, WIDTH> b)
+{
+	SIMD<int8_t, WIDTH> tmp;
+	for (int i = 0; i < WIDTH; ++i)
+		tmp.v[i] = a.v[i] - b.v[i];
+	return tmp;
+}
+
+template <int WIDTH>
+static inline SIMD<int16_t, WIDTH> vsub(SIMD<int16_t, WIDTH> a, SIMD<int16_t, WIDTH> b)
+{
+	SIMD<int16_t, WIDTH> tmp;
+	for (int i = 0; i < WIDTH; ++i)
+		tmp.v[i] = a.v[i] - b.v[i];
+	return tmp;
+}
+
+template <int WIDTH>
+static inline SIMD<int32_t, WIDTH> vsub(SIMD<int32_t, WIDTH> a, SIMD<int32_t, WIDTH> b)
+{
+	SIMD<int32_t, WIDTH> tmp;
+	for (int i = 0; i < WIDTH; ++i)
+		tmp.v[i] = a.v[i] - b.v[i];
+	return tmp;
+}
+
+template <int WIDTH>
+static inline SIMD<int64_t, WIDTH> vsub(SIMD<int64_t, WIDTH> a, SIMD<int64_t, WIDTH> b)
+{
+	SIMD<int64_t, WIDTH> tmp;
+	for (int i = 0; i < WIDTH; ++i)
+		tmp.v[i] = a.v[i] - b.v[i];
+	return tmp;
+}
+
+template <int WIDTH>
+static inline SIMD<int8_t, WIDTH> vqsub(SIMD<int8_t, WIDTH> a, SIMD<int8_t, WIDTH> b)
+{
+	SIMD<int8_t, WIDTH> tmp;
+	for (int i = 0; i < WIDTH; ++i)
+		tmp.v[i] = std::min<int16_t>(std::max<int16_t>(int16_t(a.v[i]) - int16_t(b.v[i]), INT8_MIN), INT8_MAX);
+	return tmp;
+}
+
+template <int WIDTH>
+static inline SIMD<int16_t, WIDTH> vqsub(SIMD<int16_t, WIDTH> a, SIMD<int16_t, WIDTH> b)
+{
+	SIMD<int16_t, WIDTH> tmp;
+	for (int i = 0; i < WIDTH; ++i)
+		tmp.v[i] = std::min<int32_t>(std::max<int32_t>(int32_t(a.v[i]) - int32_t(b.v[i]), INT16_MIN), INT16_MAX);
+	return tmp;
+}
+
+template <int WIDTH>
 static inline SIMD<float, WIDTH> vsign(SIMD<float, WIDTH> a, SIMD<float, WIDTH> b)
 {
 	SIMD<float, WIDTH> tmp;
