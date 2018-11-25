@@ -7,29 +7,23 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 #ifndef ALGORITHMS_HH
 #define ALGORITHMS_HH
 
+#include "generic.hh"
 #include "exclusive_reduce.hh"
 
-template <typename TYPE>
-struct NormalUpdate
+template <typename VALUE, int WIDTH>
+struct SelfCorrectedUpdate<SIMD<VALUE, WIDTH>>
 {
-	static TYPE update(TYPE, TYPE v)
-	{
-		return v;
-	}
-};
-
-template <typename TYPE>
-struct SelfCorrectedUpdate
-{
+	typedef SIMD<VALUE, WIDTH> TYPE;
 	static TYPE update(TYPE a, TYPE b)
 	{
 		return vreinterpret<TYPE>(vand(vmask(b), vorr(vceqz(a), veor(vcgtz(a), vcltz(b)))));
 	}
 };
 
-template <typename TYPE, typename UPDATE>
-struct MinSumAlgorithm
+template <typename VALUE, int WIDTH, typename UPDATE>
+struct MinSumAlgorithm<SIMD<VALUE, WIDTH>, UPDATE>
 {
+	typedef SIMD<VALUE, WIDTH> TYPE;
 	static TYPE one()
 	{
 		return vdup<TYPE>(1);
@@ -76,7 +70,8 @@ struct MinSumAlgorithm
 template <int WIDTH, typename UPDATE>
 struct MinSumAlgorithm<SIMD<int8_t, WIDTH>, UPDATE>
 {
-	typedef SIMD<int8_t, WIDTH> TYPE;
+	typedef int8_t VALUE;
+	typedef SIMD<VALUE, WIDTH> TYPE;
 	static TYPE one()
 	{
 		return vdup<TYPE>(1);
@@ -126,9 +121,10 @@ struct MinSumAlgorithm<SIMD<int8_t, WIDTH>, UPDATE>
 	}
 };
 
-template <typename TYPE, typename UPDATE, int FACTOR>
-struct MinSumCAlgorithm
+template <typename VALUE, int WIDTH, typename UPDATE, int FACTOR>
+struct MinSumCAlgorithm<SIMD<VALUE, WIDTH>, UPDATE, FACTOR>
 {
+	typedef SIMD<VALUE, WIDTH> TYPE;
 	static TYPE one()
 	{
 		return vdup<TYPE>(1);
@@ -144,7 +140,6 @@ struct MinSumCAlgorithm
 		TYPE amb = vabs(vsub(a, b));
 		TYPE amb2 = vadd(amb, amb);
 		TYPE factor2 = vdup<TYPE>(FACTOR * 2);
-		typedef typename TYPE::value_type VALUE;
 		auto pc = vmask(vdup<TYPE>(VALUE(FACTOR) / VALUE(2)));
 		auto nc = vmask(vdup<TYPE>(-VALUE(FACTOR) / VALUE(2)));
 		pc = vand(pc, vand(vcgt(factor2, apb), vcgt(amb, apb2)));
@@ -186,7 +181,8 @@ struct MinSumCAlgorithm
 template <int WIDTH, typename UPDATE, int FACTOR>
 struct MinSumCAlgorithm<SIMD<int8_t, WIDTH>, UPDATE, FACTOR>
 {
-	typedef SIMD<int8_t, WIDTH> TYPE;
+	typedef int8_t VALUE;
+	typedef SIMD<VALUE, WIDTH> TYPE;
 	static TYPE one()
 	{
 		return vdup<TYPE>(1);
@@ -202,7 +198,6 @@ struct MinSumCAlgorithm<SIMD<int8_t, WIDTH>, UPDATE, FACTOR>
 		TYPE amb = vqabs(vqsub(a, b));
 		TYPE amb2 = vqadd(amb, amb);
 		TYPE factor2 = vdup<TYPE>(FACTOR * 2);
-		typedef typename TYPE::value_type VALUE;
 		auto pc = vmask(vdup<TYPE>(VALUE(FACTOR) / VALUE(2)));
 		auto nc = vmask(vdup<TYPE>(-VALUE(FACTOR) / VALUE(2)));
 		pc = vand(pc, vand(vcgt(factor2, apb), vcgt(amb, apb2)));

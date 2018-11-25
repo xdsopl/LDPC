@@ -30,7 +30,6 @@ struct SelfCorrectedUpdate
 template <typename TYPE, typename UPDATE>
 struct MinSumAlgorithm
 {
-	static const int SIMD_WIDTH = 1;
 	static TYPE one()
 	{
 		return 1;
@@ -73,7 +72,6 @@ struct MinSumAlgorithm
 template <typename UPDATE>
 struct MinSumAlgorithm<float, UPDATE>
 {
-	static const int SIMD_WIDTH = 1;
 	static float one()
 	{
 		return 1.f;
@@ -123,7 +121,6 @@ struct MinSumAlgorithm<float, UPDATE>
 template <typename UPDATE>
 struct MinSumAlgorithm<int8_t, UPDATE>
 {
-	static const int SIMD_WIDTH = 1;
 	static int8_t one()
 	{
 		return 1;
@@ -178,7 +175,6 @@ struct MinSumAlgorithm<int8_t, UPDATE>
 template <typename TYPE, typename UPDATE, int FACTOR>
 struct MinSumCAlgorithm
 {
-	static const int SIMD_WIDTH = 1;
 	static TYPE one()
 	{
 		return 1;
@@ -232,7 +228,6 @@ struct MinSumCAlgorithm
 template <typename UPDATE, int FACTOR>
 struct MinSumCAlgorithm<float, UPDATE, FACTOR>
 {
-	static const int SIMD_WIDTH = 1;
 	static float one()
 	{
 		return 1.f;
@@ -285,7 +280,6 @@ struct MinSumCAlgorithm<float, UPDATE, FACTOR>
 template <typename UPDATE, int FACTOR>
 struct MinSumCAlgorithm<int8_t, UPDATE, FACTOR>
 {
-	static const int SIMD_WIDTH = 1;
 	static int8_t one()
 	{
 		return 1;
@@ -367,7 +361,6 @@ struct MinSumCAlgorithm<int8_t, UPDATE, FACTOR>
 template <typename TYPE, typename UPDATE>
 struct LogDomainSPA
 {
-	static const int SIMD_WIDTH = 1;
 	static TYPE one()
 	{
 		return 1;
@@ -411,7 +404,6 @@ struct LogDomainSPA
 template <typename TYPE, typename UPDATE, int LAMBDA>
 struct LambdaMinAlgorithm
 {
-	static const int SIMD_WIDTH = 1;
 	static TYPE one()
 	{
 		return 1;
@@ -470,7 +462,6 @@ struct LambdaMinAlgorithm
 template <typename TYPE, typename UPDATE>
 struct SumProductAlgorithm
 {
-	static const int SIMD_WIDTH = 1;
 	static TYPE one()
 	{
 		return 1;

@@ -27,9 +27,9 @@ const int FACTOR = 1;
 
 #if 1
 const int SIMD_WIDTH = 1;
+typedef code_type simd_type;
 #else
 const int SIMD_WIDTH = SIZEOF_SIMD / sizeof(code_type);
-#endif
-
 typedef SIMD<code_type, SIMD_WIDTH> simd_type;
+#endif
 
