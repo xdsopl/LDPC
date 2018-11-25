@@ -7,14 +7,17 @@ For better speed (at almost the same decoding performance) I've added support fo
 
 [SIMD](https://en.wikipedia.org/wiki/SIMD) acceleration for floating and fixed-point is in the works.
 
-You can switch between six [Belief propagation](https://en.wikipedia.org/wiki/Belief_propagation) algorithms:
+You can switch between five [Belief propagation](https://en.wikipedia.org/wiki/Belief_propagation) algorithms:
 
 * min-sum algorithm: using minimum and addition
-* self-corrected min-sum algorithm: using minimum, addition and erasures
 * min-sum-c algorithm: using minimum, addition and a correction factor
 * sum-product algorithm: using tanh+atanh-functions, addition and multiplication
 * log-sum-product algorithm: using log+exp-functions to replace above multiplication with addition in the log domain
 * lambda-min algorithm: same as log-sum-product, but using only lambda minima
+
+You can enable the self-corrected update for any of the above listed algorithms to further boost its decoding performance.
+It works by erasing unreliable bit nodes, whose signs fluctuate between updates.
+As shown in the BER plots below, the min-sum algorithm benefits the most from the erasures.
 
 Decoding speed varies about 10ms (no errors) to 300ms (max errors) for the rate 1/2 N=64800 code using self-corrected min-sum on my workstation.
 
