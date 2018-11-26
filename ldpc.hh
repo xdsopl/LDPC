@@ -12,6 +12,7 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 
 struct LDPCInterface
 {
+	virtual LDPCInterface *clone() = 0;
 	virtual int code_len() = 0;
 	virtual int data_len() = 0;
 	virtual int links_total() = 0;
@@ -54,6 +55,10 @@ class LDPC : public LDPCInterface
 		++grp_cnt;
 	}
 public:
+	LDPCInterface *clone()
+	{
+		return new LDPC<TABLE>();
+	}
 	int code_len()
 	{
 		return N;
@@ -210,8 +215,9 @@ class LDPCDecoder
 			data[i] = bnv[i+R];
 	}
 public:
-	LDPCDecoder(LDPCInterface *ldpc) : ldpc(ldpc)
+	LDPCDecoder(LDPCInterface *it)
 	{
+		ldpc = it->clone();
 		N = ldpc->code_len();
 		K = ldpc->data_len();
 		R = N - K;
@@ -246,6 +252,7 @@ public:
 	{
 		free(aligned_buffer);
 		delete[] cnc;
+		delete ldpc;
 	}
 };
 
@@ -264,8 +271,9 @@ class LDPCEncoder
 		return b < TYPE(0) ? -a : b > TYPE(0) ? a : TYPE(0);
 	}
 public:
-	LDPCEncoder(LDPCInterface *ldpc) : ldpc(ldpc)
+	LDPCEncoder(LDPCInterface *it)
 	{
+		ldpc = it->clone();
 		N = ldpc->code_len();
 		K = ldpc->data_len();
 		R = N - K;
@@ -286,6 +294,10 @@ public:
 		}
 		for (int i = 1; i < R; ++i)
 			parity[i] = sign(parity[i], parity[i-1]);
+	}
+	~LDPCEncoder()
+	{
+		delete ldpc;
 	}
 };
 
