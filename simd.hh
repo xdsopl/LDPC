@@ -956,6 +956,10 @@ static inline SIMD<int64_t, WIDTH> vsign(SIMD<int64_t, WIDTH> a, SIMD<int64_t, W
 #if 1
 #ifdef __AVX2__
 #include "avx2.hh"
+#else
+#ifdef __SSE4_2__
+#include "sse4_2.hh"
+#endif
 #endif
 
 #ifdef __ARM_NEON__
