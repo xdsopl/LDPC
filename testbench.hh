@@ -25,7 +25,7 @@ typedef float code_type;
 const int FACTOR = 1;
 #endif
 
-#if 1
+#if 0
 const int SIMD_WIDTH = 1;
 typedef code_type simd_type;
 #else
