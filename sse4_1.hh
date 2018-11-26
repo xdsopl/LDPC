@@ -1,11 +1,11 @@
 /*
-Intel SSE4.2 acceleration
+Intel SSE4.1 acceleration
 
 Copyright 2018 Ahmet Inan <inan@aicodix.de>
 */
 
-#ifndef SSE4_2_HH
-#define SSE4_2_HH
+#ifndef SSE4_1_HH
+#define SSE4_1_HH
 
 #include <smmintrin.h>
 
