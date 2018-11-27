@@ -454,7 +454,7 @@ static inline SIMD<uint32_t, WIDTH> vcgtz(SIMD<float, WIDTH> a)
 {
 	SIMD<uint32_t, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
-		tmp.v[i] = a.v[i] > 0.f ? UINT32_MAX : 0;
+		tmp.v[i] = -(a.v[i] > 0.f);
 	return tmp;
 }
 
@@ -463,7 +463,7 @@ static inline SIMD<uint64_t, WIDTH> vcgtz(SIMD<double, WIDTH> a)
 {
 	SIMD<uint64_t, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
-		tmp.v[i] = a.v[i] > 0. ? UINT64_MAX : 0;
+		tmp.v[i] = -(a.v[i] > 0.);
 	return tmp;
 }
 
@@ -472,7 +472,7 @@ static inline SIMD<uint8_t, WIDTH> vcgtz(SIMD<int8_t, WIDTH> a)
 {
 	SIMD<uint8_t, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
-		tmp.v[i] = a.v[i] > 0 ? UINT8_MAX : 0;
+		tmp.v[i] = -(a.v[i] > 0);
 	return tmp;
 }
 
@@ -481,7 +481,7 @@ static inline SIMD<uint16_t, WIDTH> vcgtz(SIMD<int16_t, WIDTH> a)
 {
 	SIMD<uint16_t, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
-		tmp.v[i] = a.v[i] > 0 ? UINT16_MAX : 0;
+		tmp.v[i] = -(a.v[i] > 0);
 	return tmp;
 }
 
@@ -490,7 +490,7 @@ static inline SIMD<uint32_t, WIDTH> vcgtz(SIMD<int32_t, WIDTH> a)
 {
 	SIMD<uint32_t, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
-		tmp.v[i] = a.v[i] > 0 ? UINT32_MAX : 0;
+		tmp.v[i] = -(a.v[i] > 0);
 	return tmp;
 }
 
@@ -499,7 +499,7 @@ static inline SIMD<uint64_t, WIDTH> vcgtz(SIMD<int64_t, WIDTH> a)
 {
 	SIMD<uint64_t, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
-		tmp.v[i] = a.v[i] > 0 ? UINT64_MAX : 0;
+		tmp.v[i] = -(a.v[i] > 0);
 	return tmp;
 }
 
@@ -508,7 +508,7 @@ static inline SIMD<uint32_t, WIDTH> vceqz(SIMD<float, WIDTH> a)
 {
 	SIMD<uint32_t, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
-		tmp.v[i] = a.v[i] == 0.f ? UINT32_MAX : 0;
+		tmp.v[i] = -(a.v[i] == 0.f);
 	return tmp;
 }
 
@@ -517,7 +517,7 @@ static inline SIMD<uint64_t, WIDTH> vceqz(SIMD<double, WIDTH> a)
 {
 	SIMD<uint64_t, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
-		tmp.v[i] = a.v[i] == 0. ? UINT64_MAX : 0;
+		tmp.v[i] = -(a.v[i] == 0.);
 	return tmp;
 }
 
@@ -526,7 +526,7 @@ static inline SIMD<uint8_t, WIDTH> vceqz(SIMD<int8_t, WIDTH> a)
 {
 	SIMD<uint8_t, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
-		tmp.v[i] = a.v[i] == 0 ? UINT8_MAX : 0;
+		tmp.v[i] = -!a.v[i];
 	return tmp;
 }
 
@@ -535,7 +535,7 @@ static inline SIMD<uint16_t, WIDTH> vceqz(SIMD<int16_t, WIDTH> a)
 {
 	SIMD<uint16_t, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
-		tmp.v[i] = a.v[i] == 0 ? UINT16_MAX : 0;
+		tmp.v[i] = -!a.v[i];
 	return tmp;
 }
 
@@ -544,7 +544,7 @@ static inline SIMD<uint32_t, WIDTH> vceqz(SIMD<int32_t, WIDTH> a)
 {
 	SIMD<uint32_t, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
-		tmp.v[i] = a.v[i] == 0 ? UINT32_MAX : 0;
+		tmp.v[i] = -!a.v[i];
 	return tmp;
 }
 
@@ -553,7 +553,7 @@ static inline SIMD<uint64_t, WIDTH> vceqz(SIMD<int64_t, WIDTH> a)
 {
 	SIMD<uint64_t, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
-		tmp.v[i] = a.v[i] == 0 ? UINT64_MAX : 0;
+		tmp.v[i] = -!a.v[i];
 	return tmp;
 }
 
@@ -562,7 +562,7 @@ static inline SIMD<uint32_t, WIDTH> vcltz(SIMD<float, WIDTH> a)
 {
 	SIMD<uint32_t, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
-		tmp.v[i] = a.v[i] < 0.f ? UINT32_MAX : 0;
+		tmp.v[i] = -(a.v[i] < 0.f);
 	return tmp;
 }
 
@@ -571,7 +571,7 @@ static inline SIMD<uint64_t, WIDTH> vcltz(SIMD<double, WIDTH> a)
 {
 	SIMD<uint64_t, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
-		tmp.v[i] = a.v[i] < 0. ? UINT64_MAX : 0;
+		tmp.v[i] = -(a.v[i] < 0.);
 	return tmp;
 }
 
@@ -580,7 +580,7 @@ static inline SIMD<uint8_t, WIDTH> vcltz(SIMD<int8_t, WIDTH> a)
 {
 	SIMD<uint8_t, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
-		tmp.v[i] = a.v[i] < 0 ? UINT8_MAX : 0;
+		tmp.v[i] = -(a.v[i] < 0);
 	return tmp;
 }
 
@@ -589,7 +589,7 @@ static inline SIMD<uint16_t, WIDTH> vcltz(SIMD<int16_t, WIDTH> a)
 {
 	SIMD<uint16_t, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
-		tmp.v[i] = a.v[i] < 0 ? UINT16_MAX : 0;
+		tmp.v[i] = -(a.v[i] < 0);
 	return tmp;
 }
 
@@ -598,7 +598,7 @@ static inline SIMD<uint32_t, WIDTH> vcltz(SIMD<int32_t, WIDTH> a)
 {
 	SIMD<uint32_t, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
-		tmp.v[i] = a.v[i] < 0 ? UINT32_MAX : 0;
+		tmp.v[i] = -(a.v[i] < 0);
 	return tmp;
 }
 
@@ -607,7 +607,7 @@ static inline SIMD<uint64_t, WIDTH> vcltz(SIMD<int64_t, WIDTH> a)
 {
 	SIMD<uint64_t, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
-		tmp.v[i] = a.v[i] < 0 ? UINT64_MAX : 0;
+		tmp.v[i] = -(a.v[i] < 0);
 	return tmp;
 }
 
@@ -616,7 +616,7 @@ static inline SIMD<uint32_t, WIDTH> vcgt(SIMD<float, WIDTH> a, SIMD<float, WIDTH
 {
 	SIMD<uint32_t, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
-		tmp.v[i] = a.v[i] > b.v[i] ? UINT32_MAX : 0;
+		tmp.v[i] = -(a.v[i] > b.v[i]);
 	return tmp;
 }
 
@@ -625,7 +625,7 @@ static inline SIMD<uint64_t, WIDTH> vcgt(SIMD<double, WIDTH> a, SIMD<double, WID
 {
 	SIMD<uint64_t, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
-		tmp.v[i] = a.v[i] > b.v[i] ? UINT64_MAX : 0;
+		tmp.v[i] = -(a.v[i] > b.v[i]);
 	return tmp;
 }
 
@@ -634,7 +634,7 @@ static inline SIMD<uint8_t, WIDTH> vcgt(SIMD<int8_t, WIDTH> a, SIMD<int8_t, WIDT
 {
 	SIMD<uint8_t, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
-		tmp.v[i] = a.v[i] > b.v[i] ? UINT8_MAX : 0;
+		tmp.v[i] = -(a.v[i] > b.v[i]);
 	return tmp;
 }
 
@@ -643,7 +643,7 @@ static inline SIMD<uint16_t, WIDTH> vcgt(SIMD<int16_t, WIDTH> a, SIMD<int16_t, W
 {
 	SIMD<uint16_t, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
-		tmp.v[i] = a.v[i] > b.v[i] ? UINT16_MAX : 0;
+		tmp.v[i] = -(a.v[i] > b.v[i]);
 	return tmp;
 }
 
@@ -652,7 +652,7 @@ static inline SIMD<uint32_t, WIDTH> vcgt(SIMD<int32_t, WIDTH> a, SIMD<int32_t, W
 {
 	SIMD<uint32_t, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
-		tmp.v[i] = a.v[i] > b.v[i] ? UINT32_MAX : 0;
+		tmp.v[i] = -(a.v[i] > b.v[i]);
 	return tmp;
 }
 
@@ -661,7 +661,7 @@ static inline SIMD<uint64_t, WIDTH> vcgt(SIMD<int64_t, WIDTH> a, SIMD<int64_t, W
 {
 	SIMD<uint64_t, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
-		tmp.v[i] = a.v[i] > b.v[i] ? UINT64_MAX : 0;
+		tmp.v[i] = -(a.v[i] > b.v[i]);
 	return tmp;
 }
 
@@ -670,7 +670,7 @@ static inline SIMD<uint8_t, WIDTH> vcgt(SIMD<uint8_t, WIDTH> a, SIMD<uint8_t, WI
 {
 	SIMD<uint8_t, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
-		tmp.v[i] = a.v[i] > b.v[i] ? UINT8_MAX : 0;
+		tmp.v[i] = -(a.v[i] > b.v[i]);
 	return tmp;
 }
 
@@ -679,7 +679,7 @@ static inline SIMD<uint16_t, WIDTH> vcgt(SIMD<uint16_t, WIDTH> a, SIMD<uint16_t,
 {
 	SIMD<uint16_t, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
-		tmp.v[i] = a.v[i] > b.v[i] ? UINT16_MAX : 0;
+		tmp.v[i] = -(a.v[i] > b.v[i]);
 	return tmp;
 }
 
@@ -688,7 +688,7 @@ static inline SIMD<uint32_t, WIDTH> vcgt(SIMD<uint32_t, WIDTH> a, SIMD<uint32_t,
 {
 	SIMD<uint32_t, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
-		tmp.v[i] = a.v[i] > b.v[i] ? UINT32_MAX : 0;
+		tmp.v[i] = -(a.v[i] > b.v[i]);
 	return tmp;
 }
 
@@ -697,7 +697,7 @@ static inline SIMD<uint64_t, WIDTH> vcgt(SIMD<uint64_t, WIDTH> a, SIMD<uint64_t,
 {
 	SIMD<uint64_t, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
-		tmp.v[i] = a.v[i] > b.v[i] ? UINT64_MAX : 0;
+		tmp.v[i] = -(a.v[i] > b.v[i]);
 	return tmp;
 }
 
@@ -904,7 +904,7 @@ static inline SIMD<float, WIDTH> vsign(SIMD<float, WIDTH> a, SIMD<float, WIDTH> 
 {
 	SIMD<float, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
-		tmp.v[i] = b.v[i] < 0.f ? -a.v[i] : b.v[i] > 0.f ? a.v[i] : 0.f;
+		tmp.v[i] = ((b.v[i] > 0.f) - (b.v[i] < 0.f)) * a.v[i];
 	return tmp;
 }
 
@@ -913,7 +913,7 @@ static inline SIMD<double, WIDTH> vsign(SIMD<double, WIDTH> a, SIMD<double, WIDT
 {
 	SIMD<double, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
-		tmp.v[i] = b.v[i] < 0. ? -a.v[i] : b.v[i] > 0. ? a.v[i] : 0.;
+		tmp.v[i] = ((b.v[i] > 0.) - (b.v[i] < 0.)) * a.v[i];
 	return tmp;
 }
 
@@ -922,7 +922,7 @@ static inline SIMD<int8_t, WIDTH> vsign(SIMD<int8_t, WIDTH> a, SIMD<int8_t, WIDT
 {
 	SIMD<int8_t, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
-		tmp.v[i] = b.v[i] < 0 ? -a.v[i] : b.v[i] > 0 ? a.v[i] : 0;
+		tmp.v[i] = ((b.v[i] > 0) - (b.v[i] < 0)) * a.v[i];
 	return tmp;
 }
 
@@ -931,7 +931,7 @@ static inline SIMD<int16_t, WIDTH> vsign(SIMD<int16_t, WIDTH> a, SIMD<int16_t, W
 {
 	SIMD<int16_t, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
-		tmp.v[i] = b.v[i] < 0 ? -a.v[i] : b.v[i] > 0 ? a.v[i] : 0;
+		tmp.v[i] = ((b.v[i] > 0) - (b.v[i] < 0)) * a.v[i];
 	return tmp;
 }
 
@@ -940,7 +940,7 @@ static inline SIMD<int32_t, WIDTH> vsign(SIMD<int32_t, WIDTH> a, SIMD<int32_t, W
 {
 	SIMD<int32_t, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
-		tmp.v[i] = b.v[i] < 0 ? -a.v[i] : b.v[i] > 0 ? a.v[i] : 0;
+		tmp.v[i] = ((b.v[i] > 0) - (b.v[i] < 0)) * a.v[i];
 	return tmp;
 }
 
@@ -949,7 +949,7 @@ static inline SIMD<int64_t, WIDTH> vsign(SIMD<int64_t, WIDTH> a, SIMD<int64_t, W
 {
 	SIMD<int64_t, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
-		tmp.v[i] = b.v[i] < 0 ? -a.v[i] : b.v[i] > 0 ? a.v[i] : 0;
+		tmp.v[i] = ((b.v[i] > 0) - (b.v[i] < 0)) * a.v[i];
 	return tmp;
 }
 
