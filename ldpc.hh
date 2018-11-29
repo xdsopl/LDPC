@@ -114,7 +114,7 @@ class LDPCDecoder
 	uint8_t *cnc;
 	LDPCInterface *ldpc;
 	ALG alg;
-	int N, K, R, CNL;
+	int N, K, R, CNL, LT;
 
 	void bit_node_init(TYPE *data, TYPE *parity)
 	{
@@ -216,7 +216,7 @@ public:
 		K = ldpc->data_len();
 		R = N - K;
 		CNL = ldpc->links_max_cn();
-		int LT = ldpc->links_total();
+		LT = ldpc->links_total();
 		int num = LT + N + R * CNL + R;
 		aligned_buffer = aligned_alloc(sizeof(TYPE), sizeof(TYPE) * num);
 		TYPE *ptr = reinterpret_cast<TYPE *>(aligned_buffer);
