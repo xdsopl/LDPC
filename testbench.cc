@@ -15,7 +15,8 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 #include <algorithm>
 #include <functional>
 #include "testbench.hh"
-#include "ldpc.hh"
+#include "encoder.hh"
+#include "decoder.hh"
 #include "algorithms.hh"
 #include "interleaver.hh"
 #include "modulation.hh"
