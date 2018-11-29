@@ -118,19 +118,17 @@ class LDPCDecoder
 
 	void bit_node_init(TYPE *data, TYPE *parity)
 	{
-		for (int i = 0; i < R; ++i)
-			bnv[i] = parity[i];
-		for (int i = 0; i < K; ++i)
-			bnv[i+R] = data[i];
-
 		TYPE *bl = bnl;
 		for (int i = 0; i < R-1; ++i) {
+			bnv[i] = parity[i];
 			*bl++ = parity[i];
 			*bl++ = parity[i];
 		}
+		bnv[R-1] = parity[R-1];
 		*bl++ = parity[R-1];
 		ldpc->first_bit();
 		for (int j = 0; j < K; ++j) {
+			bnv[j+R] = data[j];
 			int bit_deg = ldpc->bit_deg();
 			for (int n = 0; n < bit_deg; ++n)
 				*bl++ = data[j];
@@ -139,14 +137,12 @@ class LDPCDecoder
 	}
 	void check_node_update()
 	{
-		cnv[0] = alg.sign(alg.one(), bnv[0]);
-		for (int i = 1; i < R; ++i)
-			cnv[i] = alg.sign(alg.sign(alg.one(), bnv[i-1]), bnv[i]);
-
 		TYPE *bl = bnl;
+		cnv[0] = alg.sign(alg.one(), bnv[0]);
 		cnl[0] = *bl++;
 		cnc[0] = 1;
 		for (int i = 1; i < R; ++i) {
+			cnv[i] = alg.sign(alg.sign(alg.one(), bnv[i-1]), bnv[i]);
 			cnl[CNL*i] = *bl++;
 			cnl[CNL*i+1] = *bl++;
 			cnc[i] = 2;
@@ -167,22 +163,20 @@ class LDPCDecoder
 	}
 	void bit_node_update(TYPE *data, TYPE *parity)
 	{
-		bnv[0] = alg.add(parity[0], alg.add(cnl[0], cnl[CNL]));
-		for (int i = 1; i < R-1; ++i)
-			bnv[i] = alg.add(parity[i], alg.add(cnl[CNL*i+1], cnl[CNL*(i+1)]));
-		bnv[R-1] = alg.add(parity[R-1], cnl[CNL*(R-1)+1]);
-
 		TYPE *bl = bnl;
-		cnc[0] = 1;
-		for (int i = 1; i < R; ++i)
-			cnc[i] = 2;
+		bnv[0] = alg.add(parity[0], alg.add(cnl[0], cnl[CNL]));
 		*bl = alg.update(*bl, alg.add(parity[0], cnl[CNL])); ++bl;
 		*bl = alg.update(*bl, alg.add(parity[0], cnl[0])); ++bl;
+		cnc[0] = 1;
 		for (int i = 1; i < R-1; ++i) {
+			bnv[i] = alg.add(parity[i], alg.add(cnl[CNL*i+1], cnl[CNL*(i+1)]));
 			*bl = alg.update(*bl, alg.add(parity[i], cnl[CNL*(i+1)])); ++bl;
 			*bl = alg.update(*bl, alg.add(parity[i], cnl[CNL*i+1])); ++bl;
+			cnc[i] = 2;
 		}
+		bnv[R-1] = alg.add(parity[R-1], cnl[CNL*(R-1)+1]);
 		*bl = alg.update(*bl, parity[R-1]); ++bl;
+		cnc[R-1] = 2;
 		ldpc->first_bit();
 		for (int j = 0; j < K; ++j) {
 			int *acc_pos = ldpc->acc_pos();
