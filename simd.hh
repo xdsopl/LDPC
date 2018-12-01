@@ -123,6 +123,15 @@ static inline TYPE vdup(typename TYPE::value_type a)
 	return tmp;
 }
 
+template <typename TYPE>
+static inline TYPE vzero()
+{
+	TYPE tmp;
+	for (int i = 0; i < TYPE::SIZE; ++i)
+		tmp.u[i] ^= tmp.u[i];
+	return tmp;
+}
+
 template <typename DST, typename SRC>
 static inline DST vreinterpret(SRC a)
 {

@@ -264,6 +264,54 @@ inline SIMD<int64_t, 2> vdup<SIMD<int64_t, 2>>(int64_t a)
 }
 
 template <>
+inline SIMD<float, 4> vzero()
+{
+	SIMD<float, 4> tmp;
+	tmp.m = _mm_setzero_ps();
+	return tmp;
+}
+
+template <>
+inline SIMD<double, 2> vzero()
+{
+	SIMD<double, 2> tmp;
+	tmp.m = _mm_setzero_pd();
+	return tmp;
+}
+
+template <>
+inline SIMD<int8_t, 16> vzero()
+{
+	SIMD<int8_t, 16> tmp;
+	tmp.m = _mm_setzero_si128();
+	return tmp;
+}
+
+template <>
+inline SIMD<int16_t, 8> vzero()
+{
+	SIMD<int16_t, 8> tmp;
+	tmp.m = _mm_setzero_si128();
+	return tmp;
+}
+
+template <>
+inline SIMD<int32_t, 4> vzero()
+{
+	SIMD<int32_t, 4> tmp;
+	tmp.m = _mm_setzero_si128();
+	return tmp;
+}
+
+template <>
+inline SIMD<int64_t, 2> vzero()
+{
+	SIMD<int64_t, 2> tmp;
+	tmp.m = _mm_setzero_si128();
+	return tmp;
+}
+
+template <>
 inline SIMD<float, 4> vadd(SIMD<float, 4> a, SIMD<float, 4> b)
 {
 	SIMD<float, 4> tmp;

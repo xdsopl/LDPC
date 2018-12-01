@@ -245,6 +245,78 @@ inline SIMD<uint64_t, 2> vdup(uint64_t a)
 }
 
 template <>
+inline SIMD<float, 4> vzero()
+{
+	SIMD<float, 4> tmp;
+	tmp.m = (float32x4_t)veorq_u32((uint32x4_t)tmp.m, (uint32x4_t)tmp.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<int8_t, 16> vzero()
+{
+	SIMD<int8_t, 16> tmp;
+	tmp.m = veorq_s8(tmp.m, tmp.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<int16_t, 8> vzero()
+{
+	SIMD<int16_t, 8> tmp;
+	tmp.m = veorq_s16(tmp.m, tmp.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<int32_t, 4> vzero()
+{
+	SIMD<int32_t, 4> tmp;
+	tmp.m = veorq_s32(tmp.m, tmp.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<int64_t, 2> vzero()
+{
+	SIMD<int64_t, 2> tmp;
+	tmp.m = veorq_s64(tmp.m, tmp.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<uint8_t, 16> vzero()
+{
+	SIMD<uint8_t, 16> tmp;
+	tmp.m = veorq_u8(tmp.m, tmp.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<uint16_t, 8> vzero()
+{
+	SIMD<uint16_t, 8> tmp;
+	tmp.m = veorq_u16(tmp.m, tmp.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<uint32_t, 4> vzero()
+{
+	SIMD<uint32_t, 4> tmp;
+	tmp.m = veorq_u32(tmp.m, tmp.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<uint64_t, 2> vzero()
+{
+	SIMD<uint64_t, 2> tmp;
+	tmp.m = veorq_u64(tmp.m, tmp.m);
+	return tmp;
+}
+
+template <>
 inline SIMD<float, 4> vadd(SIMD<float, 4> a, SIMD<float, 4> b)
 {
 	SIMD<float, 4> tmp;
