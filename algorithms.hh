@@ -24,6 +24,10 @@ template <typename VALUE, int WIDTH, typename UPDATE>
 struct MinSumAlgorithm<SIMD<VALUE, WIDTH>, UPDATE>
 {
 	typedef SIMD<VALUE, WIDTH> TYPE;
+	static TYPE zero()
+	{
+		return vzero<TYPE>();
+	}
 	static TYPE one()
 	{
 		return vdup<TYPE>(1);
@@ -72,6 +76,10 @@ struct MinSumAlgorithm<SIMD<int8_t, WIDTH>, UPDATE>
 {
 	typedef int8_t VALUE;
 	typedef SIMD<VALUE, WIDTH> TYPE;
+	static TYPE zero()
+	{
+		return vzero<TYPE>();
+	}
 	static TYPE one()
 	{
 		return vdup<TYPE>(1);
@@ -125,6 +133,10 @@ template <typename VALUE, int WIDTH, typename UPDATE, int FACTOR>
 struct MinSumCAlgorithm<SIMD<VALUE, WIDTH>, UPDATE, FACTOR>
 {
 	typedef SIMD<VALUE, WIDTH> TYPE;
+	static TYPE zero()
+	{
+		return vzero<TYPE>();
+	}
 	static TYPE one()
 	{
 		return vdup<TYPE>(1);
@@ -183,6 +195,10 @@ struct MinSumCAlgorithm<SIMD<int8_t, WIDTH>, UPDATE, FACTOR>
 {
 	typedef int8_t VALUE;
 	typedef SIMD<VALUE, WIDTH> TYPE;
+	static TYPE zero()
+	{
+		return vzero<TYPE>();
+	}
 	static TYPE one()
 	{
 		return vdup<TYPE>(1);
