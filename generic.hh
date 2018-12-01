@@ -63,6 +63,10 @@ struct MinSumAlgorithm
 	{
 		return a + b;
 	}
+	static TYPE sub(TYPE a, TYPE b)
+	{
+		return a - b;
+	}
 	static bool bad(TYPE v, int)
 	{
 		return v <= TYPE(0);
@@ -116,6 +120,10 @@ struct MinSumAlgorithm<float, UPDATE>
 	{
 		return a + b;
 	}
+	static float sub(float a, float b)
+	{
+		return a - b;
+	}
 	static bool bad(float v, int)
 	{
 		return v <= 0.f;
@@ -140,6 +148,12 @@ struct MinSumAlgorithm<int8_t, UPDATE>
 	static int8_t add(int8_t a, int8_t b)
 	{
 		int x = int(a) + int(b);
+		x = std::min<int>(std::max<int>(x, -128), 127);
+		return x;
+	}
+	static int8_t sub(int8_t a, int8_t b)
+	{
+		int x = int(a) - int(b);
 		x = std::min<int>(std::max<int>(x, -128), 127);
 		return x;
 	}
@@ -231,6 +245,10 @@ struct MinSumCAlgorithm
 	{
 		return a + b;
 	}
+	static TYPE sub(TYPE a, TYPE b)
+	{
+		return a - b;
+	}
 	static bool bad(TYPE v, int)
 	{
 		return v <= TYPE(0);
@@ -286,6 +304,10 @@ struct MinSumCAlgorithm<float, UPDATE, FACTOR>
 	static float add(float a, float b)
 	{
 		return a + b;
+	}
+	static float sub(float a, float b)
+	{
+		return a - b;
 	}
 	static bool bad(float v, int)
 	{
@@ -402,6 +424,10 @@ struct LogDomainSPA
 	{
 		return a + b;
 	}
+	static TYPE sub(TYPE a, TYPE b)
+	{
+		return a - b;
+	}
 	static TYPE sign(TYPE a, TYPE b)
 	{
 		return b < TYPE(0) ? -a : b > TYPE(0) ? a : TYPE(0);
@@ -448,6 +474,10 @@ struct LambdaMinAlgorithm
 	static TYPE add(TYPE a, TYPE b)
 	{
 		return a + b;
+	}
+	static TYPE sub(TYPE a, TYPE b)
+	{
+		return a - b;
 	}
 	static TYPE sign(TYPE a, TYPE b)
 	{
@@ -530,6 +560,10 @@ struct SumProductAlgorithm
 	static TYPE add(TYPE a, TYPE b)
 	{
 		return a + b;
+	}
+	static TYPE sub(TYPE a, TYPE b)
+	{
+		return a - b;
 	}
 	static bool bad(TYPE v, int)
 	{

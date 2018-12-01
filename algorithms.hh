@@ -57,6 +57,10 @@ struct MinSumAlgorithm<SIMD<VALUE, WIDTH>, UPDATE>
 	{
 		return vadd(a, b);
 	}
+	static TYPE sub(TYPE a, TYPE b)
+	{
+		return vsub(a, b);
+	}
 	static bool bad(TYPE v, int blocks)
 	{
 		auto tmp = vcgtz(v);
@@ -114,6 +118,10 @@ struct MinSumAlgorithm<SIMD<int8_t, WIDTH>, UPDATE>
 	static TYPE add(TYPE a, TYPE b)
 	{
 		return vqadd(a, b);
+	}
+	static TYPE sub(TYPE a, TYPE b)
+	{
+		return vqsub(a, b);
 	}
 	static bool bad(TYPE v, int blocks)
 	{
@@ -176,6 +184,10 @@ struct MinSumCAlgorithm<SIMD<VALUE, WIDTH>, UPDATE, FACTOR>
 	{
 		return vadd(a, b);
 	}
+	static TYPE sub(TYPE a, TYPE b)
+	{
+		return vsub(a, b);
+	}
 	static bool bad(TYPE v, int blocks)
 	{
 		auto tmp = vcgtz(v);
@@ -237,6 +249,10 @@ struct MinSumCAlgorithm<SIMD<int8_t, WIDTH>, UPDATE, FACTOR>
 	static TYPE add(TYPE a, TYPE b)
 	{
 		return vqadd(a, b);
+	}
+	static TYPE sub(TYPE a, TYPE b)
+	{
+		return vqsub(a, b);
 	}
 	static bool bad(TYPE v, int blocks)
 	{
