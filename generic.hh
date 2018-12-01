@@ -12,18 +12,18 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 template <typename TYPE>
 struct NormalUpdate
 {
-	static TYPE update(TYPE, TYPE v)
+	static void update(TYPE *a, TYPE b)
 	{
-		return v;
+		*a = b;
 	}
 };
 
 template <typename TYPE>
 struct SelfCorrectedUpdate
 {
-	static TYPE update(TYPE a, TYPE b)
+	static void update(TYPE *a, TYPE b)
 	{
-		return (a == TYPE(0) || (a < TYPE(0)) == (b < TYPE(0))) ? b : TYPE(0);
+		*a = (*a == TYPE(0) || (*a < TYPE(0)) == (b < TYPE(0))) ? b : TYPE(0);
 	}
 };
 
@@ -67,9 +67,9 @@ struct MinSumAlgorithm
 	{
 		return v <= TYPE(0);
 	}
-	static TYPE update(TYPE a, TYPE b)
+	static void update(TYPE *a, TYPE b)
 	{
-		return UPDATE::update(a, b);
+		UPDATE::update(a, b);
 	}
 };
 
@@ -120,9 +120,9 @@ struct MinSumAlgorithm<float, UPDATE>
 	{
 		return v <= 0.f;
 	}
-	static float update(float a, float b)
+	static void update(float *a, float b)
 	{
-		return UPDATE::update(a, b);
+		UPDATE::update(a, b);
 	}
 };
 
@@ -178,9 +178,9 @@ struct MinSumAlgorithm<int8_t, UPDATE>
 	{
 		return v <= 0;
 	}
-	static int8_t update(int8_t a, int8_t b)
+	static void update(int8_t *a, int8_t b)
 	{
-		return UPDATE::update(a, b);
+		UPDATE::update(a, b);
 	}
 };
 
@@ -235,9 +235,9 @@ struct MinSumCAlgorithm
 	{
 		return v <= TYPE(0);
 	}
-	static TYPE update(TYPE a, TYPE b)
+	static void update(TYPE *a, TYPE b)
 	{
-		return UPDATE::update(a, b);
+		UPDATE::update(a, b);
 	}
 };
 
@@ -291,9 +291,9 @@ struct MinSumCAlgorithm<float, UPDATE, FACTOR>
 	{
 		return v <= 0.f;
 	}
-	static float update(float a, float b)
+	static void update(float *a, float b)
 	{
-		return UPDATE::update(a, b);
+		UPDATE::update(a, b);
 	}
 };
 
@@ -376,9 +376,9 @@ struct MinSumCAlgorithm<int8_t, UPDATE, FACTOR>
 	{
 		return v <= 0;
 	}
-	static int8_t update(int8_t a, int8_t b)
+	static void update(int8_t *a, int8_t b)
 	{
-		return UPDATE::update(a, b);
+		UPDATE::update(a, b);
 	}
 };
 
@@ -423,9 +423,9 @@ struct LogDomainSPA
 	{
 		return v <= TYPE(0);
 	}
-	static TYPE update(TYPE a, TYPE b)
+	static void update(TYPE *a, TYPE b)
 	{
-		return UPDATE::update(a, b);
+		UPDATE::update(a, b);
 	}
 };
 
@@ -485,9 +485,9 @@ struct LambdaMinAlgorithm
 	{
 		return v <= TYPE(0);
 	}
-	static TYPE update(TYPE a, TYPE b)
+	static void update(TYPE *a, TYPE b)
 	{
-		return UPDATE::update(a, b);
+		UPDATE::update(a, b);
 	}
 };
 
@@ -535,9 +535,9 @@ struct SumProductAlgorithm
 	{
 		return v <= TYPE(0);
 	}
-	static TYPE update(TYPE a, TYPE b)
+	static void update(TYPE *a, TYPE b)
 	{
-		return UPDATE::update(a, b);
+		UPDATE::update(a, b);
 	}
 };
 

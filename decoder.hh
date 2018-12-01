@@ -70,17 +70,17 @@ class LDPCDecoder
 	{
 		TYPE *bl = bnl;
 		bnv[0] = alg.add(parity[0], alg.add(cnl[0], cnl[CNL]));
-		*bl = alg.update(*bl, alg.add(parity[0], cnl[CNL])); ++bl;
-		*bl = alg.update(*bl, alg.add(parity[0], cnl[0])); ++bl;
+		alg.update(bl++, alg.add(parity[0], cnl[CNL]));
+		alg.update(bl++, alg.add(parity[0], cnl[0]));
 		cnc[0] = 1;
 		for (int i = 1; i < R-1; ++i) {
 			bnv[i] = alg.add(parity[i], alg.add(cnl[CNL*i+1], cnl[CNL*(i+1)]));
-			*bl = alg.update(*bl, alg.add(parity[i], cnl[CNL*(i+1)])); ++bl;
-			*bl = alg.update(*bl, alg.add(parity[i], cnl[CNL*i+1])); ++bl;
+			alg.update(bl++, alg.add(parity[i], cnl[CNL*(i+1)]));
+			alg.update(bl++, alg.add(parity[i], cnl[CNL*i+1]));
 			cnc[i] = 2;
 		}
 		bnv[R-1] = alg.add(parity[R-1], cnl[CNL*(R-1)+1]);
-		*bl = alg.update(*bl, parity[R-1]); ++bl;
+		alg.update(bl++, parity[R-1]);
 		cnc[R-1] = 2;
 		ldpc->first_bit();
 		for (int j = 0; j < K; ++j) {
@@ -94,8 +94,8 @@ class LDPCDecoder
 			TYPE out[bit_deg];
 			CODE::exclusive_reduce(inp, out, bit_deg, alg.add);
 			bnv[j+R] = alg.add(data[j], alg.add(out[0], inp[0]));
-			for (int n = 0; n < bit_deg; ++n, ++bl)
-				*bl = alg.update(*bl, alg.add(data[j], out[n]));
+			for (int n = 0; n < bit_deg; ++n)
+				alg.update(bl++, alg.add(data[j], out[n]));
 			ldpc->next_bit();
 		}
 	}

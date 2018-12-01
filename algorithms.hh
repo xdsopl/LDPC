@@ -14,9 +14,9 @@ template <typename VALUE, int WIDTH>
 struct SelfCorrectedUpdate<SIMD<VALUE, WIDTH>>
 {
 	typedef SIMD<VALUE, WIDTH> TYPE;
-	static TYPE update(TYPE a, TYPE b)
+	static void update(TYPE *a, TYPE b)
 	{
-		return vreinterpret<TYPE>(vand(vmask(b), vorr(vceqz(a), veor(vcgtz(a), vcltz(b)))));
+		*a = vreinterpret<TYPE>(vand(vmask(b), vorr(vceqz(*a), veor(vcgtz(*a), vcltz(b)))));
 	}
 };
 
@@ -65,9 +65,9 @@ struct MinSumAlgorithm<SIMD<VALUE, WIDTH>, UPDATE>
 				return true;
 		return false;
 	}
-	static TYPE update(TYPE a, TYPE b)
+	static void update(TYPE *a, TYPE b)
 	{
-		return UPDATE::update(a, b);
+		UPDATE::update(a, b);
 	}
 };
 
@@ -123,9 +123,9 @@ struct MinSumAlgorithm<SIMD<int8_t, WIDTH>, UPDATE>
 				return true;
 		return false;
 	}
-	static TYPE update(TYPE a, TYPE b)
+	static void update(TYPE *a, TYPE b)
 	{
-		return UPDATE::update(a, b);
+		UPDATE::update(a, b);
 	}
 };
 
@@ -184,9 +184,9 @@ struct MinSumCAlgorithm<SIMD<VALUE, WIDTH>, UPDATE, FACTOR>
 				return true;
 		return false;
 	}
-	static TYPE update(TYPE a, TYPE b)
+	static void update(TYPE *a, TYPE b)
 	{
-		return UPDATE::update(a, b);
+		UPDATE::update(a, b);
 	}
 };
 
@@ -246,9 +246,9 @@ struct MinSumCAlgorithm<SIMD<int8_t, WIDTH>, UPDATE, FACTOR>
 				return true;
 		return false;
 	}
-	static TYPE update(TYPE a, TYPE b)
+	static void update(TYPE *a, TYPE b)
 	{
-		return UPDATE::update(a, b);
+		UPDATE::update(a, b);
 	}
 };
 
