@@ -7,6 +7,11 @@ For better speed (at almost the same decoding performance) I've added support fo
 
 Support for decoding multiple blocks using [SIMD](https://en.wikipedia.org/wiki/SIMD) acceleration is available for the min-sum, offset-min-sum and min-sum-c algorithms.
 
+You can switch between two decoder schedules:
+
+* flooding schedule: numerically stable but also slow.
+* layered schedule: numerical stability is traded for speed.
+
 You can switch between six [Belief propagation](https://en.wikipedia.org/wiki/Belief_propagation) algorithms:
 
 * min-sum algorithm: using minimum and addition
