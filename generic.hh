@@ -194,7 +194,7 @@ struct MinSumAlgorithm<int8_t, UPDATE>
 	}
 	static void update(int8_t *a, int8_t b)
 	{
-		UPDATE::update(a, b);
+		UPDATE::update(a, std::min<int8_t>(std::max<int8_t>(b, -32), 31));
 	}
 };
 
@@ -400,7 +400,7 @@ struct MinSumCAlgorithm<int8_t, UPDATE, FACTOR>
 	}
 	static void update(int8_t *a, int8_t b)
 	{
-		UPDATE::update(a, b);
+		UPDATE::update(a, std::min<int8_t>(std::max<int8_t>(b, -32), 31));
 	}
 };
 

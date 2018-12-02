@@ -133,7 +133,7 @@ struct MinSumAlgorithm<SIMD<int8_t, WIDTH>, UPDATE>
 	}
 	static void update(TYPE *a, TYPE b)
 	{
-		UPDATE::update(a, b);
+		UPDATE::update(a, vmin(vmax(b, vdup<TYPE>(-32)), vdup<TYPE>(31)));
 	}
 };
 
@@ -264,7 +264,7 @@ struct MinSumCAlgorithm<SIMD<int8_t, WIDTH>, UPDATE, FACTOR>
 	}
 	static void update(TYPE *a, TYPE b)
 	{
-		UPDATE::update(a, b);
+		UPDATE::update(a, vmin(vmax(b, vdup<TYPE>(-32)), vdup<TYPE>(31)));
 	}
 };
 
