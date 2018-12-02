@@ -728,4 +728,36 @@ inline SIMD<int32_t, 4> vmin(SIMD<int32_t, 4> a, SIMD<int32_t, 4> b)
 	return tmp;
 }
 
+template <>
+inline SIMD<float, 4> vmax(SIMD<float, 4> a, SIMD<float, 4> b)
+{
+	SIMD<float, 4> tmp;
+	tmp.m = vmaxq_f32(a.m, b.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<int8_t, 16> vmax(SIMD<int8_t, 16> a, SIMD<int8_t, 16> b)
+{
+	SIMD<int8_t, 16> tmp;
+	tmp.m = vmaxq_s8(a.m, b.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<int16_t, 8> vmax(SIMD<int16_t, 8> a, SIMD<int16_t, 8> b)
+{
+	SIMD<int16_t, 8> tmp;
+	tmp.m = vmaxq_s16(a.m, b.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<int32_t, 4> vmax(SIMD<int32_t, 4> a, SIMD<int32_t, 4> b)
+{
+	SIMD<int32_t, 4> tmp;
+	tmp.m = vmaxq_s32(a.m, b.m);
+	return tmp;
+}
+
 #endif

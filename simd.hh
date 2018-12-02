@@ -765,6 +765,60 @@ static inline SIMD<int64_t, WIDTH> vmin(SIMD<int64_t, WIDTH> a, SIMD<int64_t, WI
 }
 
 template <int WIDTH>
+static inline SIMD<float, WIDTH> vmax(SIMD<float, WIDTH> a, SIMD<float, WIDTH> b)
+{
+	SIMD<float, WIDTH> tmp;
+	for (int i = 0; i < WIDTH; ++i)
+		tmp.v[i] = std::max(a.v[i], b.v[i]);
+	return tmp;
+}
+
+template <int WIDTH>
+static inline SIMD<double, WIDTH> vmax(SIMD<double, WIDTH> a, SIMD<double, WIDTH> b)
+{
+	SIMD<double, WIDTH> tmp;
+	for (int i = 0; i < WIDTH; ++i)
+		tmp.v[i] = std::max(a.v[i], b.v[i]);
+	return tmp;
+}
+
+template <int WIDTH>
+static inline SIMD<int8_t, WIDTH> vmax(SIMD<int8_t, WIDTH> a, SIMD<int8_t, WIDTH> b)
+{
+	SIMD<int8_t, WIDTH> tmp;
+	for (int i = 0; i < WIDTH; ++i)
+		tmp.v[i] = std::max(a.v[i], b.v[i]);
+	return tmp;
+}
+
+template <int WIDTH>
+static inline SIMD<int16_t, WIDTH> vmax(SIMD<int16_t, WIDTH> a, SIMD<int16_t, WIDTH> b)
+{
+	SIMD<int16_t, WIDTH> tmp;
+	for (int i = 0; i < WIDTH; ++i)
+		tmp.v[i] = std::max(a.v[i], b.v[i]);
+	return tmp;
+}
+
+template <int WIDTH>
+static inline SIMD<int32_t, WIDTH> vmax(SIMD<int32_t, WIDTH> a, SIMD<int32_t, WIDTH> b)
+{
+	SIMD<int32_t, WIDTH> tmp;
+	for (int i = 0; i < WIDTH; ++i)
+		tmp.v[i] = std::max(a.v[i], b.v[i]);
+	return tmp;
+}
+
+template <int WIDTH>
+static inline SIMD<int64_t, WIDTH> vmax(SIMD<int64_t, WIDTH> a, SIMD<int64_t, WIDTH> b)
+{
+	SIMD<int64_t, WIDTH> tmp;
+	for (int i = 0; i < WIDTH; ++i)
+		tmp.v[i] = std::max(a.v[i], b.v[i]);
+	return tmp;
+}
+
+template <int WIDTH>
 static inline SIMD<float, WIDTH> vadd(SIMD<float, WIDTH> a, SIMD<float, WIDTH> b)
 {
 	SIMD<float, WIDTH> tmp;
