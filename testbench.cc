@@ -30,10 +30,11 @@ int main(int argc, char **argv)
 	if (argc != 6)
 		return -1;
 
-	//typedef NormalUpdate<simd_type> update_type;
-	typedef SelfCorrectedUpdate<simd_type> update_type;
+	typedef NormalUpdate<simd_type> update_type;
+	//typedef SelfCorrectedUpdate<simd_type> update_type;
 
-	typedef MinSumAlgorithm<simd_type, update_type> algorithm_type;
+	//typedef MinSumAlgorithm<simd_type, update_type> algorithm_type;
+	typedef OffsetMinSumAlgorithm<simd_type, update_type, FACTOR> algorithm_type;
 	//typedef MinSumCAlgorithm<simd_type, update_type, FACTOR> algorithm_type;
 	//typedef LogDomainSPA<simd_type, update_type> algorithm_type;
 	//typedef LambdaMinAlgorithm<simd_type, update_type, 3> algorithm_type;
