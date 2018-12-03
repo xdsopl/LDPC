@@ -34,6 +34,8 @@ by Robert G. Gallager - 1963
 by David J.C. MacKay and Radford M. Neal - 1996
 * An introduction to LDPC codes  
 by William E. Ryan - 2003
+* An efficient message-passing schedule for LDPC decoding  
+by Eran Sharon, Simon Litsyn and Jacob Goldberger - 2004
 * DVB-S2 Low Density Parity Check Codes with near Shannon Limit Performance  
 by Mustafa Eroz, Feng-Wen Sun and Lin-Nan Lee - 2004
 * Self-Corrected Min-Sum decoding of LDPC codes  
