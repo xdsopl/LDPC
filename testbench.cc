@@ -22,8 +22,10 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 
 #if 0
 #include "flooding_decoder.hh"
+static const int TRIALS = 50;
 #else
 #include "layered_decoder.hh"
+static const int TRIALS = 25;
 #endif
 
 LDPCInterface *create_ldpc(char *standard, char prefix, int number);
@@ -148,7 +150,7 @@ int main(int argc, char **argv)
 		for (int n = 0; n < blocks; ++n)
 			for (int i = 0; i < CODE_LEN; ++i)
 				reinterpret_cast<code_type *>(simd+i)[n] = code[(j+n)*CODE_LEN+i];
-		int trials = 50;
+		int trials = TRIALS;
 		int count = decode(simd, simd + DATA_LEN, trials, blocks);
 		for (int n = 0; n < blocks; ++n)
 			for (int i = 0; i < CODE_LEN; ++i)

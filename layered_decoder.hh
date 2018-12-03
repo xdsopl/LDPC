@@ -104,7 +104,7 @@ public:
 		delete ldpc;
 		bnl = reinterpret_cast<TYPE *>(aligned_alloc(sizeof(TYPE), sizeof(TYPE) * LT));
 	}
-	int operator()(TYPE *data, TYPE *parity, int trials = 50, int blocks = 1)
+	int operator()(TYPE *data, TYPE *parity, int trials = 25, int blocks = 1)
 	{
 		reset();
 		while (bad(data, parity, blocks) && --trials >= 0)
