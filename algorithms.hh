@@ -88,10 +88,6 @@ struct MinSumAlgorithm<SIMD<int8_t, WIDTH>, UPDATE>
 	{
 		return vdup<TYPE>(1);
 	}
-	static TYPE min(TYPE a, TYPE b)
-	{
-		return vmin(a, b);
-	}
 	static TYPE sign(TYPE a, TYPE b)
 	{
 		return vsign(a, b);
@@ -100,20 +96,35 @@ struct MinSumAlgorithm<SIMD<int8_t, WIDTH>, UPDATE>
 	{
 		return vreinterpret<TYPE>(veor(vmask(a), vmask(b)));
 	}
+	static TYPE orr(TYPE a, TYPE b)
+	{
+		return vreinterpret<TYPE>(vorr(vmask(a), vmask(b)));
+	}
+	static TYPE other(TYPE a, TYPE b, TYPE c)
+	{
+		auto tmp = vceq(a, b);
+		return vreinterpret<TYPE>(vorr(vbic(vmask(b), tmp), vand(vmask(c), tmp)));
+	}
 	static void finalp(TYPE *links, int cnt)
 	{
-		TYPE mags[cnt], mins[cnt];
+		TYPE mags[cnt];
 		for (int i = 0; i < cnt; ++i)
 			mags[i] = vqabs(links[i]);
-		CODE::exclusive_reduce(mags, mins, cnt, min);
 
-		TYPE signs[cnt];
-		CODE::exclusive_reduce(links, signs, cnt, eor);
-		for (int i = 0; i < cnt; ++i)
-			signs[i] = vreinterpret<TYPE>(vorr(vmask(signs[i]), vmask(vdup<TYPE>(127))));
+		TYPE mins[2];
+		mins[0] = vmin(mags[0], mags[1]);
+		mins[1] = vmax(mags[0], mags[1]);
+		for (int i = 2; i < cnt; ++i) {
+			mins[1] = vmin(mins[1], vmax(mins[0], mags[i]));
+			mins[0] = vmin(mins[0], mags[i]);
+		}
+
+		TYPE signs = links[0];
+		for (int i = 1; i < cnt; ++i)
+			signs = eor(signs, links[i]);
 
 		for (int i = 0; i < cnt; ++i)
-			links[i] = sign(mins[i], signs[i]);
+			links[i] = sign(other(mags[i], mins[0], mins[1]), orr(eor(signs, links[i]), vdup<TYPE>(127)));
 	}
 	static TYPE add(TYPE a, TYPE b)
 	{
