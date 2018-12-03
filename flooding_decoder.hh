@@ -1,11 +1,11 @@
 /*
-LDPC SISO decoder
+LDPC SISO flooding decoder
 
 Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 */
 
-#ifndef DECODER_HH
-#define DECODER_HH
+#ifndef FLOODING_DECODER_HH
+#define FLOODING_DECODER_HH
 
 #include <stdlib.h>
 #include "exclusive_reduce.hh"
