@@ -180,6 +180,54 @@ static inline SIMD<uint64_t, WIDTH> vmask(SIMD<int64_t, WIDTH> a)
 }
 
 template <int WIDTH>
+static inline SIMD<uint8_t, WIDTH> vunsigned(SIMD<int8_t, WIDTH> a)
+{
+	return vreinterpret<SIMD<uint8_t, WIDTH>>(a);
+}
+
+template <int WIDTH>
+static inline SIMD<uint16_t, WIDTH> vunsigned(SIMD<int16_t, WIDTH> a)
+{
+	return vreinterpret<SIMD<uint16_t, WIDTH>>(a);
+}
+
+template <int WIDTH>
+static inline SIMD<uint32_t, WIDTH> vunsigned(SIMD<int32_t, WIDTH> a)
+{
+	return vreinterpret<SIMD<uint32_t, WIDTH>>(a);
+}
+
+template <int WIDTH>
+static inline SIMD<uint64_t, WIDTH> vunsigned(SIMD<int64_t, WIDTH> a)
+{
+	return vreinterpret<SIMD<uint64_t, WIDTH>>(a);
+}
+
+template <int WIDTH>
+static inline SIMD<int8_t, WIDTH> vsigned(SIMD<uint8_t, WIDTH> a)
+{
+	return vreinterpret<SIMD<int8_t, WIDTH>>(a);
+}
+
+template <int WIDTH>
+static inline SIMD<int16_t, WIDTH> vsigned(SIMD<uint16_t, WIDTH> a)
+{
+	return vreinterpret<SIMD<int16_t, WIDTH>>(a);
+}
+
+template <int WIDTH>
+static inline SIMD<int32_t, WIDTH> vsigned(SIMD<uint32_t, WIDTH> a)
+{
+	return vreinterpret<SIMD<int32_t, WIDTH>>(a);
+}
+
+template <int WIDTH>
+static inline SIMD<int64_t, WIDTH> vsigned(SIMD<uint64_t, WIDTH> a)
+{
+	return vreinterpret<SIMD<int64_t, WIDTH>>(a);
+}
+
+template <int WIDTH>
 static inline SIMD<float, WIDTH> vneg(SIMD<float, WIDTH> a)
 {
 	SIMD<float, WIDTH> tmp;
@@ -1013,6 +1061,24 @@ static inline SIMD<int16_t, WIDTH> vqsub(SIMD<int16_t, WIDTH> a, SIMD<int16_t, W
 	SIMD<int16_t, WIDTH> tmp;
 	for (int i = 0; i < WIDTH; ++i)
 		tmp.v[i] = std::min<int32_t>(std::max<int32_t>(int32_t(a.v[i]) - int32_t(b.v[i]), INT16_MIN), INT16_MAX);
+	return tmp;
+}
+
+template <int WIDTH>
+static inline SIMD<uint8_t, WIDTH> vqsub(SIMD<uint8_t, WIDTH> a, SIMD<uint8_t, WIDTH> b)
+{
+	SIMD<uint8_t, WIDTH> tmp;
+	for (int i = 0; i < WIDTH; ++i)
+		tmp.v[i] = std::max<int16_t>(int16_t(a.v[i]) - int16_t(b.v[i]), 0);
+	return tmp;
+}
+
+template <int WIDTH>
+static inline SIMD<uint16_t, WIDTH> vqsub(SIMD<uint16_t, WIDTH> a, SIMD<uint16_t, WIDTH> b)
+{
+	SIMD<uint16_t, WIDTH> tmp;
+	for (int i = 0; i < WIDTH; ++i)
+		tmp.v[i] = std::max<int32_t>(int32_t(a.v[i]) - int32_t(b.v[i]), 0);
 	return tmp;
 }
 

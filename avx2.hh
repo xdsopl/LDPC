@@ -440,6 +440,22 @@ inline SIMD<int16_t, 16> vqsub(SIMD<int16_t, 16> a, SIMD<int16_t, 16> b)
 }
 
 template <>
+inline SIMD<uint8_t, 32> vqsub(SIMD<uint8_t, 32> a, SIMD<uint8_t, 32> b)
+{
+	SIMD<uint8_t, 32> tmp;
+	tmp.m = _mm256_subs_epu8(a.m, b.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<uint16_t, 16> vqsub(SIMD<uint16_t, 16> a, SIMD<uint16_t, 16> b)
+{
+	SIMD<uint16_t, 16> tmp;
+	tmp.m = _mm256_subs_epu16(a.m, b.m);
+	return tmp;
+}
+
+template <>
 inline SIMD<float, 8> vabs(SIMD<float, 8> a)
 {
 	SIMD<float, 8> tmp;
