@@ -16,10 +16,15 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 #include <functional>
 #include "testbench.hh"
 #include "encoder.hh"
-#include "layered_decoder.hh"
 #include "algorithms.hh"
 #include "interleaver.hh"
 #include "modulation.hh"
+
+#if 0
+#include "flooding_decoder.hh"
+#else
+#include "layered_decoder.hh"
+#endif
 
 LDPCInterface *create_ldpc(char *standard, char prefix, int number);
 Interleaver<code_type> *create_interleaver(char *modulation, char *standard, char prefix, int number);
