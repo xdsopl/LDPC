@@ -236,10 +236,10 @@ struct OffsetMinSumAlgorithm<SIMD<int8_t, WIDTH>, UPDATE, FACTOR>
 	}
 	static void finalp(TYPE *links, int cnt)
 	{
-		TYPE beta = vdup<TYPE>(std::nearbyint(0.5 * FACTOR));
+		auto beta = vunsigned(vdup<TYPE>(std::nearbyint(0.5 * FACTOR)));
 		TYPE mags[cnt];
 		for (int i = 0; i < cnt; ++i)
-			mags[i] = vmax(vqsub(vqabs(links[i]), beta), vzero<TYPE>());
+			mags[i] = vsigned(vqsub(vunsigned(vqabs(links[i])), beta));
 
 		TYPE mins[2];
 		mins[0] = vmin(mags[0], mags[1]);
