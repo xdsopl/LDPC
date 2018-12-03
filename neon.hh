@@ -633,6 +633,38 @@ inline SIMD<uint32_t, 4> vceqz(SIMD<int32_t, 4> a)
 }
 
 template <>
+inline SIMD<uint32_t, 4> vceq(SIMD<float, 4> a, SIMD<float, 4> b)
+{
+	SIMD<uint32_t, 4> tmp;
+	tmp.m = vceqq_f32(a.m, b.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<uint8_t, 16> vceq(SIMD<int8_t, 16> a, SIMD<int8_t, 16> b)
+{
+	SIMD<uint8_t, 16> tmp;
+	tmp.m = vceqq_s8(a.m, b.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<uint16_t, 8> vceq(SIMD<int16_t, 8> a, SIMD<int16_t, 8> b)
+{
+	SIMD<uint16_t, 8> tmp;
+	tmp.m = vceqq_s16(a.m, b.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<uint32_t, 4> vceq(SIMD<int32_t, 4> a, SIMD<int32_t, 4> b)
+{
+	SIMD<uint32_t, 4> tmp;
+	tmp.m = vceqq_s32(a.m, b.m);
+	return tmp;
+}
+
+template <>
 inline SIMD<uint32_t, 4> vcgtz(SIMD<float, 4> a)
 {
 	SIMD<uint32_t, 4> tmp;

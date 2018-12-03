@@ -699,6 +699,55 @@ inline SIMD<uint64_t, 2> vceqz(SIMD<int64_t, 2> a)
 	return tmp;
 }
 
+
+template <>
+inline SIMD<uint32_t, 4> vceq(SIMD<float, 4> a, SIMD<float, 4> b)
+{
+	SIMD<uint32_t, 4> tmp;
+	tmp.m = (__m128i)_mm_cmpeq_ps(a.m, b.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<uint64_t, 2> vceq(SIMD<double, 2> a, SIMD<double, 2> b)
+{
+	SIMD<uint64_t, 2> tmp;
+	tmp.m = (__m128i)_mm_cmpeq_pd(a.m, b.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<uint8_t, 16> vceq(SIMD<int8_t, 16> a, SIMD<int8_t, 16> b)
+{
+	SIMD<uint8_t, 16> tmp;
+	tmp.m = _mm_cmpeq_epi8(a.m, b.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<uint16_t, 8> vceq(SIMD<int16_t, 8> a, SIMD<int16_t, 8> b)
+{
+	SIMD<uint16_t, 8> tmp;
+	tmp.m = _mm_cmpeq_epi16(a.m, b.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<uint32_t, 4> vceq(SIMD<int32_t, 4> a, SIMD<int32_t, 4> b)
+{
+	SIMD<uint32_t, 4> tmp;
+	tmp.m = _mm_cmpeq_epi32(a.m, b.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<uint64_t, 2> vceq(SIMD<int64_t, 2> a, SIMD<int64_t, 2> b)
+{
+	SIMD<uint64_t, 2> tmp;
+	tmp.m = _mm_cmpeq_epi64(a.m, b.m);
+	return tmp;
+}
+
 template <>
 inline SIMD<uint32_t, 4> vcgtz(SIMD<float, 4> a)
 {

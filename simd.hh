@@ -711,6 +711,60 @@ static inline SIMD<uint64_t, WIDTH> vcgt(SIMD<uint64_t, WIDTH> a, SIMD<uint64_t,
 }
 
 template <int WIDTH>
+static inline SIMD<uint32_t, WIDTH> vceq(SIMD<float, WIDTH> a, SIMD<float, WIDTH> b)
+{
+	SIMD<uint32_t, WIDTH> tmp;
+	for (int i = 0; i < WIDTH; ++i)
+		tmp.v[i] = -(a.v[i] == b.v[i]);
+	return tmp;
+}
+
+template <int WIDTH>
+static inline SIMD<uint64_t, WIDTH> vceq(SIMD<double, WIDTH> a, SIMD<double, WIDTH> b)
+{
+	SIMD<uint64_t, WIDTH> tmp;
+	for (int i = 0; i < WIDTH; ++i)
+		tmp.v[i] = -(a.v[i] == b.v[i]);
+	return tmp;
+}
+
+template <int WIDTH>
+static inline SIMD<uint8_t, WIDTH> vceq(SIMD<int8_t, WIDTH> a, SIMD<int8_t, WIDTH> b)
+{
+	SIMD<uint8_t, WIDTH> tmp;
+	for (int i = 0; i < WIDTH; ++i)
+		tmp.v[i] = -(a.v[i] == b.v[i]);
+	return tmp;
+}
+
+template <int WIDTH>
+static inline SIMD<uint16_t, WIDTH> vceq(SIMD<int16_t, WIDTH> a, SIMD<int16_t, WIDTH> b)
+{
+	SIMD<uint16_t, WIDTH> tmp;
+	for (int i = 0; i < WIDTH; ++i)
+		tmp.v[i] = -(a.v[i] == b.v[i]);
+	return tmp;
+}
+
+template <int WIDTH>
+static inline SIMD<uint32_t, WIDTH> vceq(SIMD<int32_t, WIDTH> a, SIMD<int32_t, WIDTH> b)
+{
+	SIMD<uint32_t, WIDTH> tmp;
+	for (int i = 0; i < WIDTH; ++i)
+		tmp.v[i] = -(a.v[i] == b.v[i]);
+	return tmp;
+}
+
+template <int WIDTH>
+static inline SIMD<uint64_t, WIDTH> vceq(SIMD<int64_t, WIDTH> a, SIMD<int64_t, WIDTH> b)
+{
+	SIMD<uint64_t, WIDTH> tmp;
+	for (int i = 0; i < WIDTH; ++i)
+		tmp.v[i] = -(a.v[i] == b.v[i]);
+	return tmp;
+}
+
+template <int WIDTH>
 static inline SIMD<float, WIDTH> vmin(SIMD<float, WIDTH> a, SIMD<float, WIDTH> b)
 {
 	SIMD<float, WIDTH> tmp;
