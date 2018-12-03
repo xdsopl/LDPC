@@ -5,11 +5,12 @@ To study LDPC codes I've started implementing a soft decision decoder using floa
 
 For better speed (at almost the same decoding performance) I've added support for [saturating](https://en.wikipedia.org/wiki/Saturation_arithmetic) [fixed-point](https://en.wikipedia.org/wiki/Fixed-point_arithmetic) operations.
 
-Support for decoding multiple blocks using [SIMD](https://en.wikipedia.org/wiki/SIMD) acceleration is available for the min-sum and min-sum-c algorithms.
+Support for decoding multiple blocks using [SIMD](https://en.wikipedia.org/wiki/SIMD) acceleration is available for the min-sum, offset-min-sum and min-sum-c algorithms.
 
-You can switch between five [Belief propagation](https://en.wikipedia.org/wiki/Belief_propagation) algorithms:
+You can switch between six [Belief propagation](https://en.wikipedia.org/wiki/Belief_propagation) algorithms:
 
 * min-sum algorithm: using minimum and addition
+* offset-min-sum algorithm: using minimum, addition and a constant offset
 * min-sum-c algorithm: using minimum, addition and a correction factor
 * sum-product algorithm: using tanh+atanh-functions, addition and multiplication
 * log-sum-product algorithm: using log+exp-functions to replace above multiplication with addition in the log domain

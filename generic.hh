@@ -199,6 +199,128 @@ struct MinSumAlgorithm<int8_t, UPDATE>
 };
 
 template <typename TYPE, typename UPDATE, int FACTOR>
+struct OffsetMinSumAlgorithm
+{
+	static TYPE zero()
+	{
+		return 0;
+	}
+	static TYPE one()
+	{
+		return 1;
+	}
+	static TYPE min(TYPE a, TYPE b)
+	{
+		return std::min(a, b);
+	}
+	static TYPE sign(TYPE a, TYPE b)
+	{
+		return b < TYPE(0) ? -a : b > TYPE(0) ? a : TYPE(0);
+	}
+	static void finalp(TYPE *links, int cnt)
+	{
+		TYPE beta = 0.5 * FACTOR;
+		TYPE mags[cnt], mins[cnt];
+		for (int i = 0; i < cnt; ++i)
+			mags[i] = std::max(std::abs(links[i]) - beta, TYPE(0));
+		CODE::exclusive_reduce(mags, mins, cnt, min);
+
+		TYPE signs[cnt];
+		CODE::exclusive_reduce(links, signs, cnt, sign);
+
+		for (int i = 0; i < cnt; ++i)
+			links[i] = sign(mins[i], signs[i]);
+	}
+	static TYPE add(TYPE a, TYPE b)
+	{
+		return a + b;
+	}
+	static TYPE sub(TYPE a, TYPE b)
+	{
+		return a - b;
+	}
+	static bool bad(TYPE v, int)
+	{
+		return v <= TYPE(0);
+	}
+	static void update(TYPE *a, TYPE b)
+	{
+		UPDATE::update(a, b);
+	}
+};
+
+template <typename UPDATE, int FACTOR>
+struct OffsetMinSumAlgorithm<int8_t, UPDATE, FACTOR>
+{
+	static int8_t zero()
+	{
+		return 0;
+	}
+	static int8_t one()
+	{
+		return 1;
+	}
+	static int8_t add(int8_t a, int8_t b)
+	{
+		int x = int(a) + int(b);
+		x = std::min<int>(std::max<int>(x, -128), 127);
+		return x;
+	}
+	static int8_t sub(int8_t a, int8_t b)
+	{
+		int x = int(a) - int(b);
+		x = std::min<int>(std::max<int>(x, -128), 127);
+		return x;
+	}
+	static uint8_t subu(uint8_t a, uint8_t b)
+	{
+		int x = int(a) - int(b);
+		x = std::max<int>(x, 0);
+		return x;
+	}
+	static int8_t min(int8_t a, int8_t b)
+	{
+		return std::min(a, b);
+	}
+	static int8_t xor_(int8_t a, int8_t b)
+	{
+		return a ^ b;
+	}
+	static int8_t sqabs(int8_t a)
+	{
+		return std::abs(std::max<int8_t>(a, -127));
+	}
+	static int8_t sign(int8_t a, int8_t b)
+	{
+		return b < 0 ? -a : b > 0 ? a : 0;
+	}
+	static void finalp(int8_t *links, int cnt)
+	{
+		int8_t beta = std::nearbyint(0.5 * FACTOR);
+		int8_t mags[cnt], mins[cnt];
+		for (int i = 0; i < cnt; ++i)
+			mags[i] = subu(sqabs(links[i]), beta);
+		CODE::exclusive_reduce(mags, mins, cnt, min);
+
+		int8_t signs[cnt];
+		CODE::exclusive_reduce(links, signs, cnt, xor_);
+		for (int i = 0; i < cnt; ++i)
+			signs[i] |= 127;
+
+		for (int i = 0; i < cnt; ++i)
+			links[i] = sign(mins[i], signs[i]);
+	}
+	static bool bad(int8_t v, int)
+	{
+		return v <= 0;
+	}
+	static void update(int8_t *a, int8_t b)
+	{
+		UPDATE::update(a, std::min<int8_t>(std::max<int8_t>(b, -32), 31));
+	}
+};
+
+template <typename TYPE, typename UPDATE, int FACTOR>
 struct MinSumCAlgorithm
 {
 	static TYPE zero()
