@@ -102,8 +102,7 @@ struct MinSumAlgorithm<SIMD<int8_t, WIDTH>, UPDATE>
 	}
 	static TYPE other(TYPE a, TYPE b, TYPE c)
 	{
-		auto tmp = vceq(a, b);
-		return vreinterpret<TYPE>(vorr(vbic(vmask(b), tmp), vand(vmask(c), tmp)));
+		return vreinterpret<TYPE>(vbsl(vceq(a, b), vmask(c), vmask(b)));
 	}
 	static void finalp(TYPE *links, int cnt)
 	{
@@ -231,8 +230,7 @@ struct OffsetMinSumAlgorithm<SIMD<int8_t, WIDTH>, UPDATE, FACTOR>
 	}
 	static TYPE other(TYPE a, TYPE b, TYPE c)
 	{
-		auto tmp = vceq(a, b);
-		return vreinterpret<TYPE>(vorr(vbic(vmask(b), tmp), vand(vmask(c), tmp)));
+		return vreinterpret<TYPE>(vbsl(vceq(a, b), vmask(c), vmask(b)));
 	}
 	static void finalp(TYPE *links, int cnt)
 	{
