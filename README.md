@@ -5,7 +5,7 @@ To study LDPC codes I've started implementing a soft decision decoder using floa
 
 For better speed (at almost the same decoding performance) I've added support for [saturating](https://en.wikipedia.org/wiki/Saturation_arithmetic) [fixed-point](https://en.wikipedia.org/wiki/Fixed-point_arithmetic) operations.
 
-Support for decoding multiple blocks using [SIMD](https://en.wikipedia.org/wiki/SIMD) acceleration is available for the min-sum, offset-min-sum and min-sum-c algorithms.
+Parallel decoding of multiple blocks using [SIMD](https://en.wikipedia.org/wiki/SIMD) is available for all variations of the min-sum algorithm.
 
 You can switch between two decoder schedules:
 
@@ -21,6 +21,7 @@ You can switch between six [Belief propagation](https://en.wikipedia.org/wiki/Be
 * log-sum-product algorithm: using log+exp-functions to replace above multiplication with addition in the log domain
 * lambda-min algorithm: same as log-sum-product, but using only lambda minima
 
+The following applies to the flooding schedule only:  
 You can enable the self-corrected update for any of the above listed algorithms to further boost its decoding performance.
 It works by erasing unreliable bit nodes, whose signs fluctuate between updates.
 As shown in the BER plots below, the min-sum algorithm benefits the most from the erasures.
@@ -42,6 +43,8 @@ by Mustafa Eroz, Feng-Wen Sun and Lin-Nan Lee - 2004
 by J. Chen, A. Dholakia, E. Eleftheriou, M. Fossorier and X.–Y. Hu - 2005
 * Self-Corrected Min-Sum decoding of LDPC codes  
 by Valentin Savin - 2008
+
+Here some DVB standards:
 * [en_302307v010201p.pdf](http://www.etsi.org/deliver/etsi_en/302300_302399/302307/01.02.01_60/en_302307v010201p.pdf)
 * [a83-1_dvb-s2_den302307v141.pdf](https://www.dvb.org/resources/public/standards/a83-1_dvb-s2_den302307v141.pdf)
 * [en_30230702v010101a.pdf](http://www.etsi.org/deliver/etsi_en/302300_302399/30230702/01.01.01_20/en_30230702v010101a.pdf)
