@@ -507,6 +507,42 @@ static inline SIMD<uint64_t, WIDTH> vbic(SIMD<uint64_t, WIDTH> a, SIMD<uint64_t,
 }
 
 template <int WIDTH>
+static inline SIMD<uint8_t, WIDTH> vbsl(SIMD<uint8_t, WIDTH> a, SIMD<uint8_t, WIDTH> b, SIMD<uint8_t, WIDTH> c)
+{
+	SIMD<uint8_t, WIDTH> tmp;
+	for (int i = 0; i < WIDTH; ++i)
+		tmp.v[i] = (a.v[i] & b.v[i]) | (~a.v[i] & c.v[i]);
+	return tmp;
+}
+
+template <int WIDTH>
+static inline SIMD<uint16_t, WIDTH> vbsl(SIMD<uint16_t, WIDTH> a, SIMD<uint16_t, WIDTH> b, SIMD<uint16_t, WIDTH> c)
+{
+	SIMD<uint16_t, WIDTH> tmp;
+	for (int i = 0; i < WIDTH; ++i)
+		tmp.v[i] = (a.v[i] & b.v[i]) | (~a.v[i] & c.v[i]);
+	return tmp;
+}
+
+template <int WIDTH>
+static inline SIMD<uint32_t, WIDTH> vbsl(SIMD<uint32_t, WIDTH> a, SIMD<uint32_t, WIDTH> b, SIMD<uint32_t, WIDTH> c)
+{
+	SIMD<uint32_t, WIDTH> tmp;
+	for (int i = 0; i < WIDTH; ++i)
+		tmp.v[i] = (a.v[i] & b.v[i]) | (~a.v[i] & c.v[i]);
+	return tmp;
+}
+
+template <int WIDTH>
+static inline SIMD<uint64_t, WIDTH> vbsl(SIMD<uint64_t, WIDTH> a, SIMD<uint64_t, WIDTH> b, SIMD<uint64_t, WIDTH> c)
+{
+	SIMD<uint64_t, WIDTH> tmp;
+	for (int i = 0; i < WIDTH; ++i)
+		tmp.v[i] = (a.v[i] & b.v[i]) | (~a.v[i] & c.v[i]);
+	return tmp;
+}
+
+template <int WIDTH>
 static inline SIMD<uint32_t, WIDTH> vcgtz(SIMD<float, WIDTH> a)
 {
 	SIMD<uint32_t, WIDTH> tmp;

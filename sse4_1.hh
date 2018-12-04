@@ -668,6 +668,38 @@ inline SIMD<uint64_t, 2> vbic(SIMD<uint64_t, 2> a, SIMD<uint64_t, 2> b)
 }
 
 template <>
+inline SIMD<uint8_t, 16> vbsl(SIMD<uint8_t, 16> a, SIMD<uint8_t, 16> b, SIMD<uint8_t, 16> c)
+{
+	SIMD<uint8_t, 16> tmp;
+	tmp.m = _mm_or_si128(_mm_and_si128(a.m, b.m), _mm_andnot_si128(a.m, c.m));
+	return tmp;
+}
+
+template <>
+inline SIMD<uint16_t, 8> vbsl(SIMD<uint16_t, 8> a, SIMD<uint16_t, 8> b, SIMD<uint16_t, 8> c)
+{
+	SIMD<uint16_t, 8> tmp;
+	tmp.m = _mm_or_si128(_mm_and_si128(a.m, b.m), _mm_andnot_si128(a.m, c.m));
+	return tmp;
+}
+
+template <>
+inline SIMD<uint32_t, 4> vbsl(SIMD<uint32_t, 4> a, SIMD<uint32_t, 4> b, SIMD<uint32_t, 4> c)
+{
+	SIMD<uint32_t, 4> tmp;
+	tmp.m = _mm_or_si128(_mm_and_si128(a.m, b.m), _mm_andnot_si128(a.m, c.m));
+	return tmp;
+}
+
+template <>
+inline SIMD<uint64_t, 2> vbsl(SIMD<uint64_t, 2> a, SIMD<uint64_t, 2> b, SIMD<uint64_t, 2> c)
+{
+	SIMD<uint64_t, 2> tmp;
+	tmp.m = _mm_or_si128(_mm_and_si128(a.m, b.m), _mm_andnot_si128(a.m, c.m));
+	return tmp;
+}
+
+template <>
 inline SIMD<uint32_t, 4> vceqz(SIMD<float, 4> a)
 {
 	SIMD<uint32_t, 4> tmp;
