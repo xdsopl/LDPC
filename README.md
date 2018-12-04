@@ -38,6 +38,8 @@ by William E. Ryan - 2003
 by Eran Sharon, Simon Litsyn and Jacob Goldberger - 2004
 * DVB-S2 Low Density Parity Check Codes with near Shannon Limit Performance  
 by Mustafa Eroz, Feng-Wen Sun and Lin-Nan Lee - 2004
+* Reduced-Complexity Decoding of LDPC Codes  
+by J. Chen, A. Dholakia, E. Eleftheriou, M. Fossorier and X.–Y. Hu - 2005
 * Self-Corrected Min-Sum decoding of LDPC codes  
 by Valentin Savin - 2008
 * [en_302307v010201p.pdf](http://www.etsi.org/deliver/etsi_en/302300_302399/302307/01.02.01_60/en_302307v010201p.pdf)
