@@ -144,6 +144,7 @@ int main(int argc, char **argv)
 
 	LDPCDecoder<simd_type, algorithm_type> decode(ldpc);
 	int iterations = 0;
+	int num_decodes = 0;
 	auto start = std::chrono::system_clock::now();
 	for (int j = 0; j < BLOCKS; j += SIMD_WIDTH) {
 		int blocks = j + SIMD_WIDTH > BLOCKS ? BLOCKS - j : SIMD_WIDTH;
@@ -152,6 +153,7 @@ int main(int argc, char **argv)
 				reinterpret_cast<code_type *>(simd+i)[n] = code[(j+n)*CODE_LEN+i];
 		int trials = TRIALS;
 		int count = decode(simd, simd + DATA_LEN, trials, blocks);
+		++num_decodes;
 		for (int n = 0; n < blocks; ++n)
 			for (int i = 0; i < CODE_LEN; ++i)
 				code[(j+n)*CODE_LEN+i] = reinterpret_cast<code_type *>(simd+i)[n];
@@ -169,6 +171,8 @@ int main(int argc, char **argv)
 	std::cerr << kbs << " kilobit per second." << std::endl;
 	float avg_iter = (float)iterations / (float)BLOCKS;
 	std::cerr << avg_iter << " average iterations per block." << std::endl;
+	float avg_msec = (float)msec.count() / (float)num_decodes;
+	std::cerr << avg_msec << " average milliseconds per decode." << std::endl;
 
 	for (int i = 0; i < BLOCKS * CODE_LEN; ++i)
 		assert(!std::isnan(code[i]));
