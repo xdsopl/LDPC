@@ -147,14 +147,14 @@ struct MinSumAlgorithm<int8_t, UPDATE>
 	}
 	static int8_t add(int8_t a, int8_t b)
 	{
-		int x = int(a) + int(b);
-		x = std::min<int>(std::max<int>(x, -128), 127);
+		int16_t x = int16_t(a) + int16_t(b);
+		x = std::min<int16_t>(std::max<int16_t>(x, -128), 127);
 		return x;
 	}
 	static int8_t sub(int8_t a, int8_t b)
 	{
-		int x = int(a) - int(b);
-		x = std::min<int>(std::max<int>(x, -128), 127);
+		int16_t x = int16_t(a) - int16_t(b);
+		x = std::min<int16_t>(std::max<int16_t>(x, -128), 127);
 		return x;
 	}
 	static int8_t min(int8_t a, int8_t b)
@@ -262,20 +262,20 @@ struct OffsetMinSumAlgorithm<int8_t, UPDATE, FACTOR>
 	}
 	static int8_t add(int8_t a, int8_t b)
 	{
-		int x = int(a) + int(b);
-		x = std::min<int>(std::max<int>(x, -128), 127);
+		int16_t x = int16_t(a) + int16_t(b);
+		x = std::min<int16_t>(std::max<int16_t>(x, -128), 127);
 		return x;
 	}
 	static int8_t sub(int8_t a, int8_t b)
 	{
-		int x = int(a) - int(b);
-		x = std::min<int>(std::max<int>(x, -128), 127);
+		int16_t x = int16_t(a) - int16_t(b);
+		x = std::min<int16_t>(std::max<int16_t>(x, -128), 127);
 		return x;
 	}
 	static uint8_t subu(uint8_t a, uint8_t b)
 	{
-		int x = int(a) - int(b);
-		x = std::max<int>(x, 0);
+		int16_t x = int16_t(a) - int16_t(b);
+		x = std::max<int16_t>(x, 0);
 		return x;
 	}
 	static int8_t min(int8_t a, int8_t b)
@@ -454,31 +454,31 @@ struct MinSumCAlgorithm<int8_t, UPDATE, FACTOR>
 	}
 	static int8_t add(int8_t a, int8_t b)
 	{
-		int x = int(a) + int(b);
-		x = std::min<int>(std::max<int>(x, -128), 127);
+		int16_t x = int16_t(a) + int16_t(b);
+		x = std::min<int16_t>(std::max<int16_t>(x, -128), 127);
 		return x;
 	}
 	static uint8_t addu(uint8_t a, uint8_t b)
 	{
-		int x = int(a) + int(b);
-		x = std::min<int>(x, 255);
+		int16_t x = int16_t(a) + int16_t(b);
+		x = std::min<int16_t>(x, 255);
 		return x;
 	}
 	static int8_t sub(int8_t a, int8_t b)
 	{
-		int x = int(a) - int(b);
-		x = std::min<int>(std::max<int>(x, -128), 127);
+		int16_t x = int16_t(a) - int16_t(b);
+		x = std::min<int16_t>(std::max<int16_t>(x, -128), 127);
 		return x;
 	}
 	static uint8_t subu(uint8_t a, uint8_t b)
 	{
-		int x = int(a) - int(b);
-		x = std::max<int>(x, 0);
+		int16_t x = int16_t(a) - int16_t(b);
+		x = std::max<int16_t>(x, 0);
 		return x;
 	}
 	static uint8_t abs(int8_t a)
 	{
-		return std::abs<int>(a);
+		return std::abs<int16_t>(a);
 	}
 	static int8_t sqabs(int8_t a)
 	{
