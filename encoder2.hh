@@ -15,6 +15,7 @@ class LDPCEncoder
 	uint16_t *pos;
 	uint8_t *cnc;
 	int R, CNL;
+	bool initialized;
 
 	TYPE one()
 	{
@@ -25,8 +26,16 @@ class LDPCEncoder
 		return b < TYPE(0) ? -a : b > TYPE(0) ? a : TYPE(0);
 	}
 public:
-	LDPCEncoder(LDPCInterface *it)
+	LDPCEncoder() : initialized(false)
 	{
+	}
+	void init(LDPCInterface *it)
+	{
+		if (initialized) {
+			delete[] pos;
+			delete[] cnc;
+		}
+		initialized = true;
 		LDPCInterface *ldpc = it->clone();
 		int N = ldpc->code_len();
 		int K = ldpc->data_len();
@@ -59,8 +68,10 @@ public:
 	}
 	~LDPCEncoder()
 	{
-		delete[] pos;
-		delete[] cnc;
+		if (initialized) {
+			delete[] pos;
+			delete[] cnc;
+		}
 	}
 };
 

@@ -14,6 +14,7 @@ class LDPCEncoder
 {
 	LDPCInterface *ldpc;
 	int N, K, R;
+	bool initialized;
 
 	TYPE one()
 	{
@@ -24,8 +25,14 @@ class LDPCEncoder
 		return b < TYPE(0) ? -a : b > TYPE(0) ? a : TYPE(0);
 	}
 public:
-	LDPCEncoder(LDPCInterface *it)
+	LDPCEncoder() : initialized(false)
 	{
+	}
+	void init(LDPCInterface *it)
+	{
+		if (initialized)
+			delete ldpc;
+		initialized = true;
 		ldpc = it->clone();
 		N = ldpc->code_len();
 		K = ldpc->data_len();
@@ -50,7 +57,8 @@ public:
 	}
 	~LDPCEncoder()
 	{
-		delete ldpc;
+		if (initialized)
+			delete ldpc;
 	}
 };
 

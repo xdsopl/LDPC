@@ -20,6 +20,7 @@ class LDPCDecoder
 	LDPCInterface *ldpc;
 	ALG alg;
 	int N, K, R, CNL, LT;
+	bool initialized;
 
 	void bit_node_init(TYPE *data, TYPE *parity)
 	{
@@ -114,8 +115,17 @@ class LDPCDecoder
 			data[i] = bnv[i+R];
 	}
 public:
-	LDPCDecoder(LDPCInterface *it)
+	LDPCDecoder() : initialized(false)
 	{
+	}
+	void init(LDPCInterface *it)
+	{
+		if (initialized) {
+			free(aligned_buffer);
+			delete[] cnc;
+			delete ldpc;
+		}
+		initialized = true;
 		ldpc = it->clone();
 		N = ldpc->code_len();
 		K = ldpc->data_len();
@@ -149,9 +159,11 @@ public:
 	}
 	~LDPCDecoder()
 	{
-		free(aligned_buffer);
-		delete[] cnc;
-		delete ldpc;
+		if (initialized) {
+			free(aligned_buffer);
+			delete[] cnc;
+			delete ldpc;
+		}
 	}
 };
 

@@ -47,6 +47,9 @@ int main(int argc, char **argv)
 	//typedef LambdaMinAlgorithm<simd_type, update_type, 3> algorithm_type;
 	//typedef SumProductAlgorithm<simd_type, update_type> algorithm_type;
 
+	LDPCEncoder<code_type> encode;
+	LDPCDecoder<simd_type, algorithm_type> decode;
+
 	LDPCInterface *ldpc = create_ldpc(argv[2], argv[3][0], atoi(argv[3]+1));
 	if (!ldpc) {
 		std::cerr << "no such table!" << std::endl;
@@ -55,6 +58,9 @@ int main(int argc, char **argv)
 	const int CODE_LEN = ldpc->code_len();
 	const int DATA_LEN = ldpc->data_len();
 	std::cerr << "testing LDPC(" << CODE_LEN << ", " << DATA_LEN << ") code." << std::endl;
+
+	encode.init(ldpc);
+	decode.init(ldpc);
 
 	ModulationInterface<complex_type, code_type> *mod = create_modulation(argv[4], CODE_LEN);
 	if (!mod) {
@@ -95,7 +101,6 @@ int main(int argc, char **argv)
 		for (int i = 0; i < DATA_LEN; ++i)
 			code[j * CODE_LEN + i] = 1 - 2 * data();
 
-	LDPCEncoder<code_type> encode(ldpc);
 	for (int j = 0; j < BLOCKS; ++j)
 		encode(code + j * CODE_LEN, code + j * CODE_LEN + DATA_LEN);
 
@@ -142,7 +147,6 @@ int main(int argc, char **argv)
 	for (int i = 0; i < BLOCKS * CODE_LEN; ++i)
 		assert(!std::isnan(code[i]));
 
-	LDPCDecoder<simd_type, algorithm_type> decode(ldpc);
 	int iterations = 0;
 	int num_decodes = 0;
 	auto start = std::chrono::system_clock::now();
