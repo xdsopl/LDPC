@@ -30,26 +30,28 @@ class LDPCDecoder
 		{
 			int cnt = cnc[0];
 			TYPE cnv = alg.sign(alg.one(), parity[0]);
-			for (int j = 0; j < cnt; ++j)
-				cnv = alg.sign(cnv, data[pos[j]]);
+			for (int c = 0; c < cnt; ++c)
+				cnv = alg.sign(cnv, data[pos[c]]);
 			if (alg.bad(cnv, blocks))
 				return true;
 		}
-		for (int i = 1; i < M; ++i) {
-			int cnt = cnc[i/M];
-			TYPE cnv = alg.sign(alg.sign(alg.one(), parity[i+(q-1)*M-1]), parity[i]);
-			for (int j = 0; j < cnt; ++j)
-				cnv = alg.sign(cnv, data[pos[CNL*i+j]]);
+		for (int j = 1; j < M; ++j) {
+			int cnt = cnc[0];
+			TYPE cnv = alg.sign(alg.sign(alg.one(), parity[j+(q-1)*M-1]), parity[j]);
+			for (int c = 0; c < cnt; ++c)
+				cnv = alg.sign(cnv, data[pos[CNL*j+c]]);
 			if (alg.bad(cnv, blocks))
 				return true;
 		}
-		for (int i = M; i < R; ++i) {
-			int cnt = cnc[i/M];
-			TYPE cnv = alg.sign(alg.sign(alg.one(), parity[i-M]), parity[i]);
-			for (int j = 0; j < cnt; ++j)
-				cnv = alg.sign(cnv, data[pos[CNL*i+j]]);
-			if (alg.bad(cnv, blocks))
-				return true;
+		for (int i = 1; i < q; ++i) {
+			for (int j = 0; j < M; ++j) {
+				int cnt = cnc[i];
+				TYPE cnv = alg.sign(alg.sign(alg.one(), parity[M*(i-1)+j]), parity[M*i+j]);
+				for (int c = 0; c < cnt; ++c)
+					cnv = alg.sign(cnv, data[pos[CNL*(M*i+j)+c]]);
+				if (alg.bad(cnv, blocks))
+					return true;
+			}
 		}
 		return false;
 	}
@@ -60,47 +62,49 @@ class LDPCDecoder
 			int cnt = cnc[0];
 			int deg = cnt + 1;
 			TYPE inp[deg], out[deg];
-			for (int j = 0; j < cnt; ++j)
-				inp[j] = out[j] = alg.sub(data[pos[j]], bl[j]);
+			for (int c = 0; c < cnt; ++c)
+				inp[c] = out[c] = alg.sub(data[pos[c]], bl[c]);
 			inp[cnt] = out[cnt] = alg.sub(parity[0], bl[cnt]);
 			alg.finalp(out, deg);
-			for (int j = 0; j < cnt; ++j)
-				data[pos[j]] = alg.add(inp[j], out[j]);
+			for (int c = 0; c < cnt; ++c)
+				data[pos[c]] = alg.add(inp[c], out[c]);
 			parity[0] = alg.add(inp[cnt], out[cnt]);
-			for (int j = 0; j < deg; ++j)
-				alg.update(bl++, out[j]);
+			for (int d = 0; d < deg; ++d)
+				alg.update(bl++, out[d]);
 		}
-		for (int i = 1; i < M; ++i) {
-			int cnt = cnc[i/M];
+		for (int j = 1; j < M; ++j) {
+			int cnt = cnc[0];
 			int deg = cnt + 2;
 			TYPE inp[deg], out[deg];
-			for (int j = 0; j < cnt; ++j)
-				inp[j] = out[j] = alg.sub(data[pos[CNL*i+j]], bl[j]);
-			inp[cnt] = out[cnt] = alg.sub(parity[i+(q-1)*M-1], bl[cnt]);
-			inp[cnt+1] = out[cnt+1] = alg.sub(parity[i], bl[cnt+1]);
+			for (int c = 0; c < cnt; ++c)
+				inp[c] = out[c] = alg.sub(data[pos[CNL*j+c]], bl[c]);
+			inp[cnt] = out[cnt] = alg.sub(parity[j+(q-1)*M-1], bl[cnt]);
+			inp[cnt+1] = out[cnt+1] = alg.sub(parity[j], bl[cnt+1]);
 			alg.finalp(out, deg);
-			for (int j = 0; j < cnt; ++j)
-				data[pos[CNL*i+j]] = alg.add(inp[j], out[j]);
-			parity[i+(q-1)*M-1] = alg.add(inp[cnt], out[cnt]);
-			parity[i] = alg.add(inp[cnt+1], out[cnt+1]);
-			for (int j = 0; j < deg; ++j)
-				alg.update(bl++, out[j]);
+			for (int c = 0; c < cnt; ++c)
+				data[pos[CNL*j+c]] = alg.add(inp[c], out[c]);
+			parity[j+(q-1)*M-1] = alg.add(inp[cnt], out[cnt]);
+			parity[j] = alg.add(inp[cnt+1], out[cnt+1]);
+			for (int d = 0; d < deg; ++d)
+				alg.update(bl++, out[d]);
 		}
-		for (int i = M; i < R; ++i) {
-			int cnt = cnc[i/M];
-			int deg = cnt + 2;
-			TYPE inp[deg], out[deg];
-			for (int j = 0; j < cnt; ++j)
-				inp[j] = out[j] = alg.sub(data[pos[CNL*i+j]], bl[j]);
-			inp[cnt] = out[cnt] = alg.sub(parity[i-M], bl[cnt]);
-			inp[cnt+1] = out[cnt+1] = alg.sub(parity[i], bl[cnt+1]);
-			alg.finalp(out, deg);
-			for (int j = 0; j < cnt; ++j)
-				data[pos[CNL*i+j]] = alg.add(inp[j], out[j]);
-			parity[i-M] = alg.add(inp[cnt], out[cnt]);
-			parity[i] = alg.add(inp[cnt+1], out[cnt+1]);
-			for (int j = 0; j < deg; ++j)
-				alg.update(bl++, out[j]);
+		for (int i = 1; i < q; ++i) {
+			for (int j = 0; j < M; ++j) {
+				int cnt = cnc[i];
+				int deg = cnt + 2;
+				TYPE inp[deg], out[deg];
+				for (int c = 0; c < cnt; ++c)
+					inp[c] = out[c] = alg.sub(data[pos[CNL*(M*i+j)+c]], bl[c]);
+				inp[cnt] = out[cnt] = alg.sub(parity[M*(i-1)+j], bl[cnt]);
+				inp[cnt+1] = out[cnt+1] = alg.sub(parity[M*i+j], bl[cnt+1]);
+				alg.finalp(out, deg);
+				for (int c = 0; c < cnt; ++c)
+					data[pos[CNL*(M*i+j)+c]] = alg.add(inp[c], out[c]);
+				parity[M*(i-1)+j] = alg.add(inp[cnt], out[cnt]);
+				parity[M*i+j] = alg.add(inp[cnt+1], out[cnt+1]);
+				for (int d = 0; d < deg; ++d)
+					alg.update(bl++, out[d]);
+			}
 		}
 	}
 public:
