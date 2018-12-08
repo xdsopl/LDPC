@@ -53,7 +53,7 @@ class LDPCDecoder
 			int cnt = cnc[i];
 			int msg_pos[cnt];
 			for (int c = 0; c < cnt; ++c)
-				msg_pos[c] = pos[CNL*M*i+c];
+				msg_pos[c] = pos[CNL*i+c];
 			for (int j = 0; j < M; ++j) {
 				TYPE cnv = alg.sign(alg.sign(alg.one(), parity[M*(i-1)+j]), parity[M*i+j]);
 				for (int c = 0; c < cnt; ++c)
@@ -110,7 +110,7 @@ class LDPCDecoder
 			int deg = cnt + 2;
 			int msg_pos[cnt];
 			for (int c = 0; c < cnt; ++c)
-				msg_pos[c] = pos[CNL*M*i+c];
+				msg_pos[c] = pos[CNL*i+c];
 			for (int j = 0; j < M; ++j) {
 				TYPE inp[deg], out[deg];
 				for (int c = 0; c < cnt; ++c)
@@ -149,9 +149,9 @@ public:
 		R = N - K;
 		q = R / M;
 		CNL = ldpc->links_max_cn() - 2;
-		pos = new uint16_t[R * CNL];
-		cnc = new uint8_t[R];
-		for (int i = 0; i < R; ++i)
+		pos = new uint16_t[q * CNL];
+		cnc = new uint8_t[q];
+		for (int i = 0; i < q; ++i)
 			cnc[i] = 0;
 		ldpc->first_bit();
 		for (int j = 0; j < K; ++j) {
@@ -159,7 +159,8 @@ public:
 			int bit_deg = ldpc->bit_deg();
 			for (int n = 0; n < bit_deg; ++n) {
 				int i = acc_pos[n];
-				pos[CNL*i+cnc[i]++] = j;
+				if (i < q)
+					pos[CNL*i+cnc[i]++] = j;
 			}
 			ldpc->next_bit();
 		}
@@ -167,13 +168,6 @@ public:
 		delete ldpc;
 		bnl = reinterpret_cast<TYPE *>(aligned_alloc(sizeof(TYPE), sizeof(TYPE) * LT));
 		pty = reinterpret_cast<TYPE *>(aligned_alloc(sizeof(TYPE), sizeof(TYPE) * R));
-		uint16_t *tmp = new uint16_t[R * CNL];
-		for (int i = 0; i < q; ++i)
-			for (int j = 0; j < M; ++j)
-				for (int c = 0; c < CNL; ++c)
-					tmp[CNL*(M*i+j)+c] = pos[CNL*(q*j+i)+c];
-		delete[] pos;
-		pos = tmp;
 	}
 	int operator()(TYPE *data, TYPE *parity, int trials = 25, int blocks = 1)
 	{
