@@ -29,10 +29,17 @@ class LDPCDecoder
 	{
 		{
 			int cnt = cnc[0];
-			int msg_pos[cnt];
+			int offset[cnt], shift[cnt];
+			for (int c = 0; c < cnt; ++c) {
+				offset[c] = (pos[c] / M) * M;
+				shift[c] = pos[c] - offset[c];
+			}
 			{
-				for (int c = 0; c < cnt; ++c)
-					msg_pos[c] = pos[c];
+				int msg_pos[cnt];
+				for (int c = 0; c < cnt; ++c) {
+					msg_pos[c] = offset[c] + shift[c];
+					shift[c] = (shift[c] + 1) % M;
+				}
 				TYPE cnv = alg.sign(alg.one(), parity[0]);
 				for (int c = 0; c < cnt; ++c)
 					cnv = alg.sign(cnv, data[msg_pos[c]]);
@@ -40,8 +47,11 @@ class LDPCDecoder
 					return true;
 			}
 			for (int j = 1; j < M; ++j) {
-				for (int c = 0; c < cnt; ++c)
-					msg_pos[c] = (msg_pos[c] / M) * M + (msg_pos[c] + 1) % M;
+				int msg_pos[cnt];
+				for (int c = 0; c < cnt; ++c) {
+					msg_pos[c] = offset[c] + shift[c];
+					shift[c] = (shift[c] + 1) % M;
+				}
 				TYPE cnv = alg.sign(alg.sign(alg.one(), parity[j+(q-1)*M-1]), parity[j]);
 				for (int c = 0; c < cnt; ++c)
 					cnv = alg.sign(cnv, data[msg_pos[c]]);
@@ -51,17 +61,22 @@ class LDPCDecoder
 		}
 		for (int i = 1; i < q; ++i) {
 			int cnt = cnc[i];
-			int msg_pos[cnt];
-			for (int c = 0; c < cnt; ++c)
-				msg_pos[c] = pos[CNL*i+c];
+			int offset[cnt], shift[cnt];
+			for (int c = 0; c < cnt; ++c) {
+				offset[c] = (pos[CNL*i+c] / M) * M;
+				shift[c] = pos[CNL*i+c] - offset[c];
+			}
 			for (int j = 0; j < M; ++j) {
+				int msg_pos[cnt];
+				for (int c = 0; c < cnt; ++c) {
+					msg_pos[c] = offset[c] + shift[c];
+					shift[c] = (shift[c] + 1) % M;
+				}
 				TYPE cnv = alg.sign(alg.sign(alg.one(), parity[M*(i-1)+j]), parity[M*i+j]);
 				for (int c = 0; c < cnt; ++c)
 					cnv = alg.sign(cnv, data[msg_pos[c]]);
 				if (alg.bad(cnv, blocks))
 					return true;
-				for (int c = 0; c < cnt; ++c)
-					msg_pos[c] = (msg_pos[c] / M) * M + (msg_pos[c] + 1) % M;
 			}
 		}
 		return false;
@@ -71,10 +86,17 @@ class LDPCDecoder
 		TYPE *bl = bnl;
 		{
 			int cnt = cnc[0];
-			int msg_pos[cnt];
+			int offset[cnt], shift[cnt];
+			for (int c = 0; c < cnt; ++c) {
+				offset[c] = (pos[c] / M) * M;
+				shift[c] = pos[c] - offset[c];
+			}
 			{
-				for (int c = 0; c < cnt; ++c)
-					msg_pos[c] = pos[c];
+				int msg_pos[cnt];
+				for (int c = 0; c < cnt; ++c) {
+					msg_pos[c] = offset[c] + shift[c];
+					shift[c] = (shift[c] + 1) % M;
+				}
 				int deg = cnt + 1;
 				TYPE inp[deg], out[deg];
 				for (int c = 0; c < cnt; ++c)
@@ -89,8 +111,11 @@ class LDPCDecoder
 			}
 			int deg = cnt + 2;
 			for (int j = 1; j < M; ++j) {
-				for (int c = 0; c < cnt; ++c)
-					msg_pos[c] = (msg_pos[c] / M) * M + (msg_pos[c] + 1) % M;
+				int msg_pos[cnt];
+				for (int c = 0; c < cnt; ++c) {
+					msg_pos[c] = offset[c] + shift[c];
+					shift[c] = (shift[c] + 1) % M;
+				}
 				TYPE inp[deg], out[deg];
 				for (int c = 0; c < cnt; ++c)
 					inp[c] = out[c] = alg.sub(data[msg_pos[c]], bl[c]);
@@ -108,10 +133,17 @@ class LDPCDecoder
 		for (int i = 1; i < q; ++i) {
 			int cnt = cnc[i];
 			int deg = cnt + 2;
-			int msg_pos[cnt];
-			for (int c = 0; c < cnt; ++c)
-				msg_pos[c] = pos[CNL*i+c];
+			int offset[cnt], shift[cnt];
+			for (int c = 0; c < cnt; ++c) {
+				offset[c] = (pos[CNL*i+c] / M) * M;
+				shift[c] = pos[CNL*i+c] - offset[c];
+			}
 			for (int j = 0; j < M; ++j) {
+				int msg_pos[cnt];
+				for (int c = 0; c < cnt; ++c) {
+					msg_pos[c] = offset[c] + shift[c];
+					shift[c] = (shift[c] + 1) % M;
+				}
 				TYPE inp[deg], out[deg];
 				for (int c = 0; c < cnt; ++c)
 					inp[c] = out[c] = alg.sub(data[msg_pos[c]], bl[c]);
@@ -124,8 +156,6 @@ class LDPCDecoder
 				parity[M*i+j] = alg.add(inp[cnt+1], out[cnt+1]);
 				for (int d = 0; d < deg; ++d)
 					alg.update(bl++, out[d]);
-				for (int c = 0; c < cnt; ++c)
-					msg_pos[c] = (msg_pos[c] / M) * M + (msg_pos[c] + 1) % M;
 			}
 		}
 	}
