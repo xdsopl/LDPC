@@ -31,8 +31,8 @@ class LDPCDecoder
 			int cnt = cnc[0];
 			int offset[cnt], shift[cnt];
 			for (int c = 0; c < cnt; ++c) {
-				offset[c] = (pos[c] / M) * M;
-				shift[c] = pos[c] - offset[c];
+				shift[c] = pos[c] % M;
+				offset[c] = pos[c] - shift[c];
 			}
 			{
 				int msg_pos[cnt];
@@ -63,8 +63,8 @@ class LDPCDecoder
 			int cnt = cnc[i];
 			int offset[cnt], shift[cnt];
 			for (int c = 0; c < cnt; ++c) {
-				offset[c] = (pos[CNL*i+c] / M) * M;
-				shift[c] = pos[CNL*i+c] - offset[c];
+				shift[c] = pos[CNL*i+c] % M;
+				offset[c] = pos[CNL*i+c] - shift[c];
 			}
 			for (int j = 0; j < M; ++j) {
 				int msg_pos[cnt];
@@ -88,8 +88,8 @@ class LDPCDecoder
 			int cnt = cnc[0];
 			int offset[cnt], shift[cnt];
 			for (int c = 0; c < cnt; ++c) {
-				offset[c] = (pos[c] / M) * M;
-				shift[c] = pos[c] - offset[c];
+				shift[c] = pos[c] % M;
+				offset[c] = pos[c] - shift[c];
 			}
 			{
 				int msg_pos[cnt];
@@ -135,8 +135,8 @@ class LDPCDecoder
 			int deg = cnt + 2;
 			int offset[cnt], shift[cnt];
 			for (int c = 0; c < cnt; ++c) {
-				offset[c] = (pos[CNL*i+c] / M) * M;
-				shift[c] = pos[CNL*i+c] - offset[c];
+				shift[c] = pos[CNL*i+c] % M;
+				offset[c] = pos[CNL*i+c] - shift[c];
 			}
 			for (int j = 0; j < M; ++j) {
 				int msg_pos[cnt];
