@@ -133,30 +133,41 @@ class LDPCDecoder
 		for (int i = 1; i < q; ++i) {
 			int cnt = cnc[i];
 			int deg = cnt + 2;
-			int offset[cnt], shift[cnt];
+			TYPE buf[deg*M];
 			for (int c = 0; c < cnt; ++c) {
-				shift[c] = pos[CNL*i+c] % M;
-				offset[c] = pos[CNL*i+c] - shift[c];
+				int shift = pos[CNL*i+c] % M;
+				int offset = pos[CNL*i+c] - shift;
+				for (int j = 0; j < shift; ++j)
+					buf[M*c+j+(M-shift)] = data[offset+j];
+				for (int j = 0; j < M - shift; ++j)
+					buf[M*c+j] = data[offset+shift+j];
 			}
+			for (int j = 0; j < M; ++j)
+				buf[M*cnt+j] = parity[M*(i-1)+j];
+			for (int j = 0; j < M; ++j)
+				buf[M*(cnt+1)+j] = parity[M*i+j];
 			for (int j = 0; j < M; ++j) {
-				int msg_pos[cnt];
-				for (int c = 0; c < cnt; ++c) {
-					msg_pos[c] = offset[c] + shift[c];
-					shift[c] = (shift[c] + 1) % M;
-				}
 				TYPE inp[deg], out[deg];
-				for (int c = 0; c < cnt; ++c)
-					inp[c] = out[c] = alg.sub(data[msg_pos[c]], bl[c]);
-				inp[cnt] = out[cnt] = alg.sub(parity[M*(i-1)+j], bl[cnt]);
-				inp[cnt+1] = out[cnt+1] = alg.sub(parity[M*i+j], bl[cnt+1]);
+				for (int d = 0; d < deg; ++d)
+					inp[d] = out[d] = alg.sub(buf[M*d+j], bl[d]);
 				alg.finalp(out, deg);
-				for (int c = 0; c < cnt; ++c)
-					data[msg_pos[c]] = alg.add(inp[c], out[c]);
-				parity[M*(i-1)+j] = alg.add(inp[cnt], out[cnt]);
-				parity[M*i+j] = alg.add(inp[cnt+1], out[cnt+1]);
+				for (int d = 0; d < deg; ++d)
+					buf[M*d+j] = alg.add(inp[d], out[d]);
 				for (int d = 0; d < deg; ++d)
 					alg.update(bl++, out[d]);
 			}
+			for (int c = 0; c < cnt; ++c) {
+				int shift = pos[CNL*i+c] % M;
+				int offset = pos[CNL*i+c] - shift;
+				for (int j = 0; j < shift; ++j)
+					data[offset+j] = buf[M*c+j+(M-shift)];
+				for (int j = 0; j < M - shift; ++j)
+					data[offset+shift+j] = buf[M*c+j];
+			}
+			for (int j = 0; j < M; ++j)
+				parity[M*(i-1)+j] = buf[M*cnt+j];
+			for (int j = 0; j < M; ++j)
+				parity[M*i+j] = buf[M*(cnt+1)+j];
 		}
 	}
 public:
