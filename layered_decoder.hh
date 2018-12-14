@@ -48,8 +48,8 @@ class LDPCDecoder
 		TYPE *bl = bnl;
 		for (int i = 0; i < q; ++i) {
 			int cnt = cnc[i];
-			int deg = cnt + 2;
 			for (int j = 0; j < M; ++j) {
+				int deg = cnt + 2 - !(i|j);
 				TYPE inp[deg], out[deg];
 				for (int c = 0; c < cnt; ++c)
 					inp[c] = out[c] = alg.sub(data[pos[CNL*(M*i+j)+c]], bl[c]);
@@ -58,8 +58,6 @@ class LDPCDecoder
 					inp[cnt+1] = out[cnt+1] = alg.sub(parity[M*(i-1)+j], bl[cnt+1]);
 				else if (j)
 					inp[cnt+1] = out[cnt+1] = alg.sub(parity[j+(q-1)*M-1], bl[cnt+1]);
-				else
-					inp[cnt+1] = out[cnt+1] = alg.one();
 				alg.finalp(out, deg);
 				for (int c = 0; c < cnt; ++c)
 					data[pos[CNL*(M*i+j)+c]] = alg.add(inp[c], out[c]);
@@ -68,7 +66,7 @@ class LDPCDecoder
 					parity[M*(i-1)+j] = alg.add(inp[cnt+1], out[cnt+1]);
 				else if (j)
 					parity[j+(q-1)*M-1] = alg.add(inp[cnt+1], out[cnt+1]);
-				for (int d = 0; d < deg-!(i|j); ++d)
+				for (int d = 0; d < deg; ++d)
 					alg.update(bl++, out[d]);
 			}
 		}
