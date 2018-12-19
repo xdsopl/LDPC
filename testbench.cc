@@ -75,17 +75,19 @@ int main(int argc, char **argv)
 	assert(itl);
 
 	value_type SNR = atof(argv[1]);
-	value_type mean = 1;
-	value_type sigma = std::sqrt(mean * mean / (2 * std::pow(10, SNR / 10)));
-	//value_type SNR = 10 * std::log10(mean * mean / (2 * sigma * sigma));
-	std::cerr << SNR << " Es/N0 => standard deviation of " << sigma << " with mean " << mean << std::endl;
+	//value_type mean_signal = 0;
+	value_type sigma_signal = 1;
+	value_type mean_noise = 0;
+	value_type sigma_noise = std::sqrt(sigma_signal * sigma_signal / (2 * std::pow(10, SNR / 10)));
+	//value_type SNR = 10 * std::log10(sigma_signal * sigma_signal / (2 * sigma_noise * sigma_noise));
+	std::cerr << SNR << " Es/N0 => AWGN with standard deviation of " << sigma_noise << " and mean " << mean_noise << std::endl;
 
 	std::random_device rd;
 	std::default_random_engine generator(rd());
 	typedef std::uniform_int_distribution<int> uniform;
 	typedef std::normal_distribution<value_type> normal;
 	auto data = std::bind(uniform(0, 1), generator);
-	auto awgn = std::bind(normal(0.0, sigma), generator);
+	auto awgn = std::bind(normal(mean_noise, sigma_noise), generator);
 
 	int BLOCKS = atoi(argv[5]);
 	if (BLOCKS < 1)
@@ -127,14 +129,14 @@ int main(int argc, char **argv)
 			np += std::norm(e);
 		}
 		value_type snr = 10 * std::log10(sp / np);
-		mean = std::sqrt(sp / SYMBOLS);
-		sigma = std::sqrt(np / (2 * sp));
-		std::cerr << snr << " Es/N0, " << sigma << " sigma and " << mean << " mean estimated via hard decision." << std::endl;
+		sigma_signal = std::sqrt(sp / SYMBOLS);
+		sigma_noise = std::sqrt(np / (2 * sp));
+		std::cerr << snr << " Es/N0, stddev " << sigma_noise << " of noise and " << sigma_signal << " of signal estimated via hard decision." << std::endl;
 	}
 
 	// $LLR=log(\frac{p(x=+1|y)}{p(x=-1|y)})$
 	// $p(x|\mu,\sigma)=\frac{1}{\sqrt{2\pi}\sigma}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}$
-	value_type precision = FACTOR / (sigma * sigma);
+	value_type precision = FACTOR / (sigma_noise * sigma_noise);
 	for (int j = 0; j < BLOCKS; ++j)
 		mod->softN(code + j * CODE_LEN, symb + j * SYMBOLS, precision);
 
@@ -207,9 +209,9 @@ int main(int argc, char **argv)
 			np += std::norm(e);
 		}
 		value_type snr = 10 * std::log10(sp / np);
-		mean = std::sqrt(sp / SYMBOLS);
-		sigma = std::sqrt(np / (2 * sp));
-		std::cerr << snr << " Es/N0, " << sigma << " sigma and " << mean << " mean estimated from corrected symbols." << std::endl;
+		sigma_signal = std::sqrt(sp / SYMBOLS);
+		sigma_noise = std::sqrt(np / (2 * sp));
+		std::cerr << snr << " Es/N0, stddev " << sigma_noise << " of noise and " << sigma_signal << " of signal estimated from corrected symbols." << std::endl;
 	}
 
 	std::cerr << awgn_errors << " errors caused by AWGN." << std::endl;
