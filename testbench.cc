@@ -79,8 +79,11 @@ int main(int argc, char **argv)
 	value_type sigma_signal = 1;
 	value_type mean_noise = 0;
 	value_type sigma_noise = std::sqrt(sigma_signal * sigma_signal / (2 * std::pow(10, SNR / 10)));
-	//value_type SNR = 10 * std::log10(sigma_signal * sigma_signal / (2 * sigma_noise * sigma_noise));
 	std::cerr << SNR << " Es/N0 => AWGN with standard deviation of " << sigma_noise << " and mean " << mean_noise << std::endl;
+
+	value_type code_rate = (value_type)DATA_LEN / (value_type)CODE_LEN;
+	value_type EbN0 = 10 * std::log10(sigma_signal * sigma_signal / (2 * code_rate * MOD_BITS * sigma_noise * sigma_noise));
+	std::cerr << EbN0 << " Eb/N0 (normalized SNR) from " << code_rate << " code rate and " << MOD_BITS << " bits per symbol." << std::endl;
 
 	std::random_device rd;
 	std::default_random_engine generator(rd());
@@ -221,7 +224,7 @@ int main(int argc, char **argv)
 	std::cerr << bit_error_rate << " bit error rate." << std::endl;
 
 	if (0) {
-		std::cout << SNR << " " << bit_error_rate << " " << avg_iter << std::endl;
+		std::cout << SNR << " " << bit_error_rate << " " << avg_iter << " " << EbN0 << std::endl;
 	}
 
 	delete ldpc;
