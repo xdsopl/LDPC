@@ -82,8 +82,9 @@ int main(int argc, char **argv)
 	std::cerr << SNR << " Es/N0 => AWGN with standard deviation of " << sigma_noise << " and mean " << mean_noise << std::endl;
 
 	value_type code_rate = (value_type)DATA_LEN / (value_type)CODE_LEN;
-	value_type EbN0 = 10 * std::log10(sigma_signal * sigma_signal / (2 * code_rate * MOD_BITS * sigma_noise * sigma_noise));
-	std::cerr << EbN0 << " Eb/N0 (normalized SNR) from " << code_rate << " code rate and " << MOD_BITS << " bits per symbol." << std::endl;
+	value_type spectral_efficiency = code_rate * MOD_BITS;
+	value_type EbN0 = 10 * std::log10(sigma_signal * sigma_signal / (spectral_efficiency * 2 * sigma_noise * sigma_noise));
+	std::cerr << EbN0 << " Eb/N0, using spectral efficiency of " << spectral_efficiency << " from " << code_rate << " code rate and " << MOD_BITS << " bits per symbol." << std::endl;
 
 	std::random_device rd;
 	std::default_random_engine generator(rd());
