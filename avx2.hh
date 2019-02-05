@@ -932,14 +932,6 @@ inline SIMD<int32_t, 8> vmin(SIMD<int32_t, 8> a, SIMD<int32_t, 8> b)
 }
 
 template <>
-inline SIMD<int64_t, 4> vmin(SIMD<int64_t, 4> a, SIMD<int64_t, 4> b)
-{
-	SIMD<int64_t, 4> tmp;
-	tmp.m = _mm256_min_epi64(a.m, b.m);
-	return tmp;
-}
-
-template <>
 inline SIMD<float, 8> vmax(SIMD<float, 8> a, SIMD<float, 8> b)
 {
 	SIMD<float, 8> tmp;
@@ -976,14 +968,6 @@ inline SIMD<int32_t, 8> vmax(SIMD<int32_t, 8> a, SIMD<int32_t, 8> b)
 {
 	SIMD<int32_t, 8> tmp;
 	tmp.m = _mm256_max_epi32(a.m, b.m);
-	return tmp;
-}
-
-template <>
-inline SIMD<int64_t, 4> vmax(SIMD<int64_t, 4> a, SIMD<int64_t, 4> b)
-{
-	SIMD<int64_t, 4> tmp;
-	tmp.m = _mm256_max_epi64(a.m, b.m);
 	return tmp;
 }
 
