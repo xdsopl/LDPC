@@ -12,6 +12,21 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 #include "modulation.hh"
 #include "testbench.hh"
 
+template <typename TYPE, typename CODE>
+constexpr typename TYPE::value_type PhaseShiftKeying<4, TYPE, CODE>::rcp_sqrt_2;
+template <typename TYPE, typename CODE>
+constexpr TYPE PhaseShiftKeying<8, TYPE, CODE>::rot_acw;
+template <typename TYPE, typename CODE>
+constexpr TYPE PhaseShiftKeying<8, TYPE, CODE>::rot_cw;
+template <typename TYPE, typename CODE>
+constexpr typename TYPE::value_type QuadratureAmplitudeModulation<16, TYPE, CODE>::AMP;
+template <typename TYPE, typename CODE>
+constexpr typename TYPE::value_type QuadratureAmplitudeModulation<64, TYPE, CODE>::AMP;
+template <typename TYPE, typename CODE>
+constexpr typename TYPE::value_type QuadratureAmplitudeModulation<256, TYPE, CODE>::AMP;
+template <typename TYPE, typename CODE>
+constexpr typename TYPE::value_type QuadratureAmplitudeModulation<1024, TYPE, CODE>::AMP;
+
 template <int LEN>
 ModulationInterface<complex_type, code_type> *create_modulation(char *name)
 {
