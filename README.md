@@ -21,7 +21,6 @@ You can switch between six [Belief propagation](https://en.wikipedia.org/wiki/Be
 * log-sum-product algorithm: using log+exp-functions to replace above multiplication with addition in the log domain
 * lambda-min algorithm: same as log-sum-product, but using only lambda minima
 
-The following applies to the flooding schedule only:  
 You can enable the self-corrected update for any of the above listed algorithms to further boost its decoding performance.
 It works by erasing unreliable bit nodes, whose signs fluctuate between updates.
 As shown in the BER plots below, the min-sum algorithm benefits the most from the erasures.
