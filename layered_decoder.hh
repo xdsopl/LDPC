@@ -59,15 +59,16 @@ class LDPCDecoder
 				else if (j)
 					inp[cnt+1] = out[cnt+1] = alg.sub(parity[j+(q-1)*M-1], bl[cnt+1]);
 				alg.finalp(out, deg);
-				for (int c = 0; c < cnt; ++c)
-					data[pos[CNL*(M*i+j)+c]] = alg.add(inp[c], out[c]);
-				parity[M*i+j] = alg.add(inp[cnt], out[cnt]);
-				if (i)
-					parity[M*(i-1)+j] = alg.add(inp[cnt+1], out[cnt+1]);
-				else if (j)
-					parity[j+(q-1)*M-1] = alg.add(inp[cnt+1], out[cnt+1]);
 				for (int d = 0; d < deg; ++d)
-					alg.update(bl++, out[d]);
+					alg.update(bl+d, out[d]);
+				for (int c = 0; c < cnt; ++c)
+					data[pos[CNL*(M*i+j)+c]] = alg.add(inp[c], bl[c]);
+				parity[M*i+j] = alg.add(inp[cnt], bl[cnt]);
+				if (i)
+					parity[M*(i-1)+j] = alg.add(inp[cnt+1], bl[cnt+1]);
+				else if (j)
+					parity[j+(q-1)*M-1] = alg.add(inp[cnt+1], bl[cnt+1]);
+				bl += deg;
 			}
 		}
 	}
