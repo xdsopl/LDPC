@@ -660,7 +660,12 @@ struct SumProductAlgorithm
 	}
 	static TYPE postp(TYPE x)
 	{
-		return TYPE(2) * std::atanh(x);
+		if (x > 0.999999999999999)
+			return 19.07;//match matlab
+		else if(x < -0.999999999999999)
+			return -19.07;//match matlab
+		else
+			return TYPE(2) * std::atanh(x);
 	}
 	static TYPE mul(TYPE a, TYPE b)
 	{
