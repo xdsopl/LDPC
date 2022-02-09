@@ -4,7 +4,6 @@ LDPC testbench
 Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 */
 
-#include <stdlib.h>
 #include <iostream>
 #include <iomanip>
 #include <random>
@@ -96,8 +95,7 @@ int main(int argc, char **argv)
 	int BLOCKS = atoi(argv[5]);
 	if (BLOCKS < 1)
 		return -1;
-	void *aligned_buffer = aligned_alloc(sizeof(simd_type), sizeof(simd_type) * CODE_LEN);
-	simd_type *simd = reinterpret_cast<simd_type *>(aligned_buffer);
+	simd_type *simd = new simd_type[CODE_LEN];
 	code_type *code = new code_type[BLOCKS * CODE_LEN];
 	code_type *orig = new code_type[BLOCKS * CODE_LEN];
 	code_type *noisy = new code_type[BLOCKS * CODE_LEN];
@@ -232,7 +230,7 @@ int main(int argc, char **argv)
 	delete mod;
 	delete itl;
 
-	free(aligned_buffer);
+	delete[] simd;
 	delete[] code;
 	delete[] orig;
 	delete[] noisy;

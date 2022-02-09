@@ -7,7 +7,6 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 #ifndef LAYERED_DECODER_HH
 #define LAYERED_DECODER_HH
 
-#include <stdlib.h>
 #include "ldpc.hh"
 
 template <typename TYPE, typename ALG>
@@ -79,8 +78,8 @@ public:
 	void init(LDPCInterface *it)
 	{
 		if (initialized) {
-			free(bnl);
-			free(pty);
+			delete[] bnl;
+			delete[] pty;
 			delete[] cnc;
 			delete[] pos;
 		}
@@ -108,8 +107,8 @@ public:
 		}
 		LT = ldpc->links_total();
 		delete ldpc;
-		bnl = reinterpret_cast<TYPE *>(aligned_alloc(sizeof(TYPE), sizeof(TYPE) * LT));
-		pty = reinterpret_cast<TYPE *>(aligned_alloc(sizeof(TYPE), sizeof(TYPE) * R));
+		bnl = new TYPE[LT];
+		pty = new TYPE[R];
 		uint16_t *tmp = new uint16_t[R * CNL];
 		for (int i = 0; i < q; ++i)
 			for (int j = 0; j < M; ++j)
@@ -134,8 +133,8 @@ public:
 	~LDPCDecoder()
 	{
 		if (initialized) {
-			free(bnl);
-			free(pty);
+			delete[] bnl;
+			delete[] pty;
 			delete[] cnc;
 			delete[] pos;
 		}

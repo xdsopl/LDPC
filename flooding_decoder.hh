@@ -7,14 +7,12 @@ Copyright 2018 Ahmet Inan <xdsopl@gmail.com>
 #ifndef FLOODING_DECODER_HH
 #define FLOODING_DECODER_HH
 
-#include <stdlib.h>
 #include "exclusive_reduce.hh"
 #include "ldpc.hh"
 
 template <typename TYPE, typename ALG>
 class LDPCDecoder
 {
-	void *aligned_buffer;
 	TYPE *bnl, *bnv, *cnl, *cnv;
 	uint8_t *cnc;
 	LDPCInterface *ldpc;
@@ -121,7 +119,10 @@ public:
 	void init(LDPCInterface *it)
 	{
 		if (initialized) {
-			free(aligned_buffer);
+			delete[] bnl;
+			delete[] bnv;
+			delete[] cnl;
+			delete[] cnv;
 			delete[] cnc;
 			delete ldpc;
 		}
@@ -132,13 +133,10 @@ public:
 		R = N - K;
 		CNL = ldpc->links_max_cn();
 		LT = ldpc->links_total();
-		int num = LT + N + R * CNL + R;
-		aligned_buffer = aligned_alloc(sizeof(TYPE), sizeof(TYPE) * num);
-		TYPE *ptr = reinterpret_cast<TYPE *>(aligned_buffer);
-		bnl = ptr; ptr += LT;
-		bnv = ptr; ptr += N;
-		cnl = ptr; ptr += R * CNL;
-		cnv = ptr; ptr += R;
+		bnl = new TYPE[LT];
+		bnv = new TYPE[N];
+		cnl = new TYPE[R * CNL];
+		cnv = new TYPE[R];
 		cnc = new uint8_t[R];
 	}
 	int operator()(TYPE *data, TYPE *parity, int trials = 50, int blocks = 1)
@@ -160,7 +158,10 @@ public:
 	~LDPCDecoder()
 	{
 		if (initialized) {
-			free(aligned_buffer);
+			delete[] bnl;
+			delete[] bnv;
+			delete[] cnl;
+			delete[] cnv;
 			delete[] cnc;
 			delete ldpc;
 		}
