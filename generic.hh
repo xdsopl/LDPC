@@ -658,9 +658,14 @@ struct SumProductAlgorithm
 	{
 		return std::tanh(TYPE(0.5) * x);
 	}
+	static TYPE atanh_clamped(TYPE x)
+	{
+		TYPE eps = std::numeric_limits<TYPE>::epsilon();
+		return std::atanh(std::clamp(x, eps - TYPE(1), TYPE(1) - eps));
+	}
 	static TYPE postp(TYPE x)
 	{
-		return TYPE(2) * std::atanh(x);
+		return TYPE(2) * atanh_clamped(x);
 	}
 	static TYPE mul(TYPE a, TYPE b)
 	{
