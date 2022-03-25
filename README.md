@@ -71,11 +71,9 @@ The color on the following three plots are to be interpreted like this:
 This is the second fastest algorithm, min-sum-c, but it needs a few iterations longer to converge:
 ![min-sum-c](min-sum-c.png)
 
-The sum-product algorithms converge much faster than the min-sum algorithms, but they involve [transcendental functions](https://en.wikipedia.org/wiki/Transcendental_function).
-![log-sum-product](log-sum-product.png)
-
-Here we see the fastest convergence, where bit nodes go to minus or plus infinity (and sometimes back from):
-![sum-product](sum-product.png)
+The sum-product algorithms converge much faster than the min-sum algorithms:
+![log-sum-product](log-sum-product.png)  
+Unfortunately they need computationally expensive [transcendental functions](https://en.wikipedia.org/wiki/Transcendental_function).
 
 ### Getting soft information from symbols
 
