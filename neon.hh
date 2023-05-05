@@ -4,8 +4,7 @@ ARM NEON acceleration
 Copyright 2018 Ahmet Inan <inan@aicodix.de>
 */
 
-#ifndef NEON_HH
-#define NEON_HH
+#pragma once
 
 #include <arm_neon.h>
 
@@ -445,6 +444,22 @@ inline SIMD<uint16_t, 8> vqsub(SIMD<uint16_t, 8> a, SIMD<uint16_t, 8> b)
 }
 
 template <>
+inline SIMD<float, 4> vmul(SIMD<float, 4> a, SIMD<float, 4> b)
+{
+	SIMD<float, 4> tmp;
+	tmp.m = vmulq_f32(a.m, b.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<int8_t, 16> vmul(SIMD<int8_t, 16> a, SIMD<int8_t, 16> b)
+{
+	SIMD<int8_t, 16> tmp;
+	tmp.m = vmulq_s8(a.m, b.m);
+	return tmp;
+}
+
+template <>
 inline SIMD<float, 4> vabs(SIMD<float, 4> a)
 {
 	SIMD<float, 4> tmp;
@@ -469,6 +484,25 @@ inline SIMD<int16_t, 8> vqabs(SIMD<int16_t, 8> a)
 }
 
 template <>
+inline SIMD<float, 4> vsignum(SIMD<float, 4> a)
+{
+	SIMD<float, 4> tmp;
+	tmp.m = (float32x4_t)vbicq_u32(
+		veorq_u32((uint32x4_t)vdupq_n_f32(1.f), vandq_u32((uint32x4_t)vdupq_n_f32(-0.f), (uint32x4_t)a.m)),
+		vceqq_f32(a.m, vdupq_n_f32(0.f)));
+	return tmp;
+}
+
+template <>
+inline SIMD<int8_t, 16> vsignum(SIMD<int8_t, 16> a)
+{
+	SIMD<int8_t, 16> tmp;
+	tmp.m = (int8x16_t)vorrq_u8(vcgtq_s8(vdupq_n_s8(0), a.m),
+		vandq_u8(vcgtq_s8(a.m, vdupq_n_s8(0)), (uint8x16_t)vdupq_n_s8(1)));
+	return tmp;
+}
+
+template <>
 inline SIMD<float, 4> vsign(SIMD<float, 4> a, SIMD<float, 4> b)
 {
 	SIMD<float, 4> tmp;
@@ -485,6 +519,17 @@ inline SIMD<int8_t, 16> vsign(SIMD<int8_t, 16> a, SIMD<int8_t, 16> b)
 	tmp.m = (int8x16_t)vorrq_u8(
 		vandq_u8(vcgtq_s8(vdupq_n_s8(0), b.m), (uint8x16_t)vnegq_s8(a.m)),
 		vandq_u8(vcgtq_s8(b.m, vdupq_n_s8(0)), (uint8x16_t)a.m));
+	return tmp;
+}
+
+template <>
+inline SIMD<float, 4> vcopysign(SIMD<float, 4> a, SIMD<float, 4> b)
+{
+	SIMD<float, 4> tmp;
+	uint32x4_t negz = (uint32x4_t)vdupq_n_f32(-0.f);
+	tmp.m = (float32x4_t)vorrq_u32(
+		vbicq_u32((uint32x4_t)a.m, negz),
+		vandq_u32((uint32x4_t)b.m, negz));
 	return tmp;
 }
 
@@ -777,6 +822,38 @@ inline SIMD<uint32_t, 4> vcltz(SIMD<int32_t, 4> a)
 }
 
 template <>
+inline SIMD<uint32_t, 4> vclez(SIMD<float, 4> a)
+{
+	SIMD<uint32_t, 4> tmp;
+	tmp.m = vcleq_f32(a.m, vdupq_n_f32(0.f));
+	return tmp;
+}
+
+template <>
+inline SIMD<uint8_t, 16> vclez(SIMD<int8_t, 16> a)
+{
+	SIMD<uint8_t, 16> tmp;
+	tmp.m = vcleq_s8(a.m, vdupq_n_s8(0));
+	return tmp;
+}
+
+template <>
+inline SIMD<uint16_t, 8> vclez(SIMD<int16_t, 8> a)
+{
+	SIMD<uint16_t, 8> tmp;
+	tmp.m = vcleq_s16(a.m, vdupq_n_s16(0));
+	return tmp;
+}
+
+template <>
+inline SIMD<uint32_t, 4> vclez(SIMD<int32_t, 4> a)
+{
+	SIMD<uint32_t, 4> tmp;
+	tmp.m = vcleq_s32(a.m, vdupq_n_s32(0));
+	return tmp;
+}
+
+template <>
 inline SIMD<float, 4> vmin(SIMD<float, 4> a, SIMD<float, 4> b)
 {
 	SIMD<float, 4> tmp;
@@ -840,4 +917,65 @@ inline SIMD<int32_t, 4> vmax(SIMD<int32_t, 4> a, SIMD<int32_t, 4> b)
 	return tmp;
 }
 
+template <>
+inline SIMD<float, 4> vclamp(SIMD<float, 4> x, float a, float b)
+{
+	SIMD<float, 4> tmp;
+	tmp.m = vminq_f32(vmaxq_f32(x.m, vdupq_n_f32(a)), vdupq_n_f32(b));
+	return tmp;
+}
+
+template <>
+inline SIMD<int8_t, 16> vclamp(SIMD<int8_t, 16> x, int8_t a, int8_t b)
+{
+	SIMD<int8_t, 16> tmp;
+	tmp.m = vminq_s8(vmaxq_s8(x.m, vdupq_n_s8(a)), vdupq_n_s8(b));
+	return tmp;
+}
+
+template <>
+inline SIMD<int16_t, 8> vclamp(SIMD<int16_t, 8> x, int16_t a, int16_t b)
+{
+	SIMD<int16_t, 8> tmp;
+	tmp.m = vminq_s16(vmaxq_s16(x.m, vdupq_n_s16(a)), vdupq_n_s16(b));
+	return tmp;
+}
+
+template <>
+inline SIMD<int32_t, 4> vclamp(SIMD<int32_t, 4> x, int32_t a, int32_t b)
+{
+	SIMD<int32_t, 4> tmp;
+	tmp.m = vminq_s32(vmaxq_s32(x.m, vdupq_n_s32(a)), vdupq_n_s32(b));
+	return tmp;
+}
+
+template <>
+inline SIMD<uint8_t, 16> vshuf(SIMD<uint8_t, 16> a, SIMD<uint8_t, 16> b)
+{
+	SIMD<uint8_t, 16> tmp;
+#ifdef __aarch64__
+	tmp.m = vqtbl1q_u8(a.m, b.m);
+#else
+	uint8x8x2_t c { vget_low_u8(a.m), vget_high_u8(a.m) };
+	uint8x8_t d = vtbl2_u8(c, vget_low_u8(b.m));
+	uint8x8_t e = vtbl2_u8(c, vget_high_u8(b.m));
+	tmp.m = vcombine_u8(d, e);
 #endif
+	return tmp;
+}
+
+template <>
+inline SIMD<int8_t, 16> vshuf(SIMD<int8_t, 16> a, SIMD<uint8_t, 16> b)
+{
+	SIMD<int8_t, 16> tmp;
+#ifdef __aarch64__
+	tmp.m = vqtbl1q_s8(a.m, b.m);
+#else
+	int8x8x2_t c { vget_low_s8(a.m), vget_high_s8(a.m) };
+	int8x8_t d = vtbl2_s8(c, vget_low_s8((int8x16_t)b.m));
+	int8x8_t e = vtbl2_s8(c, vget_high_s8((int8x16_t)b.m));
+	tmp.m = vcombine_s8(d, e);
+#endif
+	return tmp;
+}
+

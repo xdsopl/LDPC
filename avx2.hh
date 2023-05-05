@@ -4,8 +4,7 @@ Intel AVX2 acceleration
 Copyright 2018 Ahmet Inan <inan@aicodix.de>
 */
 
-#ifndef AVX2_HH
-#define AVX2_HH
+#pragma once
 
 #include <immintrin.h>
 
@@ -456,6 +455,22 @@ inline SIMD<uint16_t, 16> vqsub(SIMD<uint16_t, 16> a, SIMD<uint16_t, 16> b)
 }
 
 template <>
+inline SIMD<float, 8> vmul(SIMD<float, 8> a, SIMD<float, 8> b)
+{
+	SIMD<float, 8> tmp;
+	tmp.m = _mm256_mul_ps(a.m, b.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<double, 4> vmul(SIMD<double, 4> a, SIMD<double, 4> b)
+{
+	SIMD<double, 4> tmp;
+	tmp.m = _mm256_mul_pd(a.m, b.m);
+	return tmp;
+}
+
+template <>
 inline SIMD<float, 8> vabs(SIMD<float, 8> a)
 {
 	SIMD<float, 8> tmp;
@@ -492,6 +507,50 @@ inline SIMD<int32_t, 8> vqabs(SIMD<int32_t, 8> a)
 {
 	SIMD<int32_t, 8> tmp;
 	tmp.m = _mm256_abs_epi32(_mm256_max_epi32(a.m, _mm256_set1_epi32(-INT32_MAX)));
+	return tmp;
+}
+
+template <>
+inline SIMD<float, 8> vsignum(SIMD<float, 8> a)
+{
+	SIMD<float, 8> tmp;
+	tmp.m = _mm256_andnot_ps(
+		_mm256_cmp_ps(a.m, _mm256_setzero_ps(), _CMP_EQ_OQ),
+		_mm256_or_ps(_mm256_set1_ps(1.f), _mm256_and_ps(_mm256_set1_ps(-0.f), a.m)));
+	return tmp;
+}
+
+template <>
+inline SIMD<double, 4> vsignum(SIMD<double, 4> a)
+{
+	SIMD<double, 4> tmp;
+	tmp.m = _mm256_andnot_pd(
+		_mm256_cmp_pd(a.m, _mm256_setzero_pd(), _CMP_EQ_OQ),
+		_mm256_or_pd(_mm256_set1_pd(1.), _mm256_and_pd(_mm256_set1_pd(-0.), a.m)));
+	return tmp;
+}
+
+template <>
+inline SIMD<int8_t, 32> vsignum(SIMD<int8_t, 32> a)
+{
+	SIMD<int8_t, 32> tmp;
+	tmp.m = _mm256_sign_epi8(_mm256_set1_epi8(1), a.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<int16_t, 16> vsignum(SIMD<int16_t, 16> a)
+{
+	SIMD<int16_t, 16> tmp;
+	tmp.m = _mm256_sign_epi16(_mm256_set1_epi16(1), a.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<int32_t, 8> vsignum(SIMD<int32_t, 8> a)
+{
+	SIMD<int32_t, 8> tmp;
+	tmp.m = _mm256_sign_epi32(_mm256_set1_epi32(1), a.m);
 	return tmp;
 }
 
@@ -536,6 +595,28 @@ inline SIMD<int32_t, 8> vsign(SIMD<int32_t, 8> a, SIMD<int32_t, 8> b)
 {
 	SIMD<int32_t, 8> tmp;
 	tmp.m = _mm256_sign_epi32(a.m, b.m);
+	return tmp;
+}
+
+template <>
+inline SIMD<float, 8> vcopysign(SIMD<float, 8> a, SIMD<float, 8> b)
+{
+	SIMD<float, 8> tmp;
+	__m256 negz = _mm256_set1_ps(-0.f);
+	tmp.m = _mm256_or_ps(
+		_mm256_andnot_ps(negz, a.m),
+		_mm256_and_ps(negz, b.m));
+	return tmp;
+}
+
+template <>
+inline SIMD<double, 4> vcopysign(SIMD<double, 4> a, SIMD<double, 4> b)
+{
+	SIMD<double, 4> tmp;
+	__m256d negz = _mm256_set1_pd(-0.);
+	tmp.m = _mm256_or_pd(
+		_mm256_andnot_pd(negz, a.m),
+		_mm256_and_pd(negz, b.m));
 	return tmp;
 }
 
@@ -892,6 +973,62 @@ inline SIMD<uint64_t, 4> vcltz(SIMD<int64_t, 4> a)
 }
 
 template <>
+inline SIMD<uint32_t, 8> vclez(SIMD<float, 8> a)
+{
+	SIMD<uint32_t, 8> tmp;
+	tmp.m = (__m256i)_mm256_cmp_ps(a.m, _mm256_setzero_ps(), _CMP_LE_OQ);
+	return tmp;
+}
+
+template <>
+inline SIMD<uint64_t, 4> vclez(SIMD<double, 4> a)
+{
+	SIMD<uint64_t, 4> tmp;
+	tmp.m = (__m256i)_mm256_cmp_pd(a.m, _mm256_setzero_pd(), _CMP_LE_OQ);
+	return tmp;
+}
+
+template <>
+inline SIMD<uint8_t, 32> vclez(SIMD<int8_t, 32> a)
+{
+	SIMD<uint8_t, 32> tmp;
+	tmp.m = _mm256_or_si256(
+		_mm256_cmpeq_epi8(a.m, _mm256_setzero_si256()),
+		_mm256_cmpgt_epi8(_mm256_setzero_si256(), a.m));
+	return tmp;
+}
+
+template <>
+inline SIMD<uint16_t, 16> vclez(SIMD<int16_t, 16> a)
+{
+	SIMD<uint16_t, 16> tmp;
+	tmp.m = _mm256_or_si256(
+		_mm256_cmpeq_epi16(a.m, _mm256_setzero_si256()),
+		_mm256_cmpgt_epi16(_mm256_setzero_si256(), a.m));
+	return tmp;
+}
+
+template <>
+inline SIMD<uint32_t, 8> vclez(SIMD<int32_t, 8> a)
+{
+	SIMD<uint32_t, 8> tmp;
+	tmp.m = _mm256_or_si256(
+		_mm256_cmpeq_epi32(a.m, _mm256_setzero_si256()),
+		_mm256_cmpgt_epi32(_mm256_setzero_si256(), a.m));
+	return tmp;
+}
+
+template <>
+inline SIMD<uint64_t, 4> vclez(SIMD<int64_t, 4> a)
+{
+	SIMD<uint64_t, 4> tmp;
+	tmp.m = _mm256_or_si256(
+		_mm256_cmpeq_epi64(a.m, _mm256_setzero_si256()),
+		_mm256_cmpgt_epi64(_mm256_setzero_si256(), a.m));
+	return tmp;
+}
+
+template <>
 inline SIMD<float, 8> vmin(SIMD<float, 8> a, SIMD<float, 8> b)
 {
 	SIMD<float, 8> tmp;
@@ -971,4 +1108,83 @@ inline SIMD<int32_t, 8> vmax(SIMD<int32_t, 8> a, SIMD<int32_t, 8> b)
 	return tmp;
 }
 
-#endif
+template <>
+inline SIMD<float, 8> vclamp(SIMD<float, 8> x, float a, float b)
+{
+	SIMD<float, 8> tmp;
+	tmp.m = _mm256_min_ps(_mm256_max_ps(x.m, _mm256_set1_ps(a)), _mm256_set1_ps(b));
+	return tmp;
+}
+
+template <>
+inline SIMD<double, 4> vclamp(SIMD<double, 4> x, double a, double b)
+{
+	SIMD<double, 4> tmp;
+	tmp.m = _mm256_min_pd(_mm256_max_pd(x.m, _mm256_set1_pd(a)), _mm256_set1_pd(b));
+	return tmp;
+}
+
+template <>
+inline SIMD<int8_t, 32> vclamp(SIMD<int8_t, 32> x, int8_t a, int8_t b)
+{
+	SIMD<int8_t, 32> tmp;
+	tmp.m = _mm256_min_epi8(_mm256_max_epi8(x.m, _mm256_set1_epi8(a)), _mm256_set1_epi8(b));
+	return tmp;
+}
+
+template <>
+inline SIMD<int16_t, 16> vclamp(SIMD<int16_t, 16> x, int16_t a, int16_t b)
+{
+	SIMD<int16_t, 16> tmp;
+	tmp.m = _mm256_min_epi16(_mm256_max_epi16(x.m, _mm256_set1_epi16(a)), _mm256_set1_epi16(b));
+	return tmp;
+}
+
+template <>
+inline SIMD<int32_t, 8> vclamp(SIMD<int32_t, 8> x, int32_t a, int32_t b)
+{
+	SIMD<int32_t, 8> tmp;
+	tmp.m = _mm256_min_epi32(_mm256_max_epi32(x.m, _mm256_set1_epi32(a)), _mm256_set1_epi32(b));
+	return tmp;
+}
+
+template <>
+inline SIMD<int64_t, 4> vclamp(SIMD<int64_t, 4> x, int64_t a, int64_t b)
+{
+	SIMD<int64_t, 4> tmp;
+	tmp.m = _mm256_min_epi64(_mm256_max_epi64(x.m, _mm256_set1_epi64x(a)), _mm256_set1_epi64x(b));
+	return tmp;
+}
+
+template <>
+inline SIMD<uint8_t, 32> vshuf(SIMD<uint8_t, 32> a, SIMD<uint8_t, 32> b)
+{
+	SIMD<uint8_t, 32> tmp;
+	__m256i c = _mm256_sub_epi8(b.m, _mm256_set1_epi8(16));
+	__m256i d = _mm256_or_si256(b.m, _mm256_cmpgt_epi8(b.m, _mm256_set1_epi8(15)));
+	__m256i e = _mm256_shuffle_epi8(_mm256_permute2x128_si256(a.m, a.m, 0), d);
+	__m256i f = _mm256_shuffle_epi8(_mm256_permute2x128_si256(a.m, a.m, 17), c);
+	tmp.m = _mm256_or_si256(e, f);
+	return tmp;
+}
+
+template <>
+inline SIMD<int8_t, 32> vshuf(SIMD<int8_t, 32> a, SIMD<uint8_t, 32> b)
+{
+	SIMD<int8_t, 32> tmp;
+	__m256i c = _mm256_sub_epi8(b.m, _mm256_set1_epi8(16));
+	__m256i d = _mm256_or_si256(b.m, _mm256_cmpgt_epi8(b.m, _mm256_set1_epi8(15)));
+	__m256i e = _mm256_shuffle_epi8(_mm256_permute2x128_si256(a.m, a.m, 0), d);
+	__m256i f = _mm256_shuffle_epi8(_mm256_permute2x128_si256(a.m, a.m, 17), c);
+	tmp.m = _mm256_or_si256(e, f);
+	return tmp;
+}
+
+template <>
+inline SIMD<float, 8> vshuf(SIMD<float, 8> a, SIMD<uint32_t, 8> b)
+{
+	SIMD<float, 8> tmp;
+	tmp.m = _mm256_permutevar8x32_ps(a.m, b.m);
+	return tmp;
+}
+
